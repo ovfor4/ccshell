@@ -25,7 +25,6 @@ string find_cmd(string s)
                 break;
         
         string cmd = path.substr(i, j-i) + '/' +s;
-        cout << cmd << endl;
         if (access(cmd.c_str(), F_OK) == 0)
             return cmd;
 
