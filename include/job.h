@@ -15,17 +15,31 @@
 #define MAXJOBS      16   /* max jobs at any point in time */
 #define MAXJID    1<<16   /* max job ID */
 
-#define UNDEF 0 /* undefined */
-#define FG 1    /* running in foreground */
-#define BG 2    /* running in background */
-#define ST 3    /* stopped */
-
 
 namespace ov4 
 {
 
 extern struct job_t jobs[];
 extern int nextjid;
+
+
+/* 
+ * Jobs states: FG (foreground), BG (background), ST (stopped)
+ * Job state transitions and enabling actions:
+ *     FG -> ST  : ctrl-z
+ *     ST -> FG  : fg command
+ *     ST -> BG  : bg command
+ *     BG -> FG  : fg command
+ * At most 1 job can be in the FG state.
+ */
+
+enum job_status
+{
+    UNDEF,
+    FG,
+    BG,
+    ST
+};
    
 struct job_t {              /* The job struct */
     pid_t pid;              /* job PID */

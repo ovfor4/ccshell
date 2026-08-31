@@ -28,22 +28,6 @@ using namespace ov4;
 
 
 
-/* Job states */
-#define UNDEF 0 /* undefined */
-#define FG 1    /* running in foreground */
-#define BG 2    /* running in background */
-#define ST 3    /* stopped */
-
-/* 
- * Jobs states: FG (foreground), BG (background), ST (stopped)
- * Job state transitions and enabling actions:
- *     FG -> ST  : ctrl-z
- *     ST -> FG  : fg command
- *     ST -> BG  : bg command
- *     BG -> FG  : fg command
- * At most 1 job can be in the FG state.
- */
-
 /* Global variables */
 char prompt[] = "$ ";    /* command line prompt (DO NOT CHANGE) */
 char sbuf[MAXLINE];         /* for composing sprintf messages */
