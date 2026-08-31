@@ -20,6 +20,7 @@
 #include "job.h"
 #include "parse.h"
 #include "handler.h"
+#include "ground.h"
 
 using namespace std;
 using namespace ov4;
@@ -58,8 +59,6 @@ vector<string> builtin_cmd_list = {"quit", "fg", "bg", "jobs"};
 /* Here are the functions that you will implement */
 void eval(char *cmdline);
 int builtin_cmd(char *c_str);
-void do_bgfg(char **argv);
-void waitfg(pid_t pid);
 
 
 
