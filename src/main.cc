@@ -106,8 +106,7 @@ int main(int argc, char **argv)
             usage();
 	    break;
         case 'v':             /* emit additional diagnostic info */
-            ov4::DEBUG = true;
-            verbose = 1;
+            verbose = true;
 	    break;
         case 'p':             /* don't print a prompt */
             emit_prompt = 0;  /* handy for automatic testing */
