@@ -50,7 +50,6 @@ char sbuf[MAXLINE];         /* for composing sprintf messages */
 
 
 
-void eval(char *cmdline);
 int builtin_cmd(char *c_str);
 
 
