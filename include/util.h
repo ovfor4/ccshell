@@ -26,13 +26,13 @@ void atomic_debug(int x);
 bool isnum(char *s);
 void reverse(char str[], int length);
 char *itoa(int num, char* str, int base);
+int builtin_cmd(char *c_str);
+void builtin_command_quit();
 
 constexpr bool GLOBAL_DEBUG = true;
 struct LogVoidify { void operator&(std::ostream&) const {} };
 
 constexpr int DECIMAL = 10;
 constexpr int LENGTH = 32;
-
-
 
 }

@@ -3,6 +3,13 @@
 namespace ov4
 {
 
+/* 
+ * parseline - Parse the command line and build the argv array.
+ * 
+ * Characters enclosed in single quotes are treated as a single
+ * argument.  Return true if the user has requested a BG job, false if
+ * the user has requested a FG job.  
+ */
 int parseline(const char *cmdline, char **argv) 
 {
     static char array[MAXLINE]; /* holds local copy of command line */
