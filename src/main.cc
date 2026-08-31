@@ -50,14 +50,6 @@ char sbuf[MAXLINE];         /* for composing sprintf messages */
 
 
 
-
-vector<string> builtin_cmd_list = {"quit", "fg", "bg", "jobs"};
-/* End global variables */
-
-
-/* Function prototypes */
-
-/* Here are the functions that you will implement */
 void eval(char *cmdline);
 int builtin_cmd(char *c_str);
 

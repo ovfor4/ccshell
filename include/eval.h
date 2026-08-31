@@ -18,3 +18,10 @@
 #include "job.h"
 #include "ground.h"
 #include "parse.h"
+
+namespace ov4
+{
+
+void eval(char *cmdline);
+
+}
