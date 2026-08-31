@@ -1,4 +1,4 @@
-#include "setting.h"
+#include "global.h"
 
 namespace ov4
 {

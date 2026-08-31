@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 
-#include "setting.h"
+#include "global.h"
 
 #define LOG !(ov4::GLOBAL_DEBUG && verbose) ? (void)0 : ov4::LogVoidify() & std::clog
 
