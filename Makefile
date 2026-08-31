@@ -3,7 +3,10 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++21
 
 TARGET = ccshell
-SRCS = main.cc
+
+SRCS = \
+	src/main.cc
+
 OBJS = $(SRCS:.cc=.o)
 
 $(TARGET): $(OBJS)
