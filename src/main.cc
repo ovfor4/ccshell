@@ -43,7 +43,7 @@ using namespace ov4;
  */
 
 /* Global variables */
-char prompt[] = "tsh> ";    /* command line prompt (DO NOT CHANGE) */
+char prompt[] = "$ ";    /* command line prompt (DO NOT CHANGE) */
 char sbuf[MAXLINE];         /* for composing sprintf messages */
 
 
