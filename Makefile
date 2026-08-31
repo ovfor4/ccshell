@@ -1,21 +1,28 @@
-CC = gcc
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++21
+SRC_DIR = src
+INCLUDE_DIR = include
+BUILD = build
+TARGET = $(BUILD)/ccshell
 
-TARGET = ccshell
+CPPFLAGS := -I$(INCLUDE_DIR) -MMD -MP
+CXXFLAGS := -std=c++23 -Wall -Wextra -O2
+LDLIBS   :=
 
-SRCS = \
-	src/main.cc
-
-OBJS = $(SRCS:.cc=.o)
+SRCS := $(shell find $(SRC_DIR) -name '*.cc')
+OBJS := $(SRCS:%=$(BUILD)/%.o)
+DEPS := $(OBJS:.o=.d)
 
 $(TARGET): $(OBJS)
-	$(CXX) $(OBJS) -o $(TARGET)
+	@mkdir -p $(dir $@)
+	$(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-%.o: %.cc
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+$(BUILD)/%.o: %.cc
+	@mkdir -p $(dir $@)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+-include $(DEPS)
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf $(BUILD)
 
 .PHONY: clean
