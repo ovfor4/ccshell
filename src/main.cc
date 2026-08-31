@@ -1,8 +1,3 @@
-/* 
- * tsh - A tiny shell program with job control
- * 
- * <Put your name and login ID here>
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -59,6 +54,11 @@ void test()
  */
 int main(int argc, char **argv) 
 {
+    cout << "\
+You are using ccshell. \n\
+This is free software; see the source for copying conditions. \
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. \n\
+Published under GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) Version 3." << endl;
     //test();
     init();
     char c;
