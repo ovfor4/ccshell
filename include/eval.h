@@ -18,6 +18,7 @@
 #include "job.h"
 #include "ground.h"
 #include "parse.h"
+#include "path.h"
 
 namespace ov4
 {

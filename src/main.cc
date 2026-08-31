@@ -22,6 +22,7 @@
 #include "handler.h"
 #include "ground.h"
 #include "eval.h"
+#include "path.h"
 
 using namespace std;
 using namespace ov4;
@@ -47,13 +48,18 @@ handler_t *Signal(int signum, handler_t *handler);
 // built-in commands
 void builtin_command_quit();
 
-
+void test()
+{
+    cout << find_cmd("ls") << endl;
+    exit(0);
+}
 
 /*
  * main - The shell's main routine 
  */
 int main(int argc, char **argv) 
 {
+    //test();
     init();
     char c;
     char cmdline[MAXLINE];
