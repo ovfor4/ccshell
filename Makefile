@@ -4,19 +4,18 @@ INCLUDE_DIR = include
 BUILD = build
 TARGET = $(BUILD)/ccshell
 
-CPPFLAGS := -I$(INCLUDE_DIR) -MMD -MP
-CXXFLAGS := -std=c++23 -Wall -Wextra -O2
-LDLIBS   :=
+CPPFLAGS = -I$(INCLUDE_DIR) -MMD -MP
+CXXFLAGS = -std=c++23 -Wall -Wextra -O2
 
-SRCS := $(shell find $(SRC_DIR) -name '*.cc')
-OBJS := $(SRCS:%=$(BUILD)/%.o)
-DEPS := $(OBJS:.o=.d)
+SRCS = $(shell find $(SRC_DIR) -name '*.cc')
+OBJS = $(SRCS:%=$(BUILD)/%.o)
+DEPS = $(OBJS:.o=.d)
 
 $(TARGET): $(OBJS)
 	@mkdir -p $(dir $@)
 	$(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-$(BUILD)/%.o: %.cc
+$(BUILD)/%.cc.o: %.cc
 	@mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
