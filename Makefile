@@ -7,6 +7,9 @@ TARGET = $(BUILD)/ccshell
 CPPFLAGS = -I$(INCLUDE_DIR) -MMD -MP
 CXXFLAGS = -std=c++23 -Wall -Wextra -O2
 
+# static
+LDFLAGS += -static -static-libgcc -static-libstdc++
+
 SRCS = $(shell find $(SRC_DIR) -name '*.cc')
 OBJS = $(SRCS:%=$(BUILD)/%.o)
 DEPS = $(OBJS:.o=.d)
