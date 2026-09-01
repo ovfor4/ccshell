@@ -4,8 +4,10 @@ INCLUDE_DIR = include
 BUILD = build
 TARGET = $(BUILD)/ccshell
 
-CPPFLAGS = -I$(INCLUDE_DIR) -MMD -MP
-CXXFLAGS = -std=c++23 -Wall -Wextra -O2
+MAKEFLAGS += -j8
+
+CPPFLAGS = -I$(INCLUDE_DIR) -MMD -MP -flto
+CXXFLAGS = -std=c++23 -Wall -Wextra -O3 -flto
 
 # static
 LDFLAGS += -static -static-libgcc -static-libstdc++
@@ -26,5 +28,9 @@ $(BUILD)/%.cc.o: %.cc
 
 clean:
 	rm -rf $(BUILD)
+
+fresh:
+	rm -rf $(BUILD)
+	make
 
 .PHONY: clean

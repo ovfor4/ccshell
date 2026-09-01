@@ -33,4 +33,8 @@ bool isnum(char *s);
 void reverse(char str[], int length);
 char *itoa(int num, char* str, int base);
 
+void usage(void);
+void unix_error(char *msg);
+void app_error(char *msg);
+
 }

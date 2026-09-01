@@ -6,12 +6,33 @@ namespace ov4
 extern char **environ;
 sigset_t BLOCK_HANDLER;
 
-void init()
+void signal_init()
 {
     sigemptyset(&BLOCK_HANDLER);
     sigaddset(&BLOCK_HANDLER, SIGINT);
     sigaddset(&BLOCK_HANDLER, SIGTSTP);
     sigaddset(&BLOCK_HANDLER, SIGCHLD);
+
+    Signal(SIGINT,  sigint_handler);   /* ctrl-c */
+    Signal(SIGTSTP, sigtstp_handler);  /* ctrl-z */
+    Signal(SIGCHLD, sigchld_handler);  /* Terminated or stopped child */
+}
+
+/*
+ * Signal - wrapper for the sigaction function
+ */
+
+handler_t *Signal(int signum, handler_t *handler) 
+{
+    struct sigaction action, old_action;
+
+    action.sa_handler = handler;  
+    sigemptyset(&action.sa_mask); /* block sigs of type being handled */
+    action.sa_flags = SA_RESTART; /* restart syscalls if possible */
+
+    if (sigaction(signum, &action, &old_action) < 0)
+	unix_error("Signal error");
+    return (old_action.sa_handler);
 }
     
 /* 

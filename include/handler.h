@@ -18,7 +18,10 @@
 namespace ov4
 {
 
-void init();
+typedef void handler_t(int);
+
+void signal_init();
+handler_t *Signal(int signum, handler_t *handler);
 void sigchld_handler(int sig);
 void sigint_handler(int sig);
 void sigtstp_handler(int sig);
