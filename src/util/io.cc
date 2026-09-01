@@ -1,4 +1,4 @@
-#include "util.h"
+#include "util/io.h"
 
 namespace ov4
 {
@@ -95,24 +95,5 @@ char *itoa(int num, char* str, int base)
 
     return str;
 }
-
-/* 
- * builtin_cmd - If the user has typed a built-in command then execute
- *    it immediately.  
- */
-int builtin_cmd(char *c_str) 
-{
-    string s(c_str);
-    for (auto c : builtin_cmd_list)
-        if (c == s)
-            return 1;
-    return 0;     /* not a builtin command */
-}
-
-void builtin_command_quit()
-{
-    exit(0);
-}
-
 
 }

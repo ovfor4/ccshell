@@ -14,7 +14,8 @@
 #include <string>
 
 #include "global.h"
-#include "util.h"
+#include "util/io.h"
+#include "command/builtin.h"
 #include "job.h"
 #include "ground.h"
 #include "parse.h"

@@ -12,7 +12,7 @@
 #include <sys/wait.h>
 #include <errno.h>
 
-#include "util.h"
+#include "util/io.h"
 #include "job.h"
 
 namespace ov4

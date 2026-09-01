@@ -27,17 +27,18 @@ void eval(char *cmdline)
     int ground = parseline(cmdline, argv);
 
     if (argv[0] == nullptr) return;
+    if (exe_bultin_command(argv)) return;
     
-    if (builtin_cmd(argv[0])) 
-    {   
-        LOG << "built-in" << endl;
-        if (strcmp(argv[0], "quit") == 0) builtin_command_quit();
-        else if (strcmp(argv[0], "jobs") == 0) listjobs(jobs);
-        else if (strcmp(argv[0], "fg") == 0) do_bgfg(argv);
-        else if (strcmp(argv[0], "bg") == 0) do_bgfg(argv);
-        else cerr << "built-in but not supported" << endl;
-        return;
-    }
+    // if (builtin_cmd(argv[0])) 
+    // {   
+    //     LOG << "built-in" << endl;
+    //     if (strcmp(argv[0], "quit") == 0) builtin_command_quit();
+    //     else if (strcmp(argv[0], "jobs") == 0) listjobs(jobs);
+    //     else if (strcmp(argv[0], "fg") == 0) do_bgfg(argv);
+    //     else if (strcmp(argv[0], "bg") == 0) do_bgfg(argv);
+    //     else cerr << "built-in but not supported" << endl;
+    //     return;
+    // }
 
     sigset_t prev;
     block_all(&prev);

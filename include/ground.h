@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "global.h"
-#include "util.h"
+#include "util/io.h"
 #include "job.h"
 #include "handler.h"
 
