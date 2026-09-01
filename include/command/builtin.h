@@ -9,6 +9,8 @@
 #include <unordered_map>
 #include <functional>
 
+#include "all.h"
+
 namespace ov4
 {
 
@@ -26,5 +28,6 @@ void jobs(char **argv);
 void bg(char **argv);
 void fg(char **argv);
 void exit(char **argv);
+void cd(char **argv);
 
 }

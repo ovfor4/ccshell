@@ -2,6 +2,7 @@
 
 #include "command/builtin.h"
 #include "util/io.h"
+#include "util/prompt.h"
 #include "util/string.h"
 #include "eval.h"
 #include "global.h"

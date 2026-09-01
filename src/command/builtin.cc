@@ -13,7 +13,8 @@ unordered_map<string, function<void(char**)>> cmd =
     { "exit", ov4::command::exit },
     { "jobs", ov4::command::jobs },
     { "bg", ov4::command::bg },
-    { "fg", ov4::command::fg }
+    { "fg", ov4::command::fg },
+    { "cd", ov4::command::cd },
 };
 
 /* 

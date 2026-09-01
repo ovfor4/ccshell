@@ -5,19 +5,16 @@ namespace ov4
 
 using namespace std;
 
-string current_dir;
-
-string find_cmd(char* s)
+string find_cmd(const char * s)
 {
-    string tmp = s;
+    const string tmp = s;
     return find_cmd(tmp);
 }
 
-string find_cmd(string s)
+string find_cmd(const string &s)
 {
     if (s.size() == 0) return "";
     string unified_s = path_unifier(s);
-    cout << unified_s << endl;
     if (access(unified_s.c_str(), F_OK) == 0)
             return unified_s;
 
@@ -48,13 +45,18 @@ string path_unifier(const string &s)
     if (s[0] == '/') return s;
     if (s[0] == '.')
     {
-        return current_dir + s.substr(1);
+        return get_current_dir() + s.substr(1);
     }
 }
 
-string set_current_dir(string s)
+int set_current_dir(const string &s)
 {
-    return current_dir = s;
+    return chdir(s.c_str());
+}
+
+string get_current_dir()
+{
+    return (string)(get_current_dir_name());
 }
 
 

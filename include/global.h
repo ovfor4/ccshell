@@ -14,4 +14,6 @@ constexpr int MAXARGS = 128;
 
 constexpr bool GLOBAL_DEBUG = true;
 
+constexpr std::string_view name = "ccshell";
+
 }

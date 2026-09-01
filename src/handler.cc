@@ -8,11 +8,13 @@ sigset_t BLOCK_HANDLER;
 
 void signal_init()
 {
+    /* Install the signal handlers */
+    
     sigemptyset(&BLOCK_HANDLER);
     sigaddset(&BLOCK_HANDLER, SIGINT);
     sigaddset(&BLOCK_HANDLER, SIGTSTP);
     sigaddset(&BLOCK_HANDLER, SIGCHLD);
-
+    
     Signal(SIGINT,  sigint_handler);   /* ctrl-c */
     Signal(SIGTSTP, sigtstp_handler);  /* ctrl-z */
     Signal(SIGCHLD, sigchld_handler);  /* Terminated or stopped child */
