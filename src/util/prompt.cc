@@ -10,7 +10,25 @@ namespace ov4
     {
         if (emit_prompt) 
         {
-	        cout << name << " : " << get_current_dir() << " " << prompt << " " << flush;
+            char buffer[hostname_size];
+            gethostname(buffer, hostname_size);
+	        cout 
+                << name 
+                << " "
+                << getlogin()
+                << "@"
+                << buffer
+                << ":"
+                << get_current_dir() 
+                << " " 
+                << get_prompt() 
+                << " " 
+                << flush;
 	    }
+    }
+
+    string get_prompt()
+    {
+        return (string)((string)(getlogin()) == "root" ? prompt_root : prompt_normal);
     }
 }
