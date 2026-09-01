@@ -69,3 +69,4 @@ Testing/
 .cache/
 
 include/test.h
+src/test.cc

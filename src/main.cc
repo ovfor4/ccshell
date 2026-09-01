@@ -18,6 +18,8 @@
 #include "ground.h"
 #include "eval.h"
 #include "path.h"
+#include "util/string.h"
+#include "test.h"
 
 using namespace std;
 using namespace ov4;
@@ -43,12 +45,6 @@ handler_t *Signal(int signum, handler_t *handler);
 // built-in commands
 void builtin_command_quit();
 
-void test()
-{
-    cout << find_cmd("ls") << endl;
-    exit(0);
-}
-
 /*
  * main - The shell's main routine 
  */
@@ -59,7 +55,7 @@ You are using ccshell. \n\
 This is free software; see the source for copying conditions. \
 There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. \n\
 Published under GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) Version 3." << endl;
-    //test();
+    //test(argv);
     init();
     char c;
     char cmdline[MAXLINE];
