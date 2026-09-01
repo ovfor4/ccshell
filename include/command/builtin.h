@@ -19,5 +19,9 @@ namespace ov4::command
 {
 
 void quit();
+void jobs();
+void bg(char **argv);
+void fg(char **argv);
+void exit();
 
 }
