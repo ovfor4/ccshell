@@ -3,7 +3,7 @@
 namespace ov4::command
 {
 
-void exit()
+void exit(char **argv)
 {
     std::exit(0);
 }
