@@ -2,8 +2,5 @@
 
 namespace ov4
 {
-    void test(char **argv)
-    {
-        return;
-    }
+    void test(char **argv);
 }
