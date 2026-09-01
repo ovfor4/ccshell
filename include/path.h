@@ -7,6 +7,8 @@
 #include <iterator>
 #include <iostream>
 
+#include "all.h"
+
 
 namespace ov4
 {

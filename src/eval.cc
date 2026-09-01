@@ -34,13 +34,14 @@ void eval(char *cmdline)
     block_all(&prev);
 
     pid_t pid = fork();
-    const char* cmd = find_cmd(argv[0]).c_str();
+    string cmd = find_cmd(argv[0]);
+    const char* cmd_c = cmd.c_str();
     if (pid == 0) // child
     {
         sigprocmask(SIG_SETMASK, &prev, nullptr);
         setpgid(0, 0);
         
-        execve(cmd, argv, environ);
+        execve(cmd_c, argv, environ);
 
         atomic_print(cmdline, true);
         atomic_print(": Command not found\n");
