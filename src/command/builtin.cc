@@ -22,7 +22,7 @@ unordered_map<string, function<void(char**)>> cmd =
  */
 bool exe_bultin_command(char **argv) 
 {
-    if (argv == nullptr || argv[0] == nullptr) exit(1); // WTF???
+    if (argv == nullptr || argv[0] == nullptr) return false;
     string s = argv[0];
     if (cmd.find(s) != cmd.end())
     {
