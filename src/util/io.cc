@@ -5,8 +5,9 @@ using namespace std;
 namespace ov4
 {
 
-void atomic_print(char *s, bool ignore_wrap)
+void safe_print(char *s, bool ignore_wrap)
 {
+    int errno_old = errno;
     if (ignore_wrap)
         for (int i = 0; s[i] != 0; i++)
             if (s[i] == '\n')
@@ -15,17 +16,21 @@ void atomic_print(char *s, bool ignore_wrap)
                 return;
             }
     write(STDOUT_FILENO, s, strlen(s));
+    errno = errno_old;
 }
 
-void atomic_print(int x)
+void safe_print(int x)
 {
+    int errno_old = errno;
     char msg[LENGTH];
     itoa(x, msg, DECIMAL);
-    atomic_print(msg);
+    safe_print(msg);
+    errno = errno_old;
 }
 
 void reverse(char str[], int length)
 {
+    int errno_old = errno;
     int start = 0;
     int end = length - 1;
     while (start < end) {
@@ -35,29 +40,37 @@ void reverse(char str[], int length)
         end--;
         start++;
     }
+    errno = errno_old;
 }
 
-void atomic_debug(char *s, bool ignore_wrap)
+void safe_debug(char *s, bool ignore_wrap)
 {
-    if (verbose && GLOBAL_DEBUG) atomic_print(s, ignore_wrap);
+    int errno_old = errno;
+    if (verbose && GLOBAL_DEBUG) safe_print(s, ignore_wrap);
+    errno = errno_old;
 }
 
-void atomic_debug(int x)
+void safe_debug(int x)
 {
-    if (verbose && GLOBAL_DEBUG) atomic_print(x);
+    int errno_old = errno;
+    if (verbose && GLOBAL_DEBUG) safe_print(x);
+    errno = errno_old;
 }
 
 bool isnum(char *s)
 {
+    int errno_old = errno;
     for (int i = 0; s[i] != 0; i++)
         if (!isdigit(s[i]))
             return false;
     return true;
+    errno = errno_old;
 }
 
 
 char *itoa(int num, char* str, int base)
 {
+    int errno_old = errno;
     int i = 0;
     bool isNegative = false;
 
@@ -93,6 +106,7 @@ char *itoa(int num, char* str, int base)
     // Reverse the string
     reverse(str, i);
 
+    errno = errno_old;
     return str;
 }
 

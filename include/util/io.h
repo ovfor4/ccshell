@@ -25,10 +25,10 @@ struct LogVoidify { void operator&(std::ostream&) const {} };
 constexpr int DECIMAL = 10;
 constexpr int LENGTH = 32;
 
-void atomic_print(char *s, bool ignore_wrap = false);
-void atomic_print(int x);
-void atomic_debug(char *s, bool ignore_wrap = false);
-void atomic_debug(int x);
+void safe_print(char *s, bool ignore_wrap = false);
+void safe_print(int x);
+void safe_debug(char *s, bool ignore_wrap = false);
+void safe_debug(int x);
 bool isnum(char *s);
 void reverse(char str[], int length);
 char *itoa(int num, char* str, int base);

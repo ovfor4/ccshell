@@ -68,8 +68,8 @@ void eval(char *cmdline)
         
         execve(cmd_c, argv, environ);
 
-        atomic_print(cmdline, true);
-        atomic_print(": Command not found\n");
+        safe_print(cmdline, true);
+        safe_print(": Command not found\n");
         exit(-1); // if no command is found
     }
 

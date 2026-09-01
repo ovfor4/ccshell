@@ -1,5 +1,8 @@
 #include "handler.h"
 
+#include <termios.h>
+#include <sys/ioctl.h>
+
 namespace ov4
 {
 
@@ -64,45 +67,45 @@ void sigchld_handler(int sig)
     block_handler(&prev);
 
     int status, pid;
-    atomic_debug("SIGCHLD\n");
+    safe_debug("SIGCHLD\n");
 
     while ((pid = waitpid(-1, &status, WNOHANG | WUNTRACED)) > 0)
     {
         if (WIFSIGNALED(status) || WIFSTOPPED(status))
         {
             int jid = pid2jid(pid);
-            atomic_print("Job [");
-            atomic_print(jid);
-            atomic_print("] (");
-            atomic_print(pid);
-            atomic_print(") ");
+            safe_print("Job [");
+            safe_print(jid);
+            safe_print("] (");
+            safe_print(pid);
+            safe_print(") ");
             if (!WIFSTOPPED(status) && WTERMSIG(status) == SIGINT)
-                atomic_print("terminated");
+                safe_print("terminated");
             else if (WIFSTOPPED(status))
-                atomic_print("stopped");
+                safe_print("stopped");
             else 
-                atomic_print("idk");
-            atomic_print(" by signal ");
+                safe_print("idk");
+            safe_print(" by signal ");
             if (WIFSTOPPED(status))
-                atomic_print(WSTOPSIG(status));
+                safe_print(WSTOPSIG(status));
             else
-                atomic_print(WTERMSIG(status));
-            atomic_print("\n");
+                safe_print(WTERMSIG(status));
+            safe_print("\n");
         } 
 
         if (WIFSTOPPED(status))
         {
-            atomic_debug("suspended pid: ");
-            atomic_debug(pid);
-            atomic_debug("\n");
+            safe_debug("suspended pid: ");
+            safe_debug(pid);
+            safe_debug("\n");
             sigset_t prev_inner;
             block_all(&prev_inner);
             job_suspend(jobs, pid);
             sigprocmask(SIG_SETMASK, &prev_inner, nullptr);
         }
         else {
-            atomic_debug("terminated pid: ");
-            atomic_debug(pid);
+            safe_debug("terminated pid: ");
+            safe_debug(pid);
             sigset_t prev_inner;
             block_all(&prev_inner);
             deletejob(jobs, pid);
@@ -132,6 +135,10 @@ void sigint_handler(int sig)
     if (pid != 0)
     {
         kill(-pid, SIGINT);
+    } else {
+        char *buf = "\n";
+        tcflush(STDIN_FILENO, TCIFLUSH);
+        ioctl(STDIN_FILENO, TIOCSTI, buf);
     }
 
     sigprocmask(SIG_SETMASK, &prev, nullptr);
