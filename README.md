@@ -2,7 +2,7 @@
 
 A complex (or simple?) shell implemented in C++ (some C codes will be replaced by C++ soon, but anyway C is still subset of C++)
 
-NO AI
+NO AI/Codex/Claude Code/Antigravity
 
 Only the very traditional methods (stack overflow, man, cpp reference, etc.) are used
 
@@ -22,3 +22,9 @@ ignore this test
 ```sh
 git update-index --skip-worktree src/test.cc
 ```
+
+## Legal info
+
+Copyright (C) _ov4
+
+This is free software; see the source for copying conditions. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
