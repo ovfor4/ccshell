@@ -29,7 +29,7 @@ string path_unifier(const string &s, bool is_cmd)
     }
 
     // single word, use path
-    if (is_cmd && (s.find("/") == s.size()))
+    if (is_cmd && (s.find("/") == string::npos))
     {
         string path = getenv("PATH");
         size_t i = 0, j = 0, l = path.size();
