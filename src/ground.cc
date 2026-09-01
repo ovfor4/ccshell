@@ -83,8 +83,13 @@ void do_bgfg(char **argv)
             sigset_t prev_with_sigchld_blocked = prev;
             sigaddset(&prev_with_sigchld_blocked, SIGCHLD);
             sigprocmask(SIG_SETMASK, &prev_with_sigchld_blocked, NULL);
+
+            sigprocmask(SIG_BLOCK, &block_io, nullptr);
+            tcsetpgrp(tty_fd, j->pid);
+
             if (kill(-(j->pid), SIGCONT) < 0) 
             {
+                tcsetpgrp(tty_fd, shell_pgid);
                 cerr << "Cannot continue process " << j->pid;
                 sigprocmask(SIG_SETMASK, &prev, NULL);
                 return;

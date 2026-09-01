@@ -61,10 +61,10 @@ void eval(char *cmdline)
         if (!ground) // foreground
             tcsetpgrp(tty_fd, getpgrp());
 
+        sigprocmask(SIG_SETMASK, &prev, nullptr);
+
         // program inside execve may use SIGTTIN/SIGTTOU so just restore in child
         sigprocmask(SIG_UNBLOCK, &block_io, nullptr);
-
-        sigprocmask(SIG_SETMASK, &prev, nullptr);
         
         execve(cmd_c, argv, environ);
 
