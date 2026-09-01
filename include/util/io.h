@@ -22,8 +22,8 @@ namespace ov4
 
 struct LogVoidify { void operator&(std::ostream&) const {} };
 
-constexpr int DECIMAL = 10;
-constexpr int LENGTH = 32;
+inline constexpr int DECIMAL = 10;
+inline constexpr int LENGTH = 32;
 
 void safe_print(char *s, bool ignore_wrap = false);
 void safe_print(int x);

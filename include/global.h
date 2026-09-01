@@ -6,14 +6,14 @@
 namespace ov4
 {
 
-extern int verbose;
+inline int verbose =1;
 
-constexpr int MAXLINE = 1024;
-constexpr int MAXARGS = 128;
+inline constexpr int MAXLINE = 1024;
+inline constexpr int MAXARGS = 128;
 
 
-constexpr bool GLOBAL_DEBUG = true;
+inline constexpr bool GLOBAL_DEBUG = true;
 
-constexpr std::string_view name = "ccshell";
+inline constexpr std::string_view name = "ccshell";
 
 }
