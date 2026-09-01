@@ -5,6 +5,9 @@ using namespace std;
 namespace ov4
 {
 
+pid_t shell_pgid;
+int tty_fd;
+
 /* 
  * waitfg - Block until process pid is no longer the foreground process
  */
@@ -17,6 +20,11 @@ void waitfg(pid_t pid)
     LOG << "waiting for pid "<< fgpid(jobs) << endl;
     while (fgpid(jobs) != 0)
         sigsuspend(&prev_with_sigchld_unblocked);
+
+    // set shell to foreground again
+    tcsetpgrp(tty_fd, shell_pgid);
+    sigprocmask(SIG_BLOCK, &block_io, nullptr);
+
     LOG << "finished fg " << endl;
     return;
 }

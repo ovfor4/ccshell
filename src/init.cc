@@ -1,5 +1,7 @@
 #include "init.h"
 
+#include <fcntl.h>
+
 using namespace std;
 
 namespace ov4
@@ -15,6 +17,7 @@ Published under GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) Version 3." << endl;
 
     signal_init();
 
+    tty_fd = open("/dev/tty", O_RDWR);
 
 }
 

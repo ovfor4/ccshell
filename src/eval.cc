@@ -1,5 +1,18 @@
 #include "eval.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <ctype.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <errno.h>
+#include <iostream>
+#include <vector>
+#include <string>
+
 using namespace std;
 
 namespace ov4
@@ -29,17 +42,29 @@ void eval(char *cmdline)
     if (argv[0] == nullptr) return;
     if (exe_bultin_command(argv)) return;
     
+    // block_io signals can stop shell
+    // when child is at foreground, parent shell is at background
+    sigprocmask(SIG_BLOCK, &block_io, nullptr);
 
     sigset_t prev;
     block_all(&prev);
 
-    pid_t pid = fork();
     string cmd = find_cmd(argv[0]);
     const char* cmd_c = cmd.c_str();
+
+    shell_pgid = getpgid(0);
+    pid_t pid = fork();
+    
     if (pid == 0) // child
     {
-        sigprocmask(SIG_SETMASK, &prev, nullptr);
         setpgid(0, 0);
+        if (!ground) // foreground
+            tcsetpgrp(tty_fd, getpgrp());
+
+        // program inside execve may use SIGTTIN/SIGTTOU so just restore in child
+        sigprocmask(SIG_UNBLOCK, &block_io, nullptr);
+
+        sigprocmask(SIG_SETMASK, &prev, nullptr);
         
         execve(cmd_c, argv, environ);
 

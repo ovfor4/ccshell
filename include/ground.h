@@ -13,6 +13,9 @@
 namespace ov4
 {
 
+extern pid_t shell_pgid;
+extern int tty_fd;
+
 void waitfg(pid_t pid);
 void do_bgfg(char **argv);
     

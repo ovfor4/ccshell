@@ -4,17 +4,29 @@ namespace ov4
 {
 
 extern char **environ;
-sigset_t BLOCK_HANDLER;
+
+sigset_t 
+    block_sig_TTOU,
+    block_job,
+    block_io;
 
 void signal_init()
 {
     /* Install the signal handlers */
     
-    sigemptyset(&BLOCK_HANDLER);
-    sigaddset(&BLOCK_HANDLER, SIGINT);
-    sigaddset(&BLOCK_HANDLER, SIGTSTP);
-    sigaddset(&BLOCK_HANDLER, SIGCHLD);
-    
+    sigemptyset(&block_job);
+    sigemptyset(&block_sig_TTOU);
+    sigemptyset(&block_io);
+
+    sigaddset(&block_job, SIGINT);
+    sigaddset(&block_job, SIGTSTP);
+    sigaddset(&block_job, SIGCHLD);
+
+    sigaddset(&block_sig_TTOU, SIGTTOU);
+
+    sigaddset(&block_io, SIGTTOU);
+    sigaddset(&block_io, SIGTTIN);
+
     Signal(SIGINT,  sigint_handler);   /* ctrl-c */
     Signal(SIGTSTP, sigtstp_handler);  /* ctrl-z */
     Signal(SIGCHLD, sigchld_handler);  /* Terminated or stopped child */
@@ -161,7 +173,7 @@ int block_all(sigset_t *prev)
 
 int block_handler(sigset_t *prev)
 {
-    return sigprocmask(SIG_BLOCK, &BLOCK_HANDLER, prev);
+    return sigprocmask(SIG_BLOCK, &block_job, prev);
 }
 
 void sigquit_handler(int sig) 
