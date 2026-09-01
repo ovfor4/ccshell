@@ -1,9 +1,9 @@
 #include "util/io.h"
 
+using namespace std;
+
 namespace ov4
 {
-
-using namespace std;
 
 void atomic_print(char *s, bool ignore_wrap)
 {

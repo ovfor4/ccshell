@@ -1,9 +1,9 @@
 #include "init.h"
 
+using namespace std;
+
 namespace ov4
 {
-
-using namespace std;
 
 void init()
 {

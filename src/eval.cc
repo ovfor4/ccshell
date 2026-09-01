@@ -1,10 +1,10 @@
 #include "eval.h"
 
-namespace ov4
-{
-
 using namespace std;
 
+namespace ov4
+{
+    
 /* 
  * eval - Evaluate the command line that the user has just typed in
  * 

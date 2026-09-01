@@ -1,9 +1,9 @@
 #include "util/string.h"
 
+using namespace std;
+
 namespace ov4
 {
-
-using namespace std;
 
 void string2argv(const vector<string> * const s, char **argv)
 {

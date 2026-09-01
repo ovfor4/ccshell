@@ -1,8 +1,9 @@
 #include "util/prompt.h"
 
+using namespace std;
+
 namespace ov4
 {
-    using namespace std;
 
     bool emit_prompt = true; /* emit prompt (default) */
 

@@ -1,9 +1,9 @@
 #include "ground.h"
 
+using namespace std;
+
 namespace ov4
 {
-
-using namespace std;
 
 /* 
  * waitfg - Block until process pid is no longer the foreground process

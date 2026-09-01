@@ -39,7 +39,7 @@ string find_cmd(const string &s)
     }
 }
 
-string path_unifier(const string &s)
+string path_unifier(const string &s, bool is_cmd)
 {
     if (s.size() == 0) return "";
     if (s[0] == '/') return s;
