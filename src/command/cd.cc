@@ -5,15 +5,6 @@
 
 using namespace std;
 
-// constexpr string_view
-//     err_EACCES = "cd: Search permission is denied for one of the components of path.",
-//     err_EFAULT = "cd: path points outside your accessible address space.",
-//     err_EIO = "An I/O error occurred.",
-//     err_ENOTDIR = "A component of path is not a directory.",
-//     err_ENOENT = "The directory specified in path does not exist.",
-//     err_ENAMETOOLONG = "path is too long.",
-//     err_ENOMEM = "Insufficient kernel memory was available.";
-
 const unordered_map<int, string_view> err_list = {
     { EACCES, "cd: Search permission is denied for one of the components of path." },
     { EFAULT, "cd: path points outside your accessible address space." },
