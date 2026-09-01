@@ -7,7 +7,7 @@ using namespace ov4;
 
 void quit()
 {
-    exit(0);
+    std::exit(0);
 }
 
 }
