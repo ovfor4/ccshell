@@ -4,6 +4,7 @@
 #include "util/io.h"
 #include "util/prompt.h"
 #include "util/string.h"
+#include "util/color.h"
 #include "eval.h"
 #include "global.h"
 #include "ground.h"

@@ -14,15 +14,15 @@ namespace ov4
             char buffer[hostname_size];
             gethostname(buffer, hostname_size);
 	        cout 
-                << name 
+                << make_color((string)name, ov4::color::bright_green) 
                 << " "
-                << getlogin()
-                << "@"
-                << buffer
+                << make_color(getlogin(), ov4::color::bright_blue)
+                << make_color("@", ov4::color::bright_blue)
+                << make_color(buffer, ov4::color::bright_blue)
                 << ":"
-                << get_current_dir() 
+                << make_color(get_current_dir(), ov4::color::bright_purple)
                 << " " 
-                << get_prompt() 
+                << make_color(get_prompt(), ov4::color::bright_yellow)
                 << " " 
                 << flush;
 	    }
