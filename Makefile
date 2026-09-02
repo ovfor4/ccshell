@@ -1,3 +1,4 @@
+CC = gcc
 CXX = g++
 SRC_DIR = src
 INCLUDE_DIR = include
@@ -9,8 +10,12 @@ MAKEFLAGS += -j8
 CPPFLAGS = -I$(INCLUDE_DIR) -MMD -MP -flto
 CXXFLAGS = -std=c++23 -Wall -Wextra -O3 -flto
 
-# static
-LDFLAGS += -static -static-libgcc -static-libstdc++
+TARGET_OS ?= $(shell uname -s)
+
+ifeq ($(TARGET_OS),Linux)
+    LDFLAGS += -static -static-libgcc -static-libstdc++
+else
+	$(warning Unknown target OS: $(TARGET_OS))
 
 SRCS = $(shell find $(SRC_DIR) -name '*.cc')
 OBJS = $(SRCS:%=$(BUILD)/%.o)
