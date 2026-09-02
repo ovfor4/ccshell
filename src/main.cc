@@ -23,12 +23,11 @@ char sbuf[MAXLINE];         /* for composing sprintf messages */
 /*
  * main - The shell's main routine 
  */
-int main(int argc, char **argv) 
+int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv) 
 {
     init(); 
     //test(argv);
 
-    char c;
     char cmdline[MAXLINE];
 
     /* Redirect stderr to stdout (so that driver will get all output
