@@ -16,6 +16,7 @@ ifeq ($(TARGET_OS),Linux)
     LDFLAGS += -static -static-libgcc -static-libstdc++
 else
 	$(warning Unknown target OS: $(TARGET_OS))
+endif
 
 SRCS = $(shell find $(SRC_DIR) -name '*.cc')
 OBJS = $(SRCS:%=$(BUILD)/%.o)
