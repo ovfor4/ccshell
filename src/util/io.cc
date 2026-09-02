@@ -5,7 +5,7 @@ using namespace std;
 namespace ov4
 {
 
-void safe_print(char *s, bool ignore_wrap)
+void safe_print(const char *s, bool ignore_wrap)
 {
     int errno_old = errno;
     if (ignore_wrap)
@@ -28,7 +28,7 @@ void safe_print(int x)
     errno = errno_old;
 }
 
-void reverse(char str[], int length)
+void reverse(char *str, int length)
 {
     int errno_old = errno;
     int start = 0;
@@ -43,7 +43,7 @@ void reverse(char str[], int length)
     errno = errno_old;
 }
 
-void safe_debug(char *s, bool ignore_wrap)
+void safe_debug(const char *s, bool ignore_wrap)
 {
     int errno_old = errno;
     if (verbose && GLOBAL_DEBUG) safe_print(s, ignore_wrap);
@@ -57,7 +57,7 @@ void safe_debug(int x)
     errno = errno_old;
 }
 
-bool isnum(char *s)
+bool isnum(const char *s)
 {
     int errno_old = errno;
     for (int i = 0; s[i] != 0; i++)
@@ -125,7 +125,7 @@ void usage(void)
 /*
  * unix_error - unix-style error routine
  */
-void unix_error(char *msg)
+void unix_error(const char *msg)
 {
     fprintf(stdout, "%s: %s\n", msg, strerror(errno));
     exit(1);
@@ -134,7 +134,7 @@ void unix_error(char *msg)
 /*
  * app_error - application-style error routine
  */
-void app_error(char *msg)
+void app_error(const char *msg)
 {
     fprintf(stdout, "%s\n", msg);
     exit(1);

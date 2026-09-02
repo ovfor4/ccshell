@@ -25,16 +25,16 @@ struct LogVoidify { void operator&(std::ostream&) const {} };
 inline constexpr int DECIMAL = 10;
 inline constexpr int LENGTH = 32;
 
-void safe_print(char *s, bool ignore_wrap = false);
+void safe_print(const char *s, bool ignore_wrap = false);
 void safe_print(int x);
-void safe_debug(char *s, bool ignore_wrap = false);
+void safe_debug(const char *s, bool ignore_wrap = false);
 void safe_debug(int x);
-bool isnum(char *s);
-void reverse(char str[], int length);
+bool isnum(const char *s);
+void reverse(char *str, int length);
 char *itoa(int num, char* str, int base);
 
 void usage(void);
-void unix_error(char *msg);
-void app_error(char *msg);
+void unix_error(const char *msg);
+void app_error(const char *msg);
 
 }

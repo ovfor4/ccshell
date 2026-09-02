@@ -134,9 +134,8 @@ void sigint_handler([[maybe_unused]] int sig)
     {
         kill(-pid, SIGINT);
     } else {
-        char *buf = "\n";
         tcflush(STDIN_FILENO, TCIFLUSH);
-        ioctl(STDIN_FILENO, TIOCSTI, buf);
+        ioctl(STDIN_FILENO, TIOCSTI, "\n");
     }
 
     sigprocmask(SIG_SETMASK, &prev, nullptr);
