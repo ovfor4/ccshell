@@ -14,8 +14,10 @@ TARGET_OS ?= $(shell uname -s)
 
 ifeq ($(TARGET_OS),Linux)
     LDFLAGS += -static -static-libgcc -static-libstdc++
+else ifeq ($(TARGET_OS),Darwin)
+    # empty
 else
-	$(warning Unknown target OS: $(TARGET_OS))
+    # empty
 endif
 
 SRCS = $(shell find $(SRC_DIR) -name '*.cc')
