@@ -79,7 +79,7 @@ void eval(char *cmdline)
 
     if (!ground)  // foreground
     {   
-        addjob(jobs, pid, FG, cmdline); 
+        addjob(pid, FG, cmdline); 
         sigset_t prev_with_sigchld_blocked = prev;
         sigaddset(&prev_with_sigchld_blocked, SIGCHLD);
         sigprocmask(SIG_SETMASK, &prev_with_sigchld_blocked, NULL);
@@ -88,7 +88,7 @@ void eval(char *cmdline)
     }
     else // background
     {
-        addjob(jobs, pid, BG, cmdline);
+        addjob(pid, BG, cmdline);
         sigprocmask(SIG_SETMASK, &prev, NULL);
         cout << "[" << pid2jid(pid) << "] (" << pid << ") " << cmdline;
     }

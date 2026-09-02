@@ -98,7 +98,7 @@ void sigchld_handler(int sig)
             safe_debug("\n");
             sigset_t prev_inner;
             block_all(&prev_inner);
-            job_suspend(jobs, pid);
+            job_suspend(pid);
             sigprocmask(SIG_SETMASK, &prev_inner, nullptr);
         }
         else {
@@ -106,7 +106,7 @@ void sigchld_handler(int sig)
             safe_debug(pid);
             sigset_t prev_inner;
             block_all(&prev_inner);
-            deletejob(jobs, pid);
+            deletejob(pid);
             sigprocmask(SIG_SETMASK, &prev_inner, nullptr);
         }
     }
@@ -129,7 +129,7 @@ void sigint_handler(int sig)
     sigset_t prev;
     block_handler(&prev);
 
-    int pid = fgpid(jobs);
+    int pid = fgpid();
     if (pid != 0)
     {
         kill(-pid, SIGINT);
@@ -157,7 +157,7 @@ void sigtstp_handler(int sig)
     sigset_t prev;
     block_handler(&prev);
 
-    int pid = fgpid(jobs);
+    int pid = fgpid();
     if (pid != 0)
     {
         kill(-pid, SIGTSTP);

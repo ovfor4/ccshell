@@ -17,8 +17,8 @@ void waitfg(pid_t pid)
     // get current blocked signals
     sigprocmask(0, nullptr, &prev_with_sigchld_unblocked);
     sigdelset(&prev_with_sigchld_unblocked, SIGCHLD);
-    LOG << "waiting for pid "<< fgpid(jobs) << endl;
-    while (fgpid(jobs) != 0)
+    LOG << "waiting for pid "<< fgpid() << endl;
+    while (fgpid() != 0)
         sigsuspend(&prev_with_sigchld_unblocked);
 
     // set shell to foreground again
@@ -52,7 +52,7 @@ void do_bgfg(char **argv)
                 return;
             }
             x = atoi(&argv[1][1]); // eat %
-            j = getjobjid(jobs, x);
+            j = getjobjid(x);
             if (j == nullptr)
             {
                 cerr << argv[1] << ": No such job" << endl;
@@ -65,7 +65,7 @@ void do_bgfg(char **argv)
                 return;
             }
             x = atoi(&argv[1][0]);
-            j = getjobpid(jobs, x);
+            j = getjobpid(x);
             if (j == nullptr)
             {
                 cerr << "(" << argv[1] << "): No such process" << endl;

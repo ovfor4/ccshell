@@ -19,7 +19,7 @@
 namespace ov4 
 {
 
-extern struct job_t jobs[];
+extern struct job_t _jobs[];
 extern int nextjid;
 
 
@@ -48,16 +48,16 @@ struct job_t {              /* The job struct */
     char cmdline[MAXLINE];  /* command line */
 };
 
-void clearjob(struct job_t *job);
-void initjobs(struct job_t *jobs);
-int maxjid(struct job_t *jobs);
-int addjob(struct job_t *jobs, pid_t pid, int state, char *cmdline);
-int deletejob(struct job_t *jobs, pid_t pid);
-pid_t fgpid(struct job_t *jobs);
-struct job_t *getjobpid(struct job_t *jobs, pid_t pid);
-struct job_t *getjobjid(struct job_t *jobs, int jid);
-int pid2jid(pid_t pid);
-void listjobs(struct job_t *jobs);
-bool job_suspend(struct job_t *jobs, pid_t pid);
+void clearjob(struct job_t *job = _jobs);
+void initjobs(struct job_t *job = _jobs);
+int maxjid(struct job_t *job = _jobs);
+int addjob(pid_t pid, int state, char *cmdline, struct job_t *job = _jobs);
+int deletejob(pid_t pid, struct job_t *job = _jobs);
+pid_t fgpid(struct job_t *job = _jobs);
+struct job_t *getjobpid(pid_t pid, struct job_t *job = _jobs);
+struct job_t *getjobjid(int jid, struct job_t *job = _jobs);
+int pid2jid(pid_t pid, struct job_t *job = _jobs);
+void listjobs(struct job_t *job = _jobs);
+bool job_suspend(pid_t pid, struct job_t *job = _jobs);
 
 }

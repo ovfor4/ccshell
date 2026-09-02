@@ -61,7 +61,7 @@ int main(int argc, char **argv)
     Signal(SIGQUIT, sigquit_handler); 
 
     /* Initialize the job list */
-    initjobs(jobs);
+    initjobs();
 
     /* Execute the shell's read/eval loop */
     while (1) {
