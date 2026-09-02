@@ -36,21 +36,24 @@ int main(int argc, char **argv)
     dup2(1, 2);
 
     /* Parse the command line */
-    while ((c = getopt(argc, argv, "hvp")) != EOF) {
-        switch (c) {
-        case 'h':             /* print help message */
-            usage();
-	    break;
-        case 'v':             /* emit additional diagnostic info */
-            verbose = true;
-	    break;
-        case 'p':             /* don't print a prompt */
-            emit_prompt = 0;  /* handy for automatic testing */
-	    break;
-	default:
-            usage();
-	}
-    }
+
+    exe_option(argv);
+
+    // while ((c = getopt(argc, argv, "hvp")) != EOF) {
+    //     switch (c) {
+    //     case 'h':             /* print help message */
+    //         usage();
+	//     break;
+    //     case 'v':             /* emit additional diagnostic info */
+    //         verbose = true;
+	//     break;
+    //     case 'p':             /* don't print a prompt */
+    //         emit_prompt = 0;  /* handy for automatic testing */
+	//     break;
+	// default:
+    //         usage();
+	// }
+    // }
 
     
 

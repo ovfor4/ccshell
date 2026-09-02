@@ -5,6 +5,7 @@
 #include "util/prompt.h"
 #include "util/string.h"
 #include "util/color.h"
+#include "util/option_parse.h"
 #include "eval.h"
 #include "global.h"
 #include "ground.h"
@@ -13,3 +14,4 @@
 #include "job.h"
 #include "parse.h"
 #include "path.h"
+#include "option.h"
