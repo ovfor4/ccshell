@@ -6,8 +6,6 @@
 namespace ov4
 {
 
-extern char **environ;
-
 sigset_t 
     block_sig_TTOU,
     block_job,

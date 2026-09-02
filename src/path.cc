@@ -63,7 +63,8 @@ int set_current_dir(const string &s)
 
 string get_current_dir()
 {
-    return (string)(get_current_dir_name());
+    char buf[MAXLINE];
+    return (string)(getcwd(buf, MAXLINE));
 }
 
 

@@ -15,6 +15,8 @@
 
 using namespace std;
 
+extern char **environ;
+
 namespace ov4
 {
     
