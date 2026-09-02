@@ -11,14 +11,16 @@ namespace ov4
     {
         if (emit_prompt) 
         {
-            char buffer[hostname_size];
-            gethostname(buffer, hostname_size);
+            char hostname[MAXLINE];
+            gethostname(hostname, MAXLINE);
+            char *user = getlogin();
+
 	        cout 
                 << make_color((string)name, ov4::color::bright_green) 
                 << " "
-                << make_color(getlogin(), ov4::color::bright_blue)
+                << make_color((user != nullptr ? user : "ov4"), ov4::color::bright_blue)
                 << make_color("@", ov4::color::bright_blue)
-                << make_color(buffer, ov4::color::bright_blue)
+                << make_color(hostname, ov4::color::bright_blue)
                 << ":"
                 << make_color(get_current_dir(), ov4::color::bright_purple)
                 << " " 
