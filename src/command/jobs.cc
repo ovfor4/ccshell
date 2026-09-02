@@ -7,7 +7,7 @@ namespace ov4::command
 
 using namespace ov4;
 
-void jobs(char **argv)
+void jobs([[maybe_unused]] char **argv)
 {
     listjobs();
 }

@@ -37,7 +37,7 @@ void signal_init()
  * Signal - wrapper for the sigaction function
  */
 
-handler_t *Signal(int signum, handler_t *handler) 
+handler_t *Signal([[maybe_unused]] int signum, handler_t *handler) 
 {
     struct sigaction action, old_action;
 
@@ -57,7 +57,7 @@ handler_t *Signal(int signum, handler_t *handler)
  *     available zombie children, but doesn't wait for any other
  *     currently running children to terminate.  
  */
-void sigchld_handler(int sig) 
+void sigchld_handler([[maybe_unused]] int sig) 
 {
     int errno_backup = errno;
 
@@ -122,7 +122,7 @@ void sigchld_handler(int sig)
  *    user types ctrl-c at the keyboard.  Catch it and send it along
  *    to the foreground job.  
  */
-void sigint_handler(int sig) 
+void sigint_handler([[maybe_unused]] int sig) 
 {
     int errno_backup = errno;
 
@@ -150,7 +150,7 @@ void sigint_handler(int sig)
  *     the user types ctrl-z at the keyboard. Catch it and suspend the
  *     foreground job by sending it a SIGTSTP.  
  */
-void sigtstp_handler(int sig) 
+void sigtstp_handler([[maybe_unused]] int sig) 
 {
     int errno_backup = errno;
 
@@ -181,7 +181,7 @@ int block_handler(sigset_t *prev)
     return sigprocmask(SIG_BLOCK, &block_job, prev);
 }
 
-void sigquit_handler(int sig) 
+void sigquit_handler([[maybe_unused]] int sig) 
 {
     printf("Terminating after receipt of SIGQUIT signal\n");
     exit(1);
