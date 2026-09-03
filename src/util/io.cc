@@ -22,7 +22,7 @@ void safe_print(const char *s, bool ignore_wrap)
 void safe_print(int x)
 {
     int errno_old = errno;
-    char msg[LENGTH];
+    char msg[NUMBER_LENGTH];
     itoa(x, msg, DECIMAL);
     safe_print(msg);
     errno = errno_old;
@@ -108,6 +108,37 @@ char *itoa(int num, char* str, int base)
 
     errno = errno_old;
     return str;
+}
+
+void wrap_eliminator(char *s, char replacement)
+{
+    if (replacement == '\0')
+    {
+        char *r = s;
+        char *w = s;
+        while (*r) {
+            if (*r != '\n')
+                *w++ = *r;
+            r++;
+        }
+        *w = '\0';
+        return;
+    }
+    size_t len = strlen(s);
+    for (size_t i = 0; i < len; i++)
+        if (s[i] == '\n')
+            s[i] = replacement;
+}
+
+void write_helper(const char *s)
+{
+    int errno_old = errno;
+
+    size_t len = strlen(s);
+    for (size_t i = 0; i < len; i++)
+        write(STDIN_FILENO, &s[i], 1);
+
+    errno = errno_old;
 }
 
 /*

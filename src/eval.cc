@@ -70,8 +70,8 @@ void eval(char *cmdline)
         
         execve(cmd_c, argv, environ);
 
-        safe_print(cmdline, true);
-        safe_print(": Command not found\n");
+        wrap_eliminator(cmdline);
+        cout << cmdline << ": Command not found" << endl;
         exit(-1); // if no command is found
     }
 

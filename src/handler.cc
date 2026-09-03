@@ -72,11 +72,7 @@ void sigchld_handler([[maybe_unused]] int sig)
         if (WIFSIGNALED(status) || WIFSTOPPED(status))
         {
             int jid = pid2jid(pid);
-            safe_print("Job [");
-            safe_print(jid);
-            safe_print("] (");
-            safe_print(pid);
-            safe_print(") ");
+            safe_output("Job [", jid, "] (", pid, ") ");
             if (!WIFSTOPPED(status) && WTERMSIG(status) == SIGINT)
                 safe_print("terminated");
             else if (WIFSTOPPED(status))
@@ -93,17 +89,17 @@ void sigchld_handler([[maybe_unused]] int sig)
 
         if (WIFSTOPPED(status))
         {
-            safe_debug("suspended pid: ");
-            safe_debug(pid);
-            safe_debug("\n");
+            // safe_debug("suspended pid: ");
+            // safe_debug(pid);
+            // safe_debug("\n");
+            safe_output("Process suspended PID: ", pid, "\n");
             sigset_t prev_inner;
             block_all(&prev_inner);
             job_suspend(pid);
             sigprocmask(SIG_SETMASK, &prev_inner, nullptr);
         }
         else {
-            safe_debug("terminated pid: ");
-            safe_debug(pid);
+            safe_output("Process terminated PID: ", pid, "\n");
             sigset_t prev_inner;
             block_all(&prev_inner);
             deletejob(pid);
@@ -182,7 +178,8 @@ int block_handler(sigset_t *prev)
 
 void sigquit_handler([[maybe_unused]] int sig) 
 {
-    printf("Terminating after receipt of SIGQUIT signal\n");
+    //printf("Terminating after receipt of SIGQUIT signal\n");
+    safe_output("Terminating after receipt of SIGQUIT signal\n");
     exit(1);
 }
 
