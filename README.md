@@ -6,6 +6,8 @@ NO AI/Codex/Claude Code/Antigravity
 
 Only the very traditional methods (stack overflow, man, cpp reference, etc.) are used
 
+Very simple and boring things (just job CRUD, really) are copied from CS:APP (I did that lab and now am lazy, so they're here), but will be refactored soon
+
 ## Build
 
 ```sh

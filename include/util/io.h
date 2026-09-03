@@ -98,7 +98,6 @@ void safe_output(T x, T_arg ...arg)
     errno = errno_old;
 }
 
-void usage(void);
 void unix_error(const char *msg);
 void app_error(const char *msg);
 

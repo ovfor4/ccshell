@@ -130,7 +130,7 @@ void wrap_eliminator(char *s, char replacement)
             s[i] = replacement;
 }
 
-void write_helper(const char *s)
+void _write_helper(const char *s)
 {
     int errno_old = errno;
 
@@ -139,18 +139,6 @@ void write_helper(const char *s)
         write(STDIN_FILENO, &s[i], 1);
 
     errno = errno_old;
-}
-
-/*
- * usage - print a help message
- */
-void usage(void) 
-{
-    printf("Usage: shell [-hvp]\n");
-    printf("   -h   print this message\n");
-    printf("   -v   print additional diagnostic information\n");
-    printf("   -p   do not emit a command prompt\n");
-    exit(1);
 }
 
 /*
