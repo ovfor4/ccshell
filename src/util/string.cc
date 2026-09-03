@@ -35,4 +35,9 @@ void argv2string(vector<string> *s, const char * const * argv)
     }
 }
 
+std::string safe_str(const char *s, const char *fallback)
+{
+    return (s != nullptr) ? s : fallback; 
+}
+
 }

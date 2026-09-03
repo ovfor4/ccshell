@@ -31,8 +31,7 @@ string path_unifier(const string &s, bool is_cmd)
     // single word, use path
     if (is_cmd && (s.find("/") == string::npos))
     {
-        const char *path_p = getenv("PATH");
-        string path = (path_p != nullptr) ? path_p : "";
+        string path = safe_str(getenv("PATH"));
         size_t i = 0, j = 0, l = path.size();
         while (true)
         {
@@ -65,7 +64,7 @@ int set_current_dir(const string &s)
 string get_current_dir()
 {
     char buf[MAXLINE];
-    return (string)(getcwd(buf, MAXLINE));
+    return safe_str(getcwd(buf, MAXLINE));
 }
 
 
