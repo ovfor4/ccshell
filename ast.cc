@@ -21,7 +21,7 @@ constexpr int MAXLINE = 1024;
 
 int main()
 {
-    int test_case = 3;
+    int test_case = 4;
     string s;
 
     switch (test_case)
@@ -38,6 +38,9 @@ int main()
         case 3:
             s = "hi (hello || foo)";
             break;
+        case 4:
+            s = "alpha || beta (gamma && (delta || epsilon & ) )";
+            break;
         default:
             return 0;
     }
@@ -45,7 +48,7 @@ int main()
 
 
     tokenizer(s);
-    cout << "----------" << endl;
+    cout << "---------- tokenizer ----------" << endl;
     for (auto c : token)
     {
         if (c.token_type == LOGIC_AND)
@@ -63,5 +66,9 @@ int main()
         else if (c.token_type == TEXT)
             println("{} TEXT {}", c.bracket_depth, c.text);
     }
+
+    cout << "---------- parse ----------" << endl;
+
+    parse(0, token.size(), alloc_ast());
     return 0;
 }

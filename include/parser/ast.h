@@ -3,12 +3,15 @@
 #include <string>
 
 #include "parser/enum_type.h"
+#include "parser/token.h"
 #include "parser/shared.h"
 
 using namespace std; // remove this
 
 namespace ov4
 {
+
+class T_token;
 
 class T_ast
 {
@@ -17,8 +20,8 @@ public:
 
     enum_token_type token_type;
     string command_text;
-    size_t left;
-    size_t right;
+    size_t left = string::npos;
+    size_t right = string::npos;
 };
 
 size_t alloc_ast()
@@ -48,9 +51,44 @@ int get_pivot_order(enum_token_type x)
     return 0;
 }
 
+bool is_operator(enum_token_type x)
+{
+    switch(x)
+    {
+        case LOGIC_AND:
+        case LOGIC_OR:
+        case PIPE:
+        case ASYNC:
+            return true;
+        default:
+            return false;
+    }
+}
+
 void parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
 {
-    ;
+    int current_depth = 0;
+    int current_order = -1;
+    size_t found_pos = string::npos;
+
+    while (found_pos == string::npos)
+    {
+        // scan from right to left
+        for (size_t i = cmd_end - 1; i < cmd_end; i--)
+        {
+            // if same depth
+            // and higher order number
+            if (token[i].bracket_depth == current_depth 
+                && is_operator(token[i].token_type) 
+                && get_pivot_order(token[i].token_type) > current_order)
+            {
+                current_order =  get_pivot_order(token[i].token_type);
+                found_pos = i;
+                println("Found pos: {} order: {} depth: {}", i, current_order, current_depth);
+            }
+        }
+        current_depth++;
+    }
 }
 
 }
