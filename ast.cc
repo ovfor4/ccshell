@@ -13,14 +13,15 @@ size_t ast_index = 0;
 
 enum enum_token_type
 {
-    TEXT,
-    SINGLE_QUOTATION,
-    DOUBLE_QUOTATION,
-    LOGIC_AND,
-    LOGIC_OR,
-    ASYNC,
-    PIPE,
-    EXPAND,
+    TEXT,                   //    foo
+    SINGLE_QUOTATION,       //    '
+    DOUBLE_QUOTATION,       //    "
+    LOGIC_AND,              //    &&
+    LOGIC_OR,               //    ||
+    ASYNC,                  //    &
+    PIPE,                   //    |    
+    SEMICOLON,              //    ;
+    EXPAND,                 //    $
 };
 
 class T_token
@@ -188,12 +189,24 @@ void parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
     ;
 }
 
-int get_priority(enum_token_type x)
+int get_pivot_order(enum_token_type x)
 {
-    if (x == LOGIC_AND || x == LOGIC_OR)
-        return 1000;
-    else if (x == PIPE || x == ASYNC)
-        return 500;
+    switch(x)
+    {
+        case ASYNC:
+        case SEMICOLON:
+            return 1000;
+        
+        case LOGIC_AND:
+        case LOGIC_OR:
+            return 500;
+
+        case PIPE:
+            return 100;
+            
+        default:
+            return 0;
+    }
     return 0;
 }
 
