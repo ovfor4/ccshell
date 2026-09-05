@@ -21,6 +21,27 @@ public:
     int bracket_depth = 0;
 };
 
+size_t find_non_space_previous(string s, size_t i)
+{
+    size_t len = s.size(), backup = i;
+    i--; // skip current char
+    for ( ; i < len; i--)
+        if (s[i] != ' ')
+            return i+1; // because region is [x, y) 
+
+    return backup;
+}
+
+string trim_space(const string &s)
+{
+    size_t b = s.find_first_not_of(" \t");
+    if (b == string::npos)
+        return "";
+    size_t e = s.find_last_not_of(" \t");
+    return s.substr(b, e - b + 1);
+}
+
+
 bool is_symbol(char c)
 {
     if (c == '&' || c == '|' || c == '(' || c == ')')
@@ -104,8 +125,11 @@ void token_push(string s, size_t current, size_t prev, int bracket_depth, bool i
         return;
     }
 
+    string trimed = trim_space(sub);
+    if (trimed == "")   return;
+
     tmp.token_type = TEXT;
-    tmp.text = sub;
+    tmp.text = trimed;
     token.push_back(tmp);
 }
 

@@ -64,11 +64,11 @@ int main()
         else if (c.token_type == RIGHT_BRACKET)
             println("{} RIGHT_BRACKET", c.bracket_depth);
         else if (c.token_type == TEXT)
-            println("{} TEXT {}", c.bracket_depth, c.text);
+            println("{} TEXT .{}.", c.bracket_depth, c.text);
     }
 
     cout << "---------- parse ----------" << endl;
 
-    parse(0, token.size(), alloc_ast());
+    //parse(0, token.size(), alloc_ast());
     return 0;
 }
