@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>lexer
+#include <string>
 
 #include "lexer/enum_type.h"
 #include "lexer/shared.h"
@@ -72,6 +72,11 @@ void bracket_depth_changer(char c, int &bracket_depth)
     {
         bracket_depth--;
         println("changed depth: {}", bracket_depth);
+        if (bracket_depth < 0)
+        {
+            cerr << "Ooooops bracket unmatched, quitting" << endl;
+            exit(-1); // TODO: std::expected or what, rather than quitting
+        }
         return;
     }
 }

@@ -28,7 +28,7 @@ constexpr int MAXLINE = 1024;
 
 int main()
 {
-    int test_case = 5;
+    int test_case = 6;
     string s;
 
     switch (test_case)
@@ -50,6 +50,10 @@ int main()
             break;
         case 5:
             s = "alpha || beta && (gamma || epsilon)";
+            break;
+        case 6:
+            // bracket matching test
+            s = ")alpha && beta(";
             break;
         default:
             return 0;
