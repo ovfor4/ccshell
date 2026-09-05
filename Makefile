@@ -5,10 +5,15 @@ INCLUDE_DIR = include
 BUILD = build
 TARGET = $(BUILD)/ccshell
 
+DEPS_DIR = third_party
+MAGIC_ENUM_DIR = $(DEPS_DIR)/magic_enum
+
 MAKEFLAGS += -j8
 
 CPPFLAGS = -I$(INCLUDE_DIR) -MMD -MP -flto
 CXXFLAGS = -std=c++23 -Wall -Wextra -O3 -flto
+CPPFLAGS += -I$(MAGIC_ENUM_DIR)/include
+
 
 TARGET_OS ?= $(shell uname -s)
 
@@ -42,3 +47,13 @@ fresh:
 	make
 
 .PHONY: clean
+
+.PHONY: magic-enum
+
+magic-enum:
+	@mkdir -p $(DEPS_DIR)
+	@if [ -d "$(MAGIC_ENUM_DIR)/.git" ]; then \
+		git -C "$(MAGIC_ENUM_DIR)" pull --ff-only; \
+	else \
+		git clone --depth 1 https://github.com/Neargye/magic_enum.git "$(MAGIC_ENUM_DIR)" -b master --single-branch; \
+	fi

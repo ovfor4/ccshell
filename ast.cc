@@ -6,6 +6,8 @@
 #include <vector>
 #include <print>
 
+#include "magic_enum/magic_enum.hpp"
+
 #include "parser/shared.h"
 #include "parser/ast.h"
 #include "parser/enum_type.h"
@@ -21,7 +23,7 @@ constexpr int MAXLINE = 1024;
 
 int main()
 {
-    int test_case = 4;
+    int test_case = 5;
     string s;
 
     switch (test_case)
@@ -39,7 +41,10 @@ int main()
             s = "hi (hello || foo)";
             break;
         case 4:
-            s = "alpha || beta (gamma && (delta || epsilon & ) )";
+            s = "alpha || beta (gamma argument && (delta || epsilon second_argument & ) )";
+            break;
+        case 5:
+            s = "alpha || beta && (gamma || epsilon)";
             break;
         default:
             return 0;
@@ -69,6 +74,15 @@ int main()
 
     cout << "---------- parse ----------" << endl;
 
-    //parse(0, token.size(), alloc_ast());
+    parse(0, token.size(), alloc_ast());
+
+    cout << "---------- AST ----------" << endl; 
+    for (size_t i = 0; i < ast.size(); i++)
+    {
+        print("{}: type: {} left: {} right: {}", i, magic_enum::enum_name(ast[i].token_type), ast[i].left, ast[i].right);
+        if (ast[i].token_type == TEXT)
+            print(" command: {}", ast[i].command_text);
+        println();
+    }
     return 0;
 }

@@ -24,6 +24,19 @@ public:
     size_t right = string::npos;
 };
 
+string final_trim(size_t _begin, size_t _end)
+{
+    string s;
+    for (size_t i = _begin; i < _end; i++)
+    {
+        if (token[i].token_type != TEXT)
+            continue;
+        s += token[i].text + " ";
+    }
+    s = s.substr(0, s.size()-1); // eat final space
+    return s;
+}
+
 size_t alloc_ast()
 {
     ast.emplace_back();
@@ -65,16 +78,25 @@ bool is_operator(enum_token_type x)
     }
 }
 
+// region [begin, end)
 void parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
 {
     int current_depth = 0;
     int current_order = -1;
+    int max_depth = -1;
     size_t found_pos = string::npos;
+
+    for (size_t i = cmd_begin; i < cmd_end; i++)
+    {
+        if (token[i].bracket_depth > max_depth)
+            max_depth = token[i].bracket_depth;
+    }
+
 
     while (found_pos == string::npos)
     {
         // scan from right to left
-        for (size_t i = cmd_end - 1; i < cmd_end; i--)
+        for (size_t i = cmd_end - 1; i >= cmd_begin && i < cmd_end; i--)
         {
             // if same depth
             // and higher order number
@@ -88,7 +110,30 @@ void parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
             }
         }
         current_depth++;
+        if (current_depth > max_depth)
+        {
+            break;
+        }
     }
+
+    if (found_pos == string::npos)
+    {
+        println("Smallest unit");
+        ast[ast_vec].token_type = TEXT;
+        ast[ast_vec].command_text = final_trim(cmd_begin, cmd_end);
+        return;
+    }
+
+    size_t l = alloc_ast();
+    size_t r = alloc_ast();
+    ast[ast_vec].left = l;
+    ast[ast_vec].right = r;
+    ast[ast_vec].token_type = token[found_pos].token_type;
+
+    println("Parse sub: {}, {}, {}", cmd_begin, found_pos, cmd_end);
+
+    parse(cmd_begin, found_pos, l);
+    parse(found_pos+1, cmd_end, r);
 }
 
 }
