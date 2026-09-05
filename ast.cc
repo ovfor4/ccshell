@@ -22,6 +22,15 @@ enum enum_token_type
     PIPE,                   //    |    
     SEMICOLON,              //    ;
     EXPAND,                 //    $
+    LEFT_BRACKET,           //    (
+    RIGHT_BRACKET,          //    )
+};
+
+enum guard_type
+{
+    GUARD_OFF,
+    GUARD_WEAK,
+    GUARD_STRONG,
 };
 
 class T_token
@@ -31,6 +40,8 @@ public:
 
     enum_token_type token_type;
     string text;
+    guard_type guard = GUARD_OFF;
+    int bracket_depth = 0;
 };
 
 class T_ast
@@ -51,7 +62,7 @@ vector<T_token> token;
 
 bool is_symbol(char c)
 {
-    if (c == '&' || c == '|')
+    if (c == '&' || c == '|' || c == '(' || c == ')')
         return true;
     return false;
 }
@@ -68,42 +79,51 @@ bool is_symbol_same(string x, string y)
 }
 
 // handle [prev, current)
-void token_push(string s, size_t current, size_t prev, bool is_symbol_prev)
+void token_push(string s, size_t current, size_t prev, int bracket_depth, bool is_symbol_prev)
 {
     T_token tmp;
     string sub = s.substr(prev, current - prev);
         cout << "substr " << sub << endl;
 
+    tmp.bracket_depth = bracket_depth;
     if (is_symbol_prev)
     {
         if (is_symbol_same(sub, "&&"))
         {
             cout << "&& symbol" << endl;
             tmp.token_type = LOGIC_AND;
-            token.push_back(tmp);
         }
         else if (is_symbol_same(sub, "||"))
         {
             cout << "|| symbol" << endl;
             tmp.token_type = LOGIC_OR;
-            token.push_back(tmp);
         }
         else if (is_symbol_same(sub, "&"))
         {
             cout << "& symbol" << endl;
             tmp.token_type = ASYNC;
-            token.push_back(tmp);
         }
         else if (is_symbol_same(sub, "|"))
         {
             cout << "| symbol" << endl;
             tmp.token_type = PIPE;
-            token.push_back(tmp);
+        }
+        else if (is_symbol_same(sub, "("))
+        {
+            cout << "( symbol" << endl;
+            tmp.token_type = LEFT_BRACKET;
+        }
+        else if (is_symbol_same(sub, ")"))
+        {
+            cout << ") symbol" << endl;
+            tmp.token_type = RIGHT_BRACKET;
         }
         else
         {
-            cerr << "ERROR" << endl;
+            cerr << "ERROR: is symbol but not symbol" << endl;
+            return;
         }
+        token.push_back(tmp);
         return;
     }
 
@@ -112,29 +132,50 @@ void token_push(string s, size_t current, size_t prev, bool is_symbol_prev)
     token.push_back(tmp);
 }
 
-void tokenizer(string s)
+void bracket_depth_changer(char c, int &bracket_depth)
 {
-    if (s.size() == 0) return;
+    if (c == '(')
+    {
+        bracket_depth++;
+        println("changed depth: {}", bracket_depth);
+        return;
+    }
+    if (c == ')')
+    {
+        bracket_depth--;
+        println("changed depth: {}", bracket_depth);
+        return;
+    }
+}
+
+int tokenizer(string s)
+{
+    if (s.size() == 0) return -1;
 
     size_t len = s.size();
     size_t prev = 0;
     size_t token_vector_index = 0;
-    bool is_in_symbol = false;
+    bool is_in_symbol;
+    int bracket_depth = 0;
 
     if (is_symbol(s[0]))
-    {
         is_in_symbol = true;
-    }
-    for (size_t i = 1; i < len; i++)
+    else
+        is_in_symbol = false;
+    for (size_t i = 0; i < len; i++)
     {
+        println("---");
         println("prev {} current char {}", prev, s[i]);
+
+
         // turn from symbol to text
         if (is_in_symbol && !is_symbol(s[i]))
         {
             cout << s[i] <<" symbol -> text" << endl;
             is_in_symbol = false;
-            token_push(s, i, prev, true);
+            token_push(s, i, prev, bracket_depth, true);
             prev = i;
+            bracket_depth_changer(s[i], bracket_depth);
             continue;
         }
 
@@ -143,10 +184,13 @@ void tokenizer(string s)
         {
             cout << s[i] << " text -> symbol" << endl;
             is_in_symbol = true;
-            token_push(s, i, prev, false);
+            token_push(s, i, prev, bracket_depth, false);
             prev = i;
+            bracket_depth_changer(s[i], bracket_depth);
             continue;
         }
+
+        bracket_depth_changer(s[i], bracket_depth);
 
         // text continue
         if (!is_in_symbol && !is_symbol(s[i]))
@@ -163,19 +207,26 @@ void tokenizer(string s)
         }
     }
 
+    if (bracket_depth != 0)
+    {
+        cerr << "Brackets are not paired" << endl;
+        return -1;
+    }
+
     // final round text
     if (!is_symbol(s[len - 1]))
     {
         cout << s[len - 1] << " final text" << endl;
-        token_push(s, len, prev, false);
+        token_push(s, len, prev, 0, false);
     }
 
     // final round symbol
     if (is_symbol(s[len - 1]))
     {
         cout << s[len - 1] << " final symbol" << endl;
-        token_push(s, len, prev, true);
+        token_push(s, len, prev, 0, true);
     }
+    return 0;
 }
 
 size_t alloc_ast()
@@ -213,7 +264,7 @@ int get_pivot_order(enum_token_type x)
 
 int main()
 {
-    int test_case = 0;
+    int test_case = 3;
     string s;
 
     switch (test_case)
@@ -227,6 +278,9 @@ int main()
         case 2:
             s = "&&";
             break;
+        case 3:
+            s = "hi (hello || foo)";
+            break;
         default:
             return 0;
     }
@@ -238,15 +292,19 @@ int main()
     for (auto c : token)
     {
         if (c.token_type == LOGIC_AND)
-            cout << "LOGIC_AND" << endl;
+            println("{} LOGIC_AND", c.bracket_depth);
         else if (c.token_type == LOGIC_OR)
-            cout << "LOGIC_OR" << endl;
+            println("{} LOGIC_OR", c.bracket_depth);
         else if (c.token_type == ASYNC)
-            cout << "ASYNC" << endl;
+            println("{} ASYNC", c.bracket_depth);
         else if (c.token_type == PIPE)
-            cout << "PIPE" << endl;
+            println("{} PIPE", c.bracket_depth);
+        else if (c.token_type == LEFT_BRACKET)
+            println("{} LEFT_BRACKET", c.bracket_depth);
+        else if (c.token_type == RIGHT_BRACKET)
+            println("{} RIGHT_BRACKET", c.bracket_depth);
         else if (c.token_type == TEXT)
-            cout << "TEXT " << c.text << endl;
+            println("{} TEXT {}", c.bracket_depth, c.text);
     }
     return 0;
 }
