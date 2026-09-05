@@ -1,3 +1,8 @@
+// TEST FILE
+// ONLY FOR DEMONSTRATION
+// will be removed as soon as parser is completed
+
+
 #include <iostream>
 #include <string>
 #include <type_traits>
