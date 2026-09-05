@@ -1,6 +1,6 @@
 // TEST FILE
 // ONLY FOR DEMONSTRATION
-// will be removed as soon as parser is completed
+// will be removed as soon as lexer is completed
 
 
 #include <iostream>
@@ -13,10 +13,10 @@
 
 #include "magic_enum/magic_enum.hpp"
 
-#include "parser/shared.h"
-#include "parser/ast.h"
-#include "parser/enum_type.h"
-#include "parser/token.h"
+#include "lexer/shared.h"
+#include "lexer/ast.h"
+#include "lexer/enum_type.h"
+#include "lexer/token.h"
 
 using namespace std;
 using namespace ov4;

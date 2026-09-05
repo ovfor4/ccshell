@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "parser/enum_type.h"
+#include "lexer/enum_type.h"
 
 namespace ov4
 {

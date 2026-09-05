@@ -2,9 +2,9 @@
 
 #include <string>
 
-#include "parser/enum_type.h"
-#include "parser/token.h"
-#include "parser/shared.h"
+#include "lexer/enum_type.h"
+#include "lexer/token.h"
+#include "lexer/shared.h"
 
 using namespace std; // remove this
 

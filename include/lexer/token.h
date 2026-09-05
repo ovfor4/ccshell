@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
+#include <string>lexer
 
-#include "parser/enum_type.h"
-#include "parser/shared.h"
+#include "lexer/enum_type.h"
+#include "lexer/shared.h"
 
 using namespace std; // remove this
 
