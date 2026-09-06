@@ -8,7 +8,9 @@ BUILD_ROOT := build
 DEPS_DIR := third_party
 MAGIC_ENUM_DIR := $(DEPS_DIR)/magic_enum
 
-MAKEFLAGS += -j8
+ifeq ($(MAKELEVEL),0)
+	MAKEFLAGS += -j8
+endif
 
 #   make                # release：-O3 + LTO
 #   make DEBUG=1        # debug: -Og -g3 and no LTO
