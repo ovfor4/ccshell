@@ -136,7 +136,7 @@ void _write_helper(const char *s)
 
     size_t len = strlen(s);
     for (size_t i = 0; i < len; i++)
-        write(STDIN_FILENO, &s[i], 1);
+        write(STDOUT_FILENO, &s[i], 1);
 
     errno = errno_old;
 }
