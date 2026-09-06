@@ -81,60 +81,93 @@ void bracket_depth_changer(char c, int &bracket_depth)
     }
 }
 
-// handle [prev, current)
-void token_push(string s, size_t current, size_t prev, int bracket_depth, bool is_symbol_prev)
+void symbol_push(string s, int bracket_depth)
 {
+    if (s.size() == 0) return;
     T_token tmp;
-    string sub = s.substr(prev, current - prev);
-        cout << "substr " << sub << endl;
-
     tmp.bracket_depth = bracket_depth;
-    if (is_symbol_prev)
+    bool operated = false;
+    if (s.size() >= 2)
     {
+        string sub = s.substr(0, 2);
         if (is_symbol_same(sub, "&&"))
         {
             cout << "&& symbol" << endl;
             tmp.token_type = LOGIC_AND;
+            operated = true;
         }
         else if (is_symbol_same(sub, "||"))
         {
             cout << "|| symbol" << endl;
             tmp.token_type = LOGIC_OR;
+            operated = true;
         }
-        else if (is_symbol_same(sub, "&"))
+        if (operated)
         {
-            cout << "& symbol" << endl;
-            tmp.token_type = ASYNC;
-        }
-        else if (is_symbol_same(sub, "|"))
-        {
-            cout << "| symbol" << endl;
-            tmp.token_type = PIPE;
-        }
-        else if (is_symbol_same(sub, "("))
-        {
-            cout << "( symbol" << endl;
-            tmp.token_type = LEFT_BRACKET;
-        }
-        else if (is_symbol_same(sub, ")"))
-        {
-            cout << ") symbol" << endl;
-            tmp.token_type = RIGHT_BRACKET;
-        }
-        else
-        {
-            cerr << "ERROR: is symbol but not symbol" << endl;
+            token.push_back(tmp);
+            string sub_rest = s.substr(2);
+            symbol_push(sub_rest, bracket_depth);
             return;
         }
+    }
+
+    string sub = s.substr(0, 1);
+    if (is_symbol_same(sub, "&"))
+    {
+        cout << "& symbol" << endl;
+        tmp.token_type = ASYNC;
+        operated = true;
+    }
+    else if (is_symbol_same(sub, "|"))
+    {
+        cout << "| symbol" << endl;
+        tmp.token_type = PIPE;
+        operated = true;
+    }
+    else if (is_symbol_same(sub, "("))
+    {
+        cout << "( symbol" << endl;
+        tmp.token_type = LEFT_BRACKET;
+        operated = true;
+    }
+    else if (is_symbol_same(sub, ")"))
+    {
+        cout << ") symbol" << endl;
+        tmp.token_type = RIGHT_BRACKET;
+        operated = true;
+    }
+
+    if (operated)
+    {
         token.push_back(tmp);
+        string sub_rest = s.substr(1);
+        symbol_push(sub_rest, bracket_depth);
         return;
     }
 
-    string trimed = trim_space(sub);
-    if (trimed == "")   return;
+    cerr << "ERROR: is symbol but is not symbol" << endl;
+}
+
+// handle [prev, current)
+void token_push(string s, size_t current, size_t prev, int bracket_depth, bool is_symbol_prev)
+{
+    string sub = s.substr(prev, current - prev);
+        cout << "substr " << sub << endl;
+
+    if (is_symbol_prev)
+    {
+        symbol_push(sub, bracket_depth);
+        return;
+    }
+
+    T_token tmp;
+    tmp.bracket_depth = bracket_depth;
+
+    string trimmed = trim_space(sub);
+    if (trimmed == "")   return;
 
     tmp.token_type = TEXT;
-    tmp.text = trimed;
+    tmp.text = trimmed;
     token.push_back(tmp);
 }
 
@@ -175,6 +208,16 @@ int tokenizer(string s)
             cout << s[i] << " text -> symbol" << endl;
             is_in_symbol = true;
             token_push(s, i, prev, bracket_depth, false);
+            prev = i;
+            bracket_depth_changer(s[i], bracket_depth);
+            continue;
+        }
+
+        // symbol changed
+        if (is_in_symbol && is_symbol(s[i]) && (i != 0 && s[i-1] != s[i]))
+        {
+            println("symbol changed from {} to {}", s[i-1], s[i]);
+            token_push(s, i, prev, bracket_depth, true);
             prev = i;
             bracket_depth_changer(s[i], bracket_depth);
             continue;

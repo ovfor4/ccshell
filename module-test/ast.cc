@@ -28,7 +28,7 @@ constexpr int MAXLINE = 1024;
 
 int main()
 {
-    int test_case = 6;
+    int test_case = 7;
     string s;
 
     switch (test_case)
@@ -51,10 +51,19 @@ int main()
         case 5:
             s = "alpha || beta && (gamma || epsilon)";
             break;
+            
+        // bracket matching test
         case 6:
-            // bracket matching test
             s = ")alpha && beta(";
             break;
+
+        // basic scriptio continua
+        // syntax is wrong but just to test tokenizer
+        case 7:
+            s = "((alpha&|&&beta)||gamma&&&delta)";
+            break;
+
+
         default:
             return 0;
     }
