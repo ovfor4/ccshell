@@ -3,7 +3,7 @@ CXX ?= g++
 
 SRC_DIR := src
 INCLUDE_DIR := include
-BUILD_ROOT := build
+BUILD_DIR := build
 
 DEPS_DIR := third_party
 MAGIC_ENUM_DIR := $(DEPS_DIR)/magic_enum
@@ -21,12 +21,10 @@ STATIC ?= 0
 
 ifeq ($(DEBUG),0)
     # release
-    CONFIG := release
     OPTFLAGS := -O3 -DNDEBUG
 else
     # debug
     LTO := 0
-    CONFIG   := debug
     OPTFLAGS := -Og
     OPTFLAGS += -g3 -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS
 endif
@@ -35,8 +33,7 @@ ifeq ($(LTO),1)
     LTOFLAGS := -flto=auto
 endif
 
-BUILD  := $(BUILD_ROOT)/$(CONFIG)
-TARGET := $(BUILD)/ccshell
+TARGET := $(BUILD_DIR)/ccshell
 
 WARNFLAGS := -Wall -Wextra
 
@@ -59,14 +56,14 @@ endif
 ALL_LDFLAGS += $(LDFLAGS) $(EXTRA_LDFLAGS)
 
 SRCS := $(shell find $(SRC_DIR) -name '*.cc')
-OBJS := $(SRCS:%=$(BUILD)/%.o)
+OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
 $(TARGET): $(OBJS)
 	@mkdir -p $(dir $@)
 	$(CXX) $(ALL_LDFLAGS) $^ $(LDLIBS) -o $@
 
-$(BUILD)/%.cc.o: %.cc
+$(BUILD_DIR)/%.cc.o: %.cc
 	@mkdir -p $(dir $@)
 	$(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) -c $< -o $@
 
@@ -83,7 +80,7 @@ magic-enum:
 	fi
 
 clean:
-	rm -rf $(BUILD_ROOT)
+	rm -rf $(BUILD_DIR)
 
 fresh:
 	$(MAKE) clean
