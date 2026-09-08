@@ -81,8 +81,48 @@ void bracket_depth_changer(char c, int &bracket_depth)
     }
 }
 
+
+bool token_continue(string s, char current)
+{
+    switch (current)
+    {
+        case '(':
+        case ')':
+        case ':':
+        case ';':
+            return false;
+        default:
+            break; // empty
+    }
+
+    // s is empty, so current can be part of the token
+    if (s.size() == 0) return true;
+
+    // text -> text/symbol
+    if (!is_symbol(s[s.size()-1]))
+    {
+        // text -> symbol
+        if (is_symbol(current))
+            return false;
+
+        // text still
+        return true;
+    }
+
+    // symbol -> symbol
+    // if it's already && or ||
+    // then added s will be &&& or |||
+    // not able to continue
+    s += current;
+    if (s == "&&" || s == "||") // previous & or |
+                                // add current & or |
+        return true;
+    return false;
+}
+
 void symbol_push(string s, int bracket_depth)
 {
+    println("pushing {}", s);
     if (s.size() == 0) return;
     T_token tmp;
     tmp.bracket_depth = bracket_depth;
@@ -178,64 +218,30 @@ int tokenizer(string s)
     size_t len = s.size();
     size_t prev = 0;
     size_t token_vector_index = 0;
+    string prev_str = "";
     bool is_in_symbol;
     int bracket_depth = 0;
 
-    if (is_symbol(s[0]))
-        is_in_symbol = true;
-    else
-        is_in_symbol = false;
+
     for (size_t i = 0; i < len; i++)
     {
         println("---");
         println("prev {} current char {}", prev, s[i]);
 
-
-        // turn from symbol to text
-        if (is_in_symbol && !is_symbol(s[i]))
+        // [prev, i)
+        // not contain current s[i]
+        prev_str = s.substr(prev, i-prev);
+        bool able_continue = token_continue(prev_str, s[i]);
+        if (!able_continue)
         {
-            cout << s[i] <<" symbol -> text" << endl;
-            is_in_symbol = false;
-            token_push(s, i, prev, bracket_depth, true);
+            token_push(s, i, prev, bracket_depth, is_symbol(prev_str[0]));
             prev = i;
+
+            // brackets are always non-continuable
+            // must store the previous token after changing depth
+            // otherwise pollute the previous one
             bracket_depth_changer(s[i], bracket_depth);
-            continue;
-        }
 
-        // turn from text to symbol
-        if (!is_in_symbol && is_symbol(s[i]))
-        {
-            cout << s[i] << " text -> symbol" << endl;
-            is_in_symbol = true;
-            token_push(s, i, prev, bracket_depth, false);
-            prev = i;
-            bracket_depth_changer(s[i], bracket_depth);
-            continue;
-        }
-
-        // symbol changed
-        if (is_in_symbol && is_symbol(s[i]) && (i != 0 && s[i-1] != s[i]))
-        {
-            println("symbol changed from {} to {}", s[i-1], s[i]);
-            token_push(s, i, prev, bracket_depth, true);
-            prev = i;
-            bracket_depth_changer(s[i], bracket_depth);
-            continue;
-        }
-
-        bracket_depth_changer(s[i], bracket_depth);
-
-        // text continue
-        if (!is_in_symbol && !is_symbol(s[i]))
-        {
-            cout << s[i] <<" still text" << endl;
-            continue;
-        }
-
-        // symbol continue
-        if (is_in_symbol && is_symbol(s[i]))
-        {
-            cout << s[i] <<" still symbol" << endl;
             continue;
         }
     }

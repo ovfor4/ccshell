@@ -28,7 +28,7 @@ constexpr int MAXLINE = 1024;
 
 int main()
 {
-    int test_case = 7;
+    int test_case = 9;
     string s;
 
     switch (test_case)
@@ -63,6 +63,14 @@ int main()
             s = "((alpha&|&&beta)||gamma&&&delta)";
             break;
 
+        // guard test
+        case 8:
+            s = "\'foo\' && \"bar\"";
+            break;
+
+        case 9:
+            s = "&(alpha)";
+            break;
 
         default:
             return 0;
