@@ -25,4 +25,11 @@ enum guard_type
     GUARD_STRONG,
 };
 
+enum child_existance_type
+{
+    NOT_EXIST,
+    OPTIONAL,
+    EXIST,
+};
+
 }
