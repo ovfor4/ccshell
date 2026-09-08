@@ -4,6 +4,7 @@
 
 #include "lexer/enum_type.h"
 #include "lexer/shared.h"
+#include "lexer/symbol_property.h"
 
 using namespace std; // remove this
 
@@ -21,17 +22,6 @@ public:
     int bracket_depth = 0;
 };
 
-size_t find_non_space_previous(string s, size_t i)
-{
-    size_t len = s.size(), backup = i;
-    i--; // skip current char
-    for ( ; i < len; i--)
-        if (s[i] != ' ')
-            return i+1; // because region is [x, y) 
-
-    return backup;
-}
-
 string trim_space(const string &s)
 {
     size_t b = s.find_first_not_of(" \t");
@@ -42,22 +32,13 @@ string trim_space(const string &s)
 }
 
 
-bool is_symbol(char c)
+bool is_single_symbol(char c)
 {
-    if (c == '&' || c == '|' || c == '(' || c == ')')
+    string s = " ";
+    s[0] = c;
+    if (symbol_property.contains(s))
         return true;
     return false;
-}
-
-bool is_symbol_same(string x, string y)
-{
-    string tmp = "";
-    for (size_t i = 0; i < x.size(); i++)
-    {
-        if (x[i] != ' ')
-            tmp += x[i];
-    }
-    return (tmp == y);
 }
 
 void bracket_depth_changer(char c, int &bracket_depth)
@@ -82,27 +63,17 @@ void bracket_depth_changer(char c, int &bracket_depth)
 }
 
 
-bool token_continue(string s, char current)
+bool token_continue(string s, char next)
 {
-    switch (current)
-    {
-        case '(':
-        case ')':
-        case ':':
-        case ';':
-            return false;
-        default:
-            break; // empty
-    }
-
-    // s is empty, so current can be part of the token
+    println("token_continue: receiving {} {}", s, next);
+    // s is empty, so next can be part of the token
     if (s.size() == 0) return true;
 
     // text -> text/symbol
-    if (!is_symbol(s[s.size()-1]))
+    if (!is_single_symbol(s[s.size()-1]))
     {
         // text -> symbol
-        if (is_symbol(current))
+        if (is_single_symbol(next))
             return false;
 
         // text still
@@ -110,104 +81,46 @@ bool token_continue(string s, char current)
     }
 
     // symbol -> symbol
-    // if it's already && or ||
-    // then added s will be &&& or |||
-    // not able to continue
-    s += current;
-    if (s == "&&" || s == "||") // previous & or |
-                                // add current & or |
-        return true;
-    return false;
-}
-
-void symbol_push(string s, int bracket_depth)
-{
-    println("pushing {}", s);
-    if (s.size() == 0) return;
-    T_token tmp;
-    tmp.bracket_depth = bracket_depth;
-    bool operated = false;
-    if (s.size() >= 2)
+    T_property tmp;
+    if (symbol_property.contains(s))
     {
-        string sub = s.substr(0, 2);
-        if (is_symbol_same(sub, "&&"))
+        tmp = symbol_property[s];
+        if (tmp.continuable)
         {
-            cout << "&& symbol" << endl;
-            tmp.token_type = LOGIC_AND;
-            operated = true;
+            string prev_and_next = s + next;
+            if (symbol_property.contains(prev_and_next))
+                return true;
+            return false;
         }
-        else if (is_symbol_same(sub, "||"))
-        {
-            cout << "|| symbol" << endl;
-            tmp.token_type = LOGIC_OR;
-            operated = true;
-        }
-        if (operated)
-        {
-            token.push_back(tmp);
-            string sub_rest = s.substr(2);
-            symbol_push(sub_rest, bracket_depth);
-            return;
-        }
+        return false;
     }
-
-    string sub = s.substr(0, 1);
-    if (is_symbol_same(sub, "&"))
+    else
     {
-        cout << "& symbol" << endl;
-        tmp.token_type = ASYNC;
-        operated = true;
+        println("symbol not found in map");
+        return false;
     }
-    else if (is_symbol_same(sub, "|"))
-    {
-        cout << "| symbol" << endl;
-        tmp.token_type = PIPE;
-        operated = true;
-    }
-    else if (is_symbol_same(sub, "("))
-    {
-        cout << "( symbol" << endl;
-        tmp.token_type = LEFT_BRACKET;
-        operated = true;
-    }
-    else if (is_symbol_same(sub, ")"))
-    {
-        cout << ") symbol" << endl;
-        tmp.token_type = RIGHT_BRACKET;
-        operated = true;
-    }
-
-    if (operated)
-    {
-        token.push_back(tmp);
-        string sub_rest = s.substr(1);
-        symbol_push(sub_rest, bracket_depth);
-        return;
-    }
-
-    cerr << "ERROR: is symbol but is not symbol" << endl;
 }
 
 // handle [prev, current)
-void token_push(string s, size_t current, size_t prev, int bracket_depth, bool is_symbol_prev)
+void token_push(string push_s, int bracket_depth)
 {
-    string sub = s.substr(prev, current - prev);
-        cout << "substr " << sub << endl;
-
-    if (is_symbol_prev)
-    {
-        symbol_push(sub, bracket_depth);
-        return;
-    }
-
     T_token tmp;
     tmp.bracket_depth = bracket_depth;
-
-    string trimmed = trim_space(sub);
+    string trimmed = trim_space(push_s);
     if (trimmed == "")   return;
 
-    tmp.token_type = TEXT;
-    tmp.text = trimmed;
+    println("finding {} in map", trimmed);
+
+    if (symbol_property.contains(trimmed)) // symbol
+    {
+        tmp.token_type = symbol_property[trimmed].enum_type;
+    
+    } 
+    else
+    {
+        tmp.token_type = TEXT;
+        tmp.text = trimmed;
+    }
     token.push_back(tmp);
 }
 
@@ -228,42 +141,15 @@ int tokenizer(string s)
         println("---");
         println("prev {} current char {}", prev, s[i]);
 
-        // [prev, i)
-        // not contain current s[i]
-        prev_str = s.substr(prev, i-prev);
-        bool able_continue = token_continue(prev_str, s[i]);
-        if (!able_continue)
+        prev_str += s[i];
+        bracket_depth_changer(s[i], bracket_depth);
+
+        if ((i+1 == len) || !token_continue(prev_str, s[i+1]))
         {
-            token_push(s, i, prev, bracket_depth, is_symbol(prev_str[0]));
-            prev = i;
-
-            // brackets are always non-continuable
-            // must store the previous token after changing depth
-            // otherwise pollute the previous one
-            bracket_depth_changer(s[i], bracket_depth);
-
+            token_push(prev_str, bracket_depth);
+            prev_str = "";
             continue;
         }
-    }
-
-    if (bracket_depth != 0)
-    {
-        cerr << "Brackets are not paired" << endl;
-        return -1;
-    }
-
-    // final round text
-    if (!is_symbol(s[len - 1]))
-    {
-        cout << s[len - 1] << " final text" << endl;
-        token_push(s, len, prev, 0, false);
-    }
-
-    // final round symbol
-    if (is_symbol(s[len - 1]))
-    {
-        cout << s[len - 1] << " final symbol" << endl;
-        token_push(s, len, prev, 0, true);
     }
     return 0;
 }

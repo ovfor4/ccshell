@@ -15,19 +15,23 @@ public:
     int operand_number = 0;
     bool continuable = true;
     int pivot_priority = -1;
-    enum_token_type type = TEXT;
+    enum_token_type enum_type = TEXT;
 };
 
 unordered_map<string, T_property> symbol_property = {
     // non-operator
-    {"\'",   {.type = SINGLE_QUOTATION}},
-    {"\"",   {.type = SINGLE_QUOTATION}},
+    {"\'",   {.enum_type = SINGLE_QUOTATION}},
+    {"\"",   {.enum_type = SINGLE_QUOTATION}},
+
+    // bracket
+    {"(",    {.continuable = false, .enum_type = LEFT_BRACKET}},
+    {")",    {.continuable = false, .enum_type = RIGHT_BRACKET}},
 
     // operator
-    {"&",    {.operand_number = 1, .continuable = true,  .pivot_priority = 1000, .type = ASYNC}},
-    {"|",    {.operand_number = 1, .continuable = true,  .pivot_priority = 100,  .type = PIPE}},
-    {"&&",   {.operand_number = 1, .continuable = true,  .pivot_priority = 1000, .type = LOGIC_AND}},
-    {"||",   {.operand_number = 1, .continuable = true,  .pivot_priority = 1000, .type = LOGIC_OR}},
+    {"&",    {.operand_number = 1, .continuable = true,  .pivot_priority = 1000, .enum_type = ASYNC}},
+    {"|",    {.operand_number = 1, .continuable = true,  .pivot_priority = 100,  .enum_type = PIPE}},
+    {"&&",   {.operand_number = 1, .continuable = true,  .pivot_priority = 1000, .enum_type = LOGIC_AND}},
+    {"||",   {.operand_number = 1, .continuable = true,  .pivot_priority = 1000, .enum_type = LOGIC_OR}},
 };
     
 }

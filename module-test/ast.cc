@@ -28,7 +28,7 @@ constexpr int MAXLINE = 1024;
 
 int main()
 {
-    int test_case = 9;
+    int test_case = 7;
     string s;
 
     switch (test_case)
