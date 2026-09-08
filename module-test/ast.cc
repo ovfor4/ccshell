@@ -28,7 +28,7 @@ constexpr int MAXLINE = 1024;
 
 int main()
 {
-    int test_case = 7;
+    int test_case = 10;
     string s;
 
     switch (test_case)
@@ -63,13 +63,20 @@ int main()
             s = "((alpha&|&&beta)||gamma&&&delta)";
             break;
 
-        // guard test
+        // simple guard test
         case 8:
-            s = "\'foo\' && \"bar\"";
+            s = "\'text\' &&";
             break;
 
+        // guard test
         case 9:
-            s = "&(alpha)";
+            s = "\'realOperator\' && \"fake&&\" real ||";
+            break;
+
+        // guard test
+        // with space
+        case 10:
+            s = "\'This should be 1 token\' symbol && text \'&&\'";
             break;
 
         default:

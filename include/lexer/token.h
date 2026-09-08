@@ -102,7 +102,7 @@ bool token_continue(string s, char next)
 }
 
 // handle [prev, current)
-void token_push(string push_s, int bracket_depth)
+void token_push(string push_s, int bracket_depth, bool force_text = false)
 {
     T_token tmp;
     tmp.bracket_depth = bracket_depth;
@@ -111,13 +111,14 @@ void token_push(string push_s, int bracket_depth)
 
     println("finding {} in map", trimmed);
 
-    if (symbol_property.contains(trimmed)) // symbol
+    if (symbol_property.contains(trimmed) && !force_text) // symbol
     {
+        println("token_push: adding symbol");
         tmp.token_type = symbol_property[trimmed].enum_type;
-    
     } 
     else
     {
+        println("token_push: adding text");
         tmp.token_type = TEXT;
         tmp.text = trimmed;
     }
@@ -129,24 +130,63 @@ int tokenizer(string s)
     if (s.size() == 0) return -1;
 
     size_t len = s.size();
-    size_t prev = 0;
     size_t token_vector_index = 0;
     string prev_str = "";
-    bool is_in_symbol;
+    bool force_text = false;
     int bracket_depth = 0;
+    guard_type guard = GUARD_OFF;
 
 
     for (size_t i = 0; i < len; i++)
     {
-        println("---");
-        println("prev {} current char {}", prev, s[i]);
 
-        prev_str += s[i];
-        bracket_depth_changer(s[i], bracket_depth);
+        char c = s[i];
+
+        prev_str += c;
+        
+        println("---");
+        println("prev_str .{}. next char {}", prev_str, s[i+1]);
+
+        if (c == '\'' || c == '\"')
+        {
+            println("quotation");
+
+            // turn on GUARD
+            if (guard == GUARD_OFF)
+            {
+                guard = (c == '\'') ? GUARD_STRONG : GUARD_WEAK;
+                println("set guard {}", (c == '\'') ? "GUARD_STRONG" : "GUARD_WEAK");
+                continue;
+            }
+            // turn off
+            else if (guard == GUARD_STRONG && c == '\'')
+            {
+                guard = GUARD_OFF;
+                println("quitting strong guard");
+                force_text = true;
+            }
+            //turn off
+            else if (guard == GUARD_WEAK && c == '\"')
+            {
+                guard = GUARD_OFF;
+                println("quitting weak guard");
+                force_text = true;
+            } else
+                continue;
+        }
+        // not quotation mark
+        else if ((guard == GUARD_STRONG || guard == GUARD_WEAK))
+        {
+            println("tokenizer: guarded, continue");
+            continue;
+        }
+
+        bracket_depth_changer(c, bracket_depth);
 
         if ((i+1 == len) || !token_continue(prev_str, s[i+1]))
         {
-            token_push(prev_str, bracket_depth);
+            token_push(prev_str, bracket_depth, force_text);
+            force_text = false;
             prev_str = "";
             continue;
         }
