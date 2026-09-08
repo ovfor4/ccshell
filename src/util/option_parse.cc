@@ -20,7 +20,7 @@ namespace ov4
 void exe_option(char **c_argv)
 {
     vector<string> argv;
-    argv2string(&argv, c_argv);
+    argv2string(argv, c_argv);
 
     for (auto c : argv)
     {
