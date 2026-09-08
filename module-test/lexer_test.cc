@@ -1,7 +1,5 @@
-// TEST FILE
-// ONLY FOR DEMONSTRATION
-// will be removed as soon as lexer is completed
-
+// test lexer
+// $ g++ module-test/ast.cc -std=c++23 -Iinclude -Ithird_party/magic_enum/include 
 
 #include <iostream>
 #include <string>
