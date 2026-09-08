@@ -22,12 +22,12 @@ public:
     int bracket_depth = 0;
 };
 
-string trim_space(const string &s)
+string trim(const string &s, const string &trim_target = " \t")
 {
-    size_t b = s.find_first_not_of(" \t");
+    size_t b = s.find_first_not_of(trim_target);
     if (b == string::npos)
         return "";
-    size_t e = s.find_last_not_of(" \t");
+    size_t e = s.find_last_not_of(trim_target);
     return s.substr(b, e - b + 1);
 }
 
@@ -63,7 +63,7 @@ void bracket_depth_changer(char c, int &bracket_depth)
 }
 
 
-bool token_continue(string s, char next)
+bool token_continue(const string &s, char next)
 {
     println("token_continue: receiving {} {}", s, next);
     // s is empty, so next can be part of the token
@@ -102,11 +102,11 @@ bool token_continue(string s, char next)
 }
 
 // handle [prev, current)
-void token_push(string push_s, int bracket_depth, bool force_text = false)
+void token_push(const string &push_s, int bracket_depth, bool force_text = false)
 {
     T_token tmp;
     tmp.bracket_depth = bracket_depth;
-    string trimmed = trim_space(push_s);
+    string trimmed = trim(push_s);
     if (trimmed == "")   return;
 
     println("finding {} in map", trimmed);
@@ -119,13 +119,15 @@ void token_push(string push_s, int bracket_depth, bool force_text = false)
     else
     {
         println("token_push: adding text");
+        if (force_text)
+            trimmed = trim(trimmed, "\'\"");
         tmp.token_type = TEXT;
         tmp.text = trimmed;
     }
     token.push_back(tmp);
 }
 
-int tokenizer(string s)
+int tokenizer(const string &s)
 {
     if (s.size() == 0) return -1;
 
