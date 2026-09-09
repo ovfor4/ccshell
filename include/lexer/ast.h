@@ -45,23 +45,13 @@ size_t alloc_ast()
 
 int get_pivot_order(enum_token_type x)
 {
-    switch(x)
+    string s = symbol_enum2string(x);
+    if (s != "")
     {
-        case ASYNC:
-        case SEMICOLON:
-            return 1000;
-        
-        case LOGIC_AND:
-        case LOGIC_OR:
-            return 500;
-
-        case PIPE:
-            return 100;
-            
-        default:
-            return 0;
+        return symbol_property[s].pivot_priority;
     }
-    return 0;
+    // not found
+    return -1;
 }
 
 bool is_operator(enum_token_type x)

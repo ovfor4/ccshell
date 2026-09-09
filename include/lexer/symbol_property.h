@@ -40,5 +40,22 @@ unordered_map<string, T_property> symbol_property = {
     {"||",   {.operand_number = 1, .continuable = true, .pivot_priority = 1000, .left = EXIST,     .right = EXIST,     .enum_type = LOGIC_OR}},
 
 };
+
+string symbol_enum2string(enum_token_type e)
+{
+    for (auto &c : symbol_property)
+    {
+        // pair<string, T_property>
+        
+        if (c.second.enum_type == e)
+            return c.first;
+    }
+    return "";
+}
+
+bool symbol_contains_enum_type(enum_token_type e)
+{
+    return (symbol_enum2string(e) == "") ? false : true;
+}
     
 }
