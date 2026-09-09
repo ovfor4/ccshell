@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <string>
+
 #include "lexer/enum_type.h"
 
 using namespace std;
@@ -24,7 +25,7 @@ public:
     enum_token_type enum_type = TEXT;
 };
 
-unordered_map<string, T_property> symbol_property = {
+inline unordered_map<string, T_property> symbol_property = {
     // non-operator
     {"\'",   {.enum_type = SINGLE_QUOTATION}},
     {"\"",   {.enum_type = SINGLE_QUOTATION}},
@@ -41,21 +42,8 @@ unordered_map<string, T_property> symbol_property = {
 
 };
 
-string symbol_enum2string(enum_token_type e)
-{
-    for (auto &c : symbol_property)
-    {
-        // pair<string, T_property>
-        
-        if (c.second.enum_type == e)
-            return c.first;
-    }
-    return "";
-}
+string symbol_enum2string(enum_token_type e);
 
-bool symbol_contains_enum_type(enum_token_type e)
-{
-    return (symbol_enum2string(e) == "") ? false : true;
-}
+bool symbol_contains_enum_type(enum_token_type e);
     
 }

@@ -1,5 +1,13 @@
 // test lexer
-// $ g++ module-test/ast.cc -std=c++23 -Iinclude -Ithird_party/magic_enum/include 
+/* 
+$ 
+g++ \
+    module-test/lexer_test.cc \
+    src/lexer/token.cc \
+    src/lexer/ast.cc \
+    src/lexer/symbol_property.cc \
+    -std=c++23 -Iinclude -Ithird_party/magic_enum/include 
+*/
 
 #include <iostream>
 #include <string>
@@ -19,8 +27,6 @@ using namespace std;
 using namespace ov4;
 
 constexpr int MAXLINE = 1024;
-
-
 
 
 int main()
