@@ -8,6 +8,7 @@
 #include "lexer/enum_type.h"
 #include "lexer/symbol_property.h"
 #include "util/io.h"
+#include "error.h"
 
 using namespace std; // remove this
 

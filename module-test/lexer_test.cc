@@ -16,6 +16,7 @@ g++ \
 #include <cstring>
 #include <vector>
 #include <print>
+#include <stdexcept>
 
 #include "magic_enum/magic_enum.hpp"
 
@@ -23,6 +24,7 @@ g++ \
 #include "lexer/enum_type.h"
 #include "lexer/token.h"
 #include "global.h"
+#include "error.h"
 
 using namespace std;
 using namespace ov4;
@@ -106,40 +108,50 @@ int main()
             return 0;
     }
 
-
-    T_lexer lexer_instance;
-
-    lexer_instance.tokenizer(s);
-    cout << "---------- tokenizer ----------" << endl;
-    for (auto c : lexer_instance.token)
+    try
     {
-        if (c.token_type == LOGIC_AND)
-            println("{} LOGIC_AND", c.bracket_depth);
-        else if (c.token_type == LOGIC_OR)
-            println("{} LOGIC_OR", c.bracket_depth);
-        else if (c.token_type == ASYNC)
-            println("{} ASYNC", c.bracket_depth);
-        else if (c.token_type == PIPE)
-            println("{} PIPE", c.bracket_depth);
-        else if (c.token_type == LEFT_BRACKET)
-            println("{} LEFT_BRACKET", c.bracket_depth);
-        else if (c.token_type == RIGHT_BRACKET)
-            println("{} RIGHT_BRACKET", c.bracket_depth);
-        else if (c.token_type == TEXT)
-            println("{} TEXT .{}.", c.bracket_depth, c.text);
+        T_lexer lexer_instance;
+        lexer_instance.tokenizer(s);
+        cout << "---------- tokenizer ----------" << endl;
+        for (auto c : lexer_instance.token)
+        {
+            if (c.token_type == LOGIC_AND)
+                println("{} LOGIC_AND", c.bracket_depth);
+            else if (c.token_type == LOGIC_OR)
+                println("{} LOGIC_OR", c.bracket_depth);
+            else if (c.token_type == ASYNC)
+                println("{} ASYNC", c.bracket_depth);
+            else if (c.token_type == PIPE)
+                println("{} PIPE", c.bracket_depth);
+            else if (c.token_type == LEFT_BRACKET)
+                println("{} LEFT_BRACKET", c.bracket_depth);
+            else if (c.token_type == RIGHT_BRACKET)
+                println("{} RIGHT_BRACKET", c.bracket_depth);
+            else if (c.token_type == TEXT)
+                println("{} TEXT .{}.", c.bracket_depth, c.text);
+        }
+
+        cout << "---------- parse ----------" << endl;
+
+        lexer_instance.parse(0, lexer_instance.token.size(), lexer_instance.alloc_ast());
+
+        cout << "---------- AST ----------" << endl;
+        for (size_t i = 0; i < lexer_instance.ast.size(); i++)
+        {
+            print("{}: type: {} left: {} right: {}", i, magic_enum::enum_name(lexer_instance.ast[i].token_type), lexer_instance.ast[i].left, lexer_instance.ast[i].right);
+            if (lexer_instance.ast[i].token_type == TEXT)
+                print(" command: {}", lexer_instance.ast[i].command_text);
+            println();
+        }
     }
-
-    cout << "---------- parse ----------" << endl;
-
-    lexer_instance.parse(0, lexer_instance.token.size(), lexer_instance.alloc_ast());
-
-    cout << "---------- AST ----------" << endl; 
-    for (size_t i = 0; i < lexer_instance.ast.size(); i++)
+    catch(const T_error &e)
     {
-        print("{}: type: {} left: {} right: {}", i, magic_enum::enum_name(lexer_instance.ast[i].token_type), lexer_instance.ast[i].left, lexer_instance.ast[i].right);
-        if (lexer_instance.ast[i].token_type == TEXT)
-            print(" command: {}", lexer_instance.ast[i].command_text);
-        println();
+        std::cerr << e.what() << '\n';
     }
+    
+
+    
+
+    
     return 0;
 }
