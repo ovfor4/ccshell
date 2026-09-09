@@ -26,7 +26,7 @@ constexpr int MAXLINE = 1024;
 
 int main()
 {
-    int test_case = 0;
+    int test_case = 13;
     string s;
 
     switch (test_case)
@@ -75,6 +75,24 @@ int main()
         // with space
         case 10:
             s = "\'This should be 1 token\' symbol && text \'&&\'";
+            break;
+
+        // missing test
+        // missing right
+        case 11:
+            s = "alpha&&";
+            break;
+        
+        // missing test
+        // missing left
+        case 12:
+            s = "&&left";
+            break;
+
+        // existance test
+        // exist right
+        case 13:
+            s = "alpha&beta";
             break;
 
         default:

@@ -114,6 +114,38 @@ void parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
         return;
     }
 
+    // left child
+
+    string token_str = symbol_enum2string(token[found_pos].token_type);
+
+    // miss left
+    if (symbol_property[token_str].left == EXIST && cmd_begin == found_pos)
+    {
+        println("parse: missing left child");
+        exit(-1); // TODO
+    }
+
+    // miss right
+    if (symbol_property[token_str].right == EXIST && cmd_end-1 == found_pos)
+    {
+        println("parse: missing right child");
+        exit(-1); // TODO
+    }
+
+    // should not exist left
+    if (symbol_property[token_str].left == NOT_EXIST && cmd_begin != found_pos)
+    {
+        println("parse: left child should NOT exist");
+        exit(-1); // TODO
+    }
+
+    // should not exist right
+    if (symbol_property[token_str].right == NOT_EXIST && cmd_end-1 != found_pos)
+    {
+        println("parse: right child should NOT exist");
+        exit(-1); // TODO
+    }
+
     size_t l = alloc_ast();
     size_t r = alloc_ast();
     ast[ast_vec].left = l;
