@@ -77,7 +77,7 @@ bool T_lexer::token_continue(const string &s, char next)
     T_property tmp;
     if (symbol_property.contains(s))
     {
-        tmp = symbol_property[s];
+        tmp = symbol_property.at(s);
         if (tmp.continuable)
         {
             string prev_and_next = s + next;
@@ -107,7 +107,7 @@ void T_lexer::token_push(const string &push_s, int bracket_depth, bool force_tex
     if (symbol_property.contains(trimmed) && !force_text) // symbol
     {
         loggerln("token_push: adding symbol");
-        tmp.token_type = symbol_property[trimmed].enum_type;
+        tmp.token_type = symbol_property.at(trimmed).enum_type;
     } 
     else
     {

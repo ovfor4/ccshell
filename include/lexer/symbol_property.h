@@ -13,8 +13,10 @@ namespace ov4
 class T_property
 {
 public:
-    int operand_number = 0;
     bool continuable = true;
+
+    // -1 means it's NOT operator
+    // any positive values mean it's operator
     int pivot_priority = -1;
 
     // require: MUST
@@ -25,7 +27,7 @@ public:
     enum_token_type enum_type = TEXT;
 };
 
-inline unordered_map<string, T_property> symbol_property = {
+inline const unordered_map<string, T_property> symbol_property = {
     // non-operator
     {"\'",   {.enum_type = SINGLE_QUOTATION}},
     {"\"",   {.enum_type = SINGLE_QUOTATION}},
@@ -35,10 +37,10 @@ inline unordered_map<string, T_property> symbol_property = {
     {")",    {.continuable = false, .enum_type = RIGHT_BRACKET}},
 
     // operator
-    {"&",    {.operand_number = 1, .continuable = true, .pivot_priority = 2000, .left = child_existence_type::EXIST,     .right = child_existence_type::NOT_EXIST, .enum_type = ASYNC}},
-    {"|",    {.operand_number = 1, .continuable = true, .pivot_priority = 100,  .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = PIPE}},
-    {"&&",   {.operand_number = 1, .continuable = true, .pivot_priority = 1000, .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = LOGIC_AND}},
-    {"||",   {.operand_number = 1, .continuable = true, .pivot_priority = 1000, .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = LOGIC_OR}},
+    {"&",    {.continuable = true, .pivot_priority = 2000, .left = child_existence_type::EXIST,     .right = child_existence_type::NOT_EXIST, .enum_type = ASYNC}},
+    {"|",    {.continuable = true, .pivot_priority = 100,  .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = PIPE}},
+    {"&&",   {.continuable = true, .pivot_priority = 1000, .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = LOGIC_AND}},
+    {"||",   {.continuable = true, .pivot_priority = 1000, .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = LOGIC_OR}},
 
 };
 

@@ -40,7 +40,7 @@ int T_lexer::get_pivot_order(enum_token_type x)
     string s = symbol_enum2string(x);
     if (s != "")
     {
-        return symbol_property[s].pivot_priority;
+        return symbol_property.at(s).pivot_priority;
     }
     // not found
     return -1;
@@ -48,16 +48,10 @@ int T_lexer::get_pivot_order(enum_token_type x)
 
 bool T_lexer::is_operator(enum_token_type x)
 {
-    switch(x)
-    {
-        case LOGIC_AND:
-        case LOGIC_OR:
-        case PIPE:
-        case ASYNC:
-            return true;
-        default:
-            return false;
-    }
+    string s = symbol_enum2string(x);
+    if (s != "")
+        return (symbol_property.at(s).pivot_priority >= 0) ? true : false;
+    return false;
 }
 
 // region [begin, end)
@@ -109,32 +103,32 @@ void T_lexer::parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
     string token_str = symbol_enum2string(token[found_pos].token_type);
 
     // miss left
-    if (symbol_property[token_str].left == child_existence_type::EXIST && cmd_begin == found_pos)
+    if (symbol_property.at(token_str).left == child_existence_type::EXIST && cmd_begin == found_pos)
         throw T_error{error_code::AST_MISS_LEFT_CHILD, "parse: missing left child"};
     // miss right
-    if (symbol_property[token_str].right == child_existence_type::EXIST && cmd_end-1 == found_pos)
+    if (symbol_property.at(token_str).right == child_existence_type::EXIST && cmd_end-1 == found_pos)
         throw T_error{error_code::AST_MISS_RIGHT_CHILD, "parse: missing right child"};
     // should not exist left
-    if (symbol_property[token_str].left == child_existence_type::NOT_EXIST && cmd_begin != found_pos)
+    if (symbol_property.at(token_str).left == child_existence_type::NOT_EXIST && cmd_begin != found_pos)
         throw T_error{error_code::AST_EXIST_LEFT_CHILLD, "parse: left child should NOT exist"};
     // should not exist right
-    if (symbol_property[token_str].right == child_existence_type::NOT_EXIST && cmd_end-1 != found_pos)
+    if (symbol_property.at(token_str).right == child_existence_type::NOT_EXIST && cmd_end-1 != found_pos)
         throw T_error{error_code::AST_EXIST_LEFT_CHILLD, "parse: right child should NOT exist"};
 
 
     ast[ast_vec].token_type = token[found_pos].token_type;
     loggerln("Parse sub: {}, {}, {}", cmd_begin, found_pos, cmd_end);
 
-    if (symbol_property[token_str].left == child_existence_type::EXIST 
-        || symbol_property[token_str].left == child_existence_type::OPTIONAL)
+    if (symbol_property.at(token_str).left == child_existence_type::EXIST 
+        || symbol_property.at(token_str).left == child_existence_type::OPTIONAL)
     {
         size_t l = alloc_ast();
         ast[ast_vec].left = l;
         parse(cmd_begin, found_pos, l);
     }
 
-    if (symbol_property[token_str].left == child_existence_type::EXIST 
-        || symbol_property[token_str].left == child_existence_type::OPTIONAL)
+    if (symbol_property.at(token_str).right == child_existence_type::EXIST 
+        || symbol_property.at(token_str).right == child_existence_type::OPTIONAL)
     {
         size_t r = alloc_ast();
         ast[ast_vec].right = r;
