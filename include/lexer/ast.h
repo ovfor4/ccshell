@@ -2,18 +2,16 @@
 
 #include <string>
 
+#include "lexer/lexer_class.h"
 #include "lexer/enum_type.h"
 #include "lexer/token.h"
-#include "lexer/shared.h"
 
 using namespace std; // remove this
 
 namespace ov4
 {
 
-class T_token;
-
-class T_ast
+class T_lexer::T_ast
 {
 public:
     T_ast() = default;
@@ -24,7 +22,7 @@ public:
     size_t right = string::npos;
 };
 
-string final_trim(size_t _begin, size_t _end)
+string T_lexer::final_trim(size_t _begin, size_t _end)
 {
     string s;
     for (size_t i = _begin; i < _end; i++)
@@ -37,13 +35,13 @@ string final_trim(size_t _begin, size_t _end)
     return s;
 }
 
-size_t alloc_ast()
+size_t T_lexer::alloc_ast()
 {
     ast.emplace_back();
     return ast_index++;
 }
 
-int get_pivot_order(enum_token_type x)
+int T_lexer::get_pivot_order(enum_token_type x)
 {
     string s = symbol_enum2string(x);
     if (s != "")
@@ -54,7 +52,7 @@ int get_pivot_order(enum_token_type x)
     return -1;
 }
 
-bool is_operator(enum_token_type x)
+bool T_lexer::is_operator(enum_token_type x)
 {
     switch(x)
     {
@@ -69,7 +67,7 @@ bool is_operator(enum_token_type x)
 }
 
 // region [begin, end)
-void parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
+void T_lexer::parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
 {
     int current_depth = 0;
     int current_order = -1;

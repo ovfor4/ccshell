@@ -11,7 +11,6 @@
 
 #include "magic_enum/magic_enum.hpp"
 
-#include "lexer/shared.h"
 #include "lexer/ast.h"
 #include "lexer/enum_type.h"
 #include "lexer/token.h"
@@ -100,10 +99,11 @@ int main()
     }
 
 
+    T_lexer lexer_instance;
 
-    tokenizer(s);
+    lexer_instance.tokenizer(s);
     cout << "---------- tokenizer ----------" << endl;
-    for (auto c : token)
+    for (auto c : lexer_instance.token)
     {
         if (c.token_type == LOGIC_AND)
             println("{} LOGIC_AND", c.bracket_depth);
@@ -123,14 +123,14 @@ int main()
 
     cout << "---------- parse ----------" << endl;
 
-    parse(0, token.size(), alloc_ast());
+    lexer_instance.parse(0, lexer_instance.token.size(), lexer_instance.alloc_ast());
 
     cout << "---------- AST ----------" << endl; 
-    for (size_t i = 0; i < ast.size(); i++)
+    for (size_t i = 0; i < lexer_instance.ast.size(); i++)
     {
-        print("{}: type: {} left: {} right: {}", i, magic_enum::enum_name(ast[i].token_type), ast[i].left, ast[i].right);
-        if (ast[i].token_type == TEXT)
-            print(" command: {}", ast[i].command_text);
+        print("{}: type: {} left: {} right: {}", i, magic_enum::enum_name(lexer_instance.ast[i].token_type), lexer_instance.ast[i].left, lexer_instance.ast[i].right);
+        if (lexer_instance.ast[i].token_type == TEXT)
+            print(" command: {}", lexer_instance.ast[i].command_text);
         println();
     }
     return 0;

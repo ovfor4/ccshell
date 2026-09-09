@@ -2,8 +2,8 @@
 
 #include <string>
 
+#include "lexer/lexer_class.h"
 #include "lexer/enum_type.h"
-#include "lexer/shared.h"
 #include "lexer/symbol_property.h"
 
 using namespace std; // remove this
@@ -11,7 +11,7 @@ using namespace std; // remove this
 namespace ov4
 {
 
-class T_token
+class T_lexer::T_token
 {
 public:
     T_token() = default;
@@ -22,7 +22,7 @@ public:
     int bracket_depth = 0;
 };
 
-string trim(const string &s, const string &trim_target = " \t")
+string T_lexer::trim(const string &s, const string &trim_target) // trim_target = " \t"
 {
     size_t b = s.find_first_not_of(trim_target);
     if (b == string::npos)
@@ -32,7 +32,7 @@ string trim(const string &s, const string &trim_target = " \t")
 }
 
 
-bool is_single_symbol(char c)
+bool T_lexer::is_single_symbol(char c)
 {
     string s = " ";
     s[0] = c;
@@ -41,7 +41,7 @@ bool is_single_symbol(char c)
     return false;
 }
 
-void bracket_depth_changer(char c, int &bracket_depth)
+void T_lexer::bracket_depth_changer(char c, int &bracket_depth)
 {
     if (c == '(')
     {
@@ -63,7 +63,7 @@ void bracket_depth_changer(char c, int &bracket_depth)
 }
 
 
-bool token_continue(const string &s, char next)
+bool T_lexer::token_continue(const string &s, char next)
 {
     println("token_continue: receiving {} {}", s, next);
     // s is empty, so next can be part of the token
@@ -102,7 +102,7 @@ bool token_continue(const string &s, char next)
 }
 
 // handle [prev, current)
-void token_push(const string &push_s, int bracket_depth, bool force_text = false)
+void T_lexer::token_push(const string &push_s, int bracket_depth, bool force_text) // force_text = false
 {
     T_token tmp;
     tmp.bracket_depth = bracket_depth;
@@ -127,7 +127,7 @@ void token_push(const string &push_s, int bracket_depth, bool force_text = false
     token.push_back(tmp);
 }
 
-int tokenizer(const string &s)
+int T_lexer::tokenizer(const string &s)
 {
     if (s.size() == 0) return -1;
 
