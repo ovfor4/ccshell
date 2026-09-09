@@ -7,6 +7,7 @@
 #include "lexer/lexer_class.h"
 #include "lexer/enum_type.h"
 #include "lexer/symbol_property.h"
+#include "util/io.h"
 
 using namespace std; // remove this
 
@@ -37,13 +38,13 @@ void T_lexer::bracket_depth_changer(char c, int &bracket_depth)
     if (c == '(')
     {
         bracket_depth++;
-        println("changed depth: {}", bracket_depth);
+        loggerln("changed depth: {}", bracket_depth);
         return;
     }
     if (c == ')')
     {
         bracket_depth--;
-        println("changed depth: {}", bracket_depth);
+        loggerln("changed depth: {}", bracket_depth);
         if (bracket_depth < 0)
         {
             cerr << "Ooooops bracket unmatched, quitting" << endl;
@@ -56,7 +57,7 @@ void T_lexer::bracket_depth_changer(char c, int &bracket_depth)
 
 bool T_lexer::token_continue(const string &s, char next)
 {
-    println("token_continue: receiving {} {}", s, next);
+    loggerln("token_continue: receiving {} {}", s, next);
     // s is empty, so next can be part of the token
     if (s.size() == 0) return true;
 
@@ -87,7 +88,7 @@ bool T_lexer::token_continue(const string &s, char next)
     }
     else
     {
-        println("symbol not found in map");
+        loggerln("symbol not found in map");
         return false;
     }
 }
@@ -100,16 +101,16 @@ void T_lexer::token_push(const string &push_s, int bracket_depth, bool force_tex
     string trimmed = trim(push_s);
     if (trimmed == "")   return;
 
-    println("finding {} in map", trimmed);
+    loggerln("finding {} in map", trimmed);
 
     if (symbol_property.contains(trimmed) && !force_text) // symbol
     {
-        println("token_push: adding symbol");
+        loggerln("token_push: adding symbol");
         tmp.token_type = symbol_property[trimmed].enum_type;
     } 
     else
     {
-        println("token_push: adding text");
+        loggerln("token_push: adding text");
         if (force_text)
             trimmed = trim(trimmed, "\'\"");
         tmp.token_type = TEXT;
@@ -137,32 +138,32 @@ int T_lexer::tokenizer(const string &s)
 
         prev_str += c;
         
-        println("---");
-        println("prev_str .{}. next char {}", prev_str, s[i+1]);
+        loggerln("---");
+        loggerln("prev_str .{}. next char {}", prev_str, s[i+1]);
 
         if (c == '\'' || c == '\"')
         {
-            println("quotation");
+            loggerln("quotation");
 
             // turn on GUARD
             if (guard == GUARD_OFF)
             {
                 guard = (c == '\'') ? GUARD_STRONG : GUARD_WEAK;
-                println("set guard {}", (c == '\'') ? "GUARD_STRONG" : "GUARD_WEAK");
+                loggerln("set guard {}", (c == '\'') ? "GUARD_STRONG" : "GUARD_WEAK");
                 continue;
             }
             // turn off
             else if (guard == GUARD_STRONG && c == '\'')
             {
                 guard = GUARD_OFF;
-                println("quitting strong guard");
+                loggerln("quitting strong guard");
                 force_text = true;
             }
             //turn off
             else if (guard == GUARD_WEAK && c == '\"')
             {
                 guard = GUARD_OFF;
-                println("quitting weak guard");
+                loggerln("quitting weak guard");
                 force_text = true;
             } else
                 continue;
@@ -170,7 +171,7 @@ int T_lexer::tokenizer(const string &s)
         // not quotation mark
         else if ((guard == GUARD_STRONG || guard == GUARD_WEAK))
         {
-            println("tokenizer: guarded, continue");
+            loggerln("tokenizer: guarded, continue");
             continue;
         }
 

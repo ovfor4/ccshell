@@ -8,6 +8,7 @@
 #include "lexer/enum_type.h"
 #include "lexer/token.h"
 #include "lexer/symbol_property.h"
+#include "util/io.h"
 
 using namespace std;
 
@@ -86,7 +87,7 @@ void T_lexer::parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
             {
                 current_order =  get_pivot_order(token[i].token_type);
                 found_pos = i;
-                println("Found pos: {} order: {} depth: {}", i, current_order, current_depth);
+                loggerln("Found pos: {} order: {} depth: {}", i, current_order, current_depth);
             }
         }
         current_depth++;
@@ -98,7 +99,7 @@ void T_lexer::parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
 
     if (found_pos == string::npos)
     {
-        println("Smallest unit");
+        loggerln("Smallest unit");
         ast[ast_vec].token_type = TEXT;
         ast[ast_vec].command_text = final_trim(cmd_begin, cmd_end);
         return;
@@ -111,28 +112,28 @@ void T_lexer::parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
     // miss left
     if (symbol_property[token_str].left == EXIST && cmd_begin == found_pos)
     {
-        println("parse: missing left child");
+        loggerln("parse: missing left child");
         exit(-1); // TODO
     }
 
     // miss right
     if (symbol_property[token_str].right == EXIST && cmd_end-1 == found_pos)
     {
-        println("parse: missing right child");
+        loggerln("parse: missing right child");
         exit(-1); // TODO
     }
 
     // should not exist left
     if (symbol_property[token_str].left == NOT_EXIST && cmd_begin != found_pos)
     {
-        println("parse: left child should NOT exist");
+        loggerln("parse: left child should NOT exist");
         exit(-1); // TODO
     }
 
     // should not exist right
     if (symbol_property[token_str].right == NOT_EXIST && cmd_end-1 != found_pos)
     {
-        println("parse: right child should NOT exist");
+        loggerln("parse: right child should NOT exist");
         exit(-1); // TODO
     }
 
@@ -142,7 +143,7 @@ void T_lexer::parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
     ast[ast_vec].right = r;
     ast[ast_vec].token_type = token[found_pos].token_type;
 
-    println("Parse sub: {}, {}, {}", cmd_begin, found_pos, cmd_end);
+    loggerln("Parse sub: {}, {}, {}", cmd_begin, found_pos, cmd_end);
 
     parse(cmd_begin, found_pos, l);
     parse(found_pos+1, cmd_end, r);

@@ -22,6 +22,7 @@ g++ \
 #include "lexer/ast.h"
 #include "lexer/enum_type.h"
 #include "lexer/token.h"
+#include "global.h"
 
 using namespace std;
 using namespace ov4;
@@ -31,6 +32,7 @@ constexpr int MAXLINE = 1024;
 
 int main()
 {
+    verbose = false;
     int test_case = 13;
     string s;
 

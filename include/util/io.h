@@ -13,6 +13,7 @@
 #include <vector>
 #include <string>
 #include <type_traits>
+#include <print>
 
 #include "global.h"
 
@@ -100,5 +101,32 @@ void safe_output(T x, T_arg ...arg)
 
 void unix_error(const char *msg);
 void app_error(const char *msg);
+
+template<class ...Args>
+void logger(std::format_string<Args...> fmt, Args&&... args)
+{
+    if constexpr (GLOBAL_DEBUG)
+    {
+        if (verbose)
+        {
+            print(std::clog, fmt, std::forward<Args>(args)...);
+            std::clog.flush();
+        }
+    }
+}
+
+template<class ...Args>
+void loggerln(std::format_string<Args...> fmt, Args&&... args)
+{
+    if constexpr (GLOBAL_DEBUG)
+    {
+        if (verbose)
+        {
+            println(std::clog, fmt, std::forward<Args>(args)...);
+            std::clog.flush();
+        }
+    }
+}
+
 
 }
