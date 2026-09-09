@@ -19,8 +19,8 @@ public:
 
     // require: MUST
     // accept: optional, but if it doesn't accept, but there is indeed a child, then error
-    child_existance_type left;
-    child_existance_type right;
+    child_existence_type left;
+    child_existence_type right;
 
     enum_token_type enum_type = TEXT;
 };
@@ -35,10 +35,10 @@ inline unordered_map<string, T_property> symbol_property = {
     {")",    {.continuable = false, .enum_type = RIGHT_BRACKET}},
 
     // operator
-    {"&",    {.operand_number = 1, .continuable = true, .pivot_priority = 2000, .left = EXIST,     .right = NOT_EXIST, .enum_type = ASYNC}},
-    {"|",    {.operand_number = 1, .continuable = true, .pivot_priority = 100,  .left = EXIST,     .right = EXIST,     .enum_type = PIPE}},
-    {"&&",   {.operand_number = 1, .continuable = true, .pivot_priority = 1000, .left = EXIST,     .right = EXIST,     .enum_type = LOGIC_AND}},
-    {"||",   {.operand_number = 1, .continuable = true, .pivot_priority = 1000, .left = EXIST,     .right = EXIST,     .enum_type = LOGIC_OR}},
+    {"&",    {.operand_number = 1, .continuable = true, .pivot_priority = 2000, .left = child_existence_type::EXIST,     .right = child_existence_type::NOT_EXIST, .enum_type = ASYNC}},
+    {"|",    {.operand_number = 1, .continuable = true, .pivot_priority = 100,  .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = PIPE}},
+    {"&&",   {.operand_number = 1, .continuable = true, .pivot_priority = 1000, .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = LOGIC_AND}},
+    {"||",   {.operand_number = 1, .continuable = true, .pivot_priority = 1000, .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = LOGIC_OR}},
 
 };
 

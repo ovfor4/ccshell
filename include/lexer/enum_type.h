@@ -25,7 +25,7 @@ enum guard_type
     GUARD_STRONG,
 };
 
-enum child_existance_type
+enum class child_existence_type
 {
     NOT_EXIST,
     OPTIONAL,

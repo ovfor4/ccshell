@@ -106,44 +106,41 @@ void T_lexer::parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
         return;
     }
 
-    // left child
-
     string token_str = symbol_enum2string(token[found_pos].token_type);
 
     // miss left
-    if (symbol_property[token_str].left == EXIST && cmd_begin == found_pos)
-    {
+    if (symbol_property[token_str].left == child_existence_type::EXIST && cmd_begin == found_pos)
         throw T_error{error_code::AST_MISS_LEFT_CHILD, "parse: missing left child"};
-    }
-
     // miss right
-    if (symbol_property[token_str].right == EXIST && cmd_end-1 == found_pos)
-    {
+    if (symbol_property[token_str].right == child_existence_type::EXIST && cmd_end-1 == found_pos)
         throw T_error{error_code::AST_MISS_RIGHT_CHILD, "parse: missing right child"};
-    }
-
     // should not exist left
-    if (symbol_property[token_str].left == NOT_EXIST && cmd_begin != found_pos)
-    {
+    if (symbol_property[token_str].left == child_existence_type::NOT_EXIST && cmd_begin != found_pos)
         throw T_error{error_code::AST_EXIST_LEFT_CHILLD, "parse: left child should NOT exist"};
-    }
-
     // should not exist right
-    if (symbol_property[token_str].right == NOT_EXIST && cmd_end-1 != found_pos)
-    {
+    if (symbol_property[token_str].right == child_existence_type::NOT_EXIST && cmd_end-1 != found_pos)
         throw T_error{error_code::AST_EXIST_LEFT_CHILLD, "parse: right child should NOT exist"};
-    }
 
-    size_t l = alloc_ast();
-    size_t r = alloc_ast();
-    ast[ast_vec].left = l;
-    ast[ast_vec].right = r;
+
     ast[ast_vec].token_type = token[found_pos].token_type;
-
     loggerln("Parse sub: {}, {}, {}", cmd_begin, found_pos, cmd_end);
 
-    parse(cmd_begin, found_pos, l);
-    parse(found_pos+1, cmd_end, r);
+    if (symbol_property[token_str].left == child_existence_type::EXIST 
+        || symbol_property[token_str].left == child_existence_type::OPTIONAL)
+    {
+        size_t l = alloc_ast();
+        ast[ast_vec].left = l;
+        parse(cmd_begin, found_pos, l);
+    }
+
+    if (symbol_property[token_str].left == child_existence_type::EXIST 
+        || symbol_property[token_str].left == child_existence_type::OPTIONAL)
+    {
+        size_t r = alloc_ast();
+        ast[ast_vec].right = r;
+        parse(found_pos+1, cmd_end, r);
+    }
+    
 }
 
 }

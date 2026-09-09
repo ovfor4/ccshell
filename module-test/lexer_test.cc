@@ -34,7 +34,7 @@ constexpr int MAXLINE = 1024;
 
 int main()
 {
-    verbose = false;
+    verbose = true;
     int test_case = 13;
     string s;
 
@@ -143,10 +143,12 @@ int main()
                 print(" command: {}", lexer_instance.ast[i].command_text);
             println();
         }
+
     }
     catch(const T_error &e)
     {
-        std::cerr << e.what() << '\n';
+        cerr << "Error: " << magic_enum::enum_name(e.code) << endl;
+        cerr << "what: " << e.what() << endl;
     }
     
 
