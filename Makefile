@@ -1,4 +1,4 @@
-CC = gcc
+CC ?= gcc
 CXX ?= g++
 
 SRC_DIR := src
@@ -25,8 +25,8 @@ ifeq ($(DEBUG),0)
 else
     # debug
     LTO := 0
-    OPTFLAGS := -Og
-    OPTFLAGS += -g3 -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS
+    OPTFLAGS := -O0
+    OPTFLAGS += -ggdb3 -fno-omit-frame-pointer -fno-inline -D_GLIBCXX_ASSERTIONS
 endif
 
 ifeq ($(LTO),1)
@@ -84,5 +84,5 @@ clean:
 
 fresh:
 	$(MAKE) clean
-	$(MAKE)
+	$(MAKE) DEBUG=$(DEBUG) STATIC=$(STATIC)
 
