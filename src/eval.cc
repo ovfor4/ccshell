@@ -67,12 +67,36 @@ void eval(char *cmdline)
 
         // program inside execve may use SIGTTIN/SIGTTOU so just restore in child
         sigprocmask(SIG_UNBLOCK, &block_io, nullptr);
-        
         execve(cmd_c, argv, environ);
 
         wrap_eliminator(cmdline);
-        cout << cmdline << ": Command not found" << endl;
-        exit(-1); // if no command is found
+        cout << cmdline << flush;
+        switch (errno)
+        {
+            case ENOTDIR:
+                println(": A component of the path prefix is not a directory.");
+                exit(errno);
+                break;
+            
+            case ENAMETOOLONG:
+                println(": A component of a pathname exceeded 255 characters, or an entire path name exceeded 1023 characters.");
+                exit(errno);
+                break;
+            
+            case ENOENT:
+                println(": The new process file does not exist.");
+                exit(errno);
+                break;
+
+            case EACCES:
+                println(": The new process file mode denies execute permission.");
+                exit(errno);
+                break;
+
+            default:
+                println(": Error, code: {}", errno);
+                exit(errno);
+        }
     }
 
     // parent
