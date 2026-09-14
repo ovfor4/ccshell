@@ -15,6 +15,10 @@ using namespace std; // remove this
 namespace ov4
 {
 
+/*
+ * remove leading chars
+ * by default remove " \t"
+ */
 string T_lexer::trim(const string &s, const string &trim_target) // trim_target = " \t"
 {
     size_t b = s.find_first_not_of(trim_target);
@@ -55,7 +59,9 @@ void T_lexer::bracket_depth_changer(char c, int &bracket_depth)
     }
 }
 
-
+/*
+ * determine whether `s` and `next` can be combined to form a token
+ */
 bool T_lexer::token_continue(const string &s, char next)
 {
     loggerln("token_continue: receiving {} {}", s, next);
