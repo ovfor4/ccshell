@@ -44,6 +44,8 @@ int eval_exe(string s, bool is_aync)
     }
     parseline(cmdline, argv);
 
+    if (argv == nullptr || argv[0] == nullptr) return 0;
+
     if (exe_bultin_command(argv)) return 0;
 
     // block_io signals can stop shell
@@ -113,12 +115,19 @@ int eval_exe(string s, bool is_aync)
         sigprocmask(SIG_SETMASK, &prev_with_sigchld_blocked, NULL);
         waitfg(pid);
         sigprocmask(SIG_SETMASK, &prev, NULL);
+
+        return exit_code;
     }
     else // background
     {
         addjob(pid, BG, cmdline);
         sigprocmask(SIG_SETMASK, &prev, NULL);
         cout << "[" << pid2jid(pid) << "] (" << pid << ") " << cmdline;
+
+        // POSIX:
+        // async command returns 0 immediately
+        // TODO: recurring async 
+        return 0;
     }
 
 
@@ -126,23 +135,31 @@ int eval_exe(string s, bool is_aync)
     return 0;
 }
 
-void eval_tree_cd(size_t i, const T_lexer &lexer_instance)
+int eval_tree_cd(size_t i, const T_lexer &lexer_instance)
 {
     // TODO: async
+
+    int ret = -1;
+
     if (lexer_instance.ast[i].token_type == TEXT)
     {
-        eval_exe(lexer_instance.ast[i].command_text, false);
-        return;
+        ret = eval_exe(lexer_instance.ast[i].command_text, false);
+        return ret;
     }
+
     if (lexer_instance.ast[i].left != string::npos)
     {
-        eval_tree_cd(lexer_instance.ast[i].left, lexer_instance);
+        ret = eval_tree_cd(lexer_instance.ast[i].left, lexer_instance);
     }
 
     if (lexer_instance.ast[i].right != string::npos)
     {
-        eval_tree_cd(lexer_instance.ast[i].right, lexer_instance);
+        if (lexer_instance.ast[i].token_type == LOGIC_AND && ret != 0) return ret;
+        if (lexer_instance.ast[i].token_type == LOGIC_OR && ret == 0) return ret;
+        
+        ret = eval_tree_cd(lexer_instance.ast[i].right, lexer_instance);
     }
+    return ret;
 }
     
 /* 

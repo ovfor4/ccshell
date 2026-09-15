@@ -1,6 +1,6 @@
 /*
     return specific value
-    $ g++ module-test/return_value.cc -std=c++23
+    $ g++ module-test/return_value.cc -o module-test/return_value.o -std=c++23
 */
 
 #include <iostream>
