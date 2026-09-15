@@ -19,7 +19,16 @@ int parseline(const char *cmdline, char **argv)
     int bg;                     /* background job? */
 
     strcpy(buf, cmdline);
-    buf[strlen(buf)-1] = ' ';  /* replace trailing '\n' with space */
+    if (buf[strlen(buf)-1] == '\n')
+        buf[strlen(buf)-1] = ' ';  /* replace trailing '\n' with space */
+    else
+    {
+        // if buffer is not large enough
+        // might be UB
+        // TODO: fix UB
+        buf[strlen(buf)] = ' ';
+        buf[strlen(buf)+1] = '\0';
+    }
     while (*buf && (*buf == ' ')) /* ignore leading spaces */
 	buf++;
 

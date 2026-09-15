@@ -31,6 +31,8 @@ namespace ov4
 
 int eval_exe(string s, bool is_aync)
 {
+    loggerln("eval_exe: receive {}", s);
+
     char cmdline[MAXLINE];
     strcpy(cmdline, s.c_str());
     char arg[MAXARGS][MAXLINE];
