@@ -99,6 +99,22 @@ void safe_output(T x, T_arg ...arg)
     errno = errno_old;
 }
 
+// async-signal-safe output function
+// example:
+// safe_output("string", 123, variable);
+template <typename ...T_arg>
+void safe_logger(T_arg ...arg)
+{
+    int errno_old = errno;
+
+    if (GLOBAL_DEBUG && verbose)
+    {
+        safe_output(arg...);
+    }
+
+    errno = errno_old;
+}
+
 void unix_error(const char *msg);
 void app_error(const char *msg);
 

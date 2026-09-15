@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <atomic>
 
 #include "all.h"
 
@@ -21,6 +22,8 @@ extern sigset_t
     block_sig_TTOU,
     block_job,
     block_io;
+
+inline std::atomic_int exit_code, exit_required_pid;
 
 void signal_init();
 handler_t *Signal(int signum, handler_t *handler);

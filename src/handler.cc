@@ -114,6 +114,11 @@ void sigchld_handler([[maybe_unused]] int sig)
             if (WIFEXITED(status))
             {
                 safe_output("Exit code: ", WEXITSTATUS(status), "\n");
+                if (pid == exit_required_pid)
+                {
+                    exit_code = WEXITSTATUS(status);
+                    safe_logger("sigchld_handler: required PID detected: ", pid, "\n");
+                }
             }
         }
     }

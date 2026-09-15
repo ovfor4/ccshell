@@ -21,6 +21,7 @@
 #include "lexer/token.h"
 #include "lexer/enum_type.h"
 #include "lexer/symbol_property.h"
+#include "handler.h"
 
 using namespace std;
 
@@ -101,6 +102,8 @@ int eval_exe(string s, bool is_aync)
     }
 
     // parent
+
+    exit_required_pid = pid;
 
     if (!is_aync)  // foreground
     {   
