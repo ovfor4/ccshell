@@ -6,7 +6,9 @@ g++ \
     src/lexer/token.cc \
     src/lexer/ast.cc \
     src/lexer/symbol_property.cc \
-    -std=c++23 -Iinclude -Ithird_party/magic_enum/include 
+    -std=c++23 -Iinclude -Ithird_party/magic_enum/include \
+    -O0 -ggdb3 -fno-omit-frame-pointer -fno-inline -D_GLIBCXX_ASSERTIONS \
+    -o module-test/lexer_test.out
 */
 
 #include <iostream>
@@ -35,7 +37,7 @@ constexpr int MAXLINE = 1024;
 int main()
 {
     verbose = true;
-    int test_case = 13;
+    int test_case = 15;
     string s;
 
     switch (test_case)
@@ -104,6 +106,16 @@ int main()
             s = "alpha&beta";
             break;
 
+        // simple subshell test
+        case 14:
+            s = "alpha && (beta)";
+            break;
+
+        // complex subshell test
+        case 15:
+            s = "alpha && (beta || gamma) && (sleep &)";
+            break;
+
         default:
             return 0;
     }
@@ -138,7 +150,12 @@ int main()
         cout << "---------- AST ----------" << endl;
         for (size_t i = 0; i < lexer_instance.ast.size(); i++)
         {
-            print("{}: type: {} left: {} right: {}", i, magic_enum::enum_name(lexer_instance.ast[i].token_type), lexer_instance.ast[i].left, lexer_instance.ast[i].right);
+            print("{}: type: {} left: {} right: {}, subshell {}", 
+                i, 
+                magic_enum::enum_name(lexer_instance.ast[i].token_type), 
+                lexer_instance.ast[i].left, 
+                lexer_instance.ast[i].right,
+                lexer_instance.ast[i].subshell ? "TRUE" : "FALSE");
             if (lexer_instance.ast[i].token_type == TEXT)
                 print(" command: {}", lexer_instance.ast[i].command_text);
             println();

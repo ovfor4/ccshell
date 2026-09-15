@@ -20,6 +20,8 @@ public:
     string command_text;
     size_t left = string::npos;
     size_t right = string::npos;
+
+    bool subshell;
 };
 
 }

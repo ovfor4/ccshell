@@ -10,6 +10,7 @@
 #include "lexer/symbol_property.h"
 #include "util/io.h"
 #include "error.h"
+#include "magic_enum/magic_enum.hpp"
 
 using namespace std;
 
@@ -61,6 +62,25 @@ void T_lexer::parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
     int current_order = -1;
     int max_depth = -1;
     size_t found_pos = string::npos;
+
+    // if it's fully inside bracket
+    // then it's subshell
+    loggerln("parse: left token type: {}, right: {}", 
+        magic_enum::enum_name(token[cmd_begin].token_type), 
+        magic_enum::enum_name(token[cmd_end-1].token_type));
+    if (token[cmd_begin].token_type == LEFT_BRACKET && token[cmd_end-1].token_type == RIGHT_BRACKET)
+    {
+        ast[ast_vec].subshell = true;
+        loggerln("parse: detect subshell {}", ast_vec);
+
+        // eat () subshell token
+        cmd_begin++;
+        cmd_end--;
+    }
+    else 
+    {
+        ast[ast_vec].subshell = false;
+    }
 
     for (size_t i = cmd_begin; i < cmd_end; i++)
     {
