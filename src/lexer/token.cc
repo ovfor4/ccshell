@@ -12,6 +12,8 @@
 
 using namespace std; // remove this
 
+constexpr bool TOKEN_DEBUG = false;
+
 namespace ov4
 {
 
@@ -43,7 +45,7 @@ void T_lexer::bracket_depth_changer(char c, int &bracket_depth)
     if (c == '(')
     {
         bracket_depth++;
-        loggerln("changed depth: {}", bracket_depth);
+        if constexpr (TOKEN_DEBUG) loggerln("changed depth: {}", bracket_depth);
         return;
     }
     if (c == ')')
@@ -64,7 +66,7 @@ void T_lexer::bracket_depth_changer(char c, int &bracket_depth)
  */
 bool T_lexer::token_continue(const string &s, char next)
 {
-    loggerln("token_continue: receiving {} {}", s, next);
+    if constexpr (TOKEN_DEBUG) loggerln("token_continue: receiving {} {}", s, next);
     // s is empty, so next can be part of the token
     if (s.size() == 0) return true;
 
@@ -95,7 +97,7 @@ bool T_lexer::token_continue(const string &s, char next)
     }
     else
     {
-        loggerln("symbol not found in map");
+        if constexpr (TOKEN_DEBUG) loggerln("symbol not found in map");
         return false;
     }
 }
@@ -108,16 +110,16 @@ void T_lexer::token_push(const string &push_s, int bracket_depth, bool force_tex
     string trimmed = trim(push_s);
     if (trimmed == "")   return;
 
-    loggerln("finding {} in map", trimmed);
+    if constexpr (TOKEN_DEBUG) loggerln("finding {} in map", trimmed);
 
     if (symbol_property.contains(trimmed) && !force_text) // symbol
     {
-        loggerln("token_push: adding symbol");
+        if constexpr (TOKEN_DEBUG) loggerln("token_push: adding symbol");
         tmp.token_type = symbol_property.at(trimmed).enum_type;
     } 
     else
     {
-        loggerln("token_push: adding text");
+        if constexpr (TOKEN_DEBUG) loggerln("token_push: adding text");
         if (force_text)
             trimmed = trim(trimmed, "\'\"");
         tmp.token_type = TEXT;
@@ -145,32 +147,32 @@ int T_lexer::tokenizer(const string &s)
 
         prev_str += c;
         
-        loggerln("---");
-        loggerln("prev_str .{}. next char {}", prev_str, s[i+1]);
+        if constexpr (TOKEN_DEBUG) loggerln("---");
+        if constexpr (TOKEN_DEBUG) loggerln("prev_str .{}. next char {}", prev_str, s[i+1]);
 
         if (c == '\'' || c == '\"')
         {
-            loggerln("quotation");
+            if constexpr (TOKEN_DEBUG) loggerln("quotation");
 
             // turn on GUARD
             if (guard == GUARD_OFF)
             {
                 guard = (c == '\'') ? GUARD_STRONG : GUARD_WEAK;
-                loggerln("set guard {}", (c == '\'') ? "GUARD_STRONG" : "GUARD_WEAK");
+                if constexpr (TOKEN_DEBUG) loggerln("set guard {}", (c == '\'') ? "GUARD_STRONG" : "GUARD_WEAK");
                 continue;
             }
             // turn off
             else if (guard == GUARD_STRONG && c == '\'')
             {
                 guard = GUARD_OFF;
-                loggerln("quitting strong guard");
+                if constexpr (TOKEN_DEBUG) loggerln("quitting strong guard");
                 force_text = true;
             }
             //turn off
             else if (guard == GUARD_WEAK && c == '\"')
             {
                 guard = GUARD_OFF;
-                loggerln("quitting weak guard");
+                if constexpr (TOKEN_DEBUG) loggerln("quitting weak guard");
                 force_text = true;
             } else
                 continue;
@@ -178,7 +180,7 @@ int T_lexer::tokenizer(const string &s)
         // not quotation mark
         else if ((guard == GUARD_STRONG || guard == GUARD_WEAK))
         {
-            loggerln("tokenizer: guarded, continue");
+            if constexpr (TOKEN_DEBUG) loggerln("tokenizer: guarded, continue");
             continue;
         }
 

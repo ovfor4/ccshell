@@ -65,10 +65,11 @@ void T_lexer::parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec)
 
     // if it's fully inside bracket
     // then it's subshell
-    loggerln("parse: left token type: {}, right: {}", 
-        magic_enum::enum_name(token[cmd_begin].token_type), 
-        magic_enum::enum_name(token[cmd_end-1].token_type));
-    if (token[cmd_begin].token_type == LEFT_BRACKET && token[cmd_end-1].token_type == RIGHT_BRACKET)
+    if (cmd_begin != cmd_end)
+        loggerln("parse: left token type: {}, right: {}", 
+            magic_enum::enum_name(token[cmd_begin].token_type), 
+            magic_enum::enum_name(token[cmd_end-1].token_type));
+    if (cmd_begin != cmd_end && token[cmd_begin].token_type == LEFT_BRACKET && token[cmd_end-1].token_type == RIGHT_BRACKET)
     {
         ast[ast_vec].subshell = true;
         loggerln("parse: detect subshell {}", ast_vec);

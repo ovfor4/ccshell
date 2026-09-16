@@ -75,7 +75,11 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 	    exit(0);
 	}
 
+
 	/* Evaluate the command line */
+    // trim \n
+    if(cmdline[strlen(cmdline)-1] == '\n')
+        cmdline[strlen(cmdline)-1] = '\0';
 	eval(cmdline);
 	fflush(stdout);
 	fflush(stdout);

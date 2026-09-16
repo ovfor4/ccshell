@@ -21,6 +21,9 @@ public:
     size_t left = string::npos;
     size_t right = string::npos;
 
+    // if this is marked as `subshell`
+    // it will fork a subshell
+    // then the subshell will handler the rest
     bool subshell;
 };
 

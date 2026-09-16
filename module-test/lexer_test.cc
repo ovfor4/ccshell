@@ -37,7 +37,7 @@ constexpr int MAXLINE = 1024;
 int main()
 {
     verbose = true;
-    int test_case = 15;
+    int test_case = 16;
     string s;
 
     switch (test_case)
@@ -114,6 +114,11 @@ int main()
         // complex subshell test
         case 15:
             s = "alpha && (beta || gamma) && (sleep &)";
+            break;
+
+        // \n test
+        case 16:
+            s = "(ls)";
             break;
 
         default:
