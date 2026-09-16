@@ -30,33 +30,53 @@ extern char **environ;
 namespace ov4
 {
 
-int eval_exe(const string &s, bool is_aync)
+int eval_exe(const string &s, bool is_async)
+{
+    return eval_exe(s, is_async, nullptr, string::npos);
+}
+
+int eval_exe(const string &s, bool is_async, const T_lexer *lexer_instance, size_t i)
 {
     loggerln("eval_exe: receive {}", s);
 
+    bool task_type_is_subshell = false;
     char cmdline[MAXLINE];
-    strcpy(cmdline, s.c_str());
     char arg[MAXARGS][MAXLINE];
     char *argv[MAXARGS];
-    for (int i = 0 ; i < MAXARGS; i++)
+    char cmd_c[MAXLINE];
+
+    // subshell type
+    if (lexer_instance != nullptr)
     {
-        argv[i] = &arg[i][0];
+        task_type_is_subshell = true;
+        strcpy(cmdline, "SUBSHELL");
+    } 
+    // command type
+    else
+    {
+        task_type_is_subshell = false;
+        strcpy(cmdline, s.c_str());
+        
+        for (int i = 0 ; i < MAXARGS; i++)
+        {
+            argv[i] = &arg[i][0];
+        }
+        parseline(cmdline, argv);
+
+        if (argv == nullptr || argv[0] == nullptr) return 0;
+
+        if (exe_bultin_command(argv)) return 0;
+
+        string cmd = find_cmd(argv[0]);
+        strcpy(cmd_c, cmd.c_str());
     }
-    parseline(cmdline, argv);
-
-    if (argv == nullptr || argv[0] == nullptr) return 0;
-
-    if (exe_bultin_command(argv)) return 0;
 
     // block_io signals can stop shell
     // when child is at foreground, parent shell is at background
-    sigprocmask(SIG_BLOCK, &block_io, nullptr);
+    sigprocmask(SIG_BLOCK, &block_io, nullptr);    
 
     sigset_t prev;
     block_all(&prev);
-
-    string cmd = find_cmd(argv[0]);
-    const char* cmd_c = cmd.c_str();
 
     shell_pgid = getpgid(0);
     pid_t pid = fork();
@@ -64,7 +84,7 @@ int eval_exe(const string &s, bool is_aync)
     if (pid == 0) // child
     {
         setpgid(0, 0);
-        if (!is_aync) // foreground
+        if (!is_async) // foreground
             tcsetpgrp(tty_fd, getpgrp());
 
         sigprocmask(SIG_SETMASK, &prev, nullptr);
@@ -72,6 +92,15 @@ int eval_exe(const string &s, bool is_aync)
         // program inside execve may use SIGTTIN/SIGTTOU
         // so just restore in child
         sigprocmask(SIG_UNBLOCK, &block_io, nullptr);
+
+        // subshell
+        if (task_type_is_subshell)
+        {
+            eval_tree_cd(i, *lexer_instance, true);
+            exit(0);
+        }
+
+        // normal command
         execve(cmd_c, argv, environ);
 
         // execve: if success, never returns
@@ -110,7 +139,7 @@ int eval_exe(const string &s, bool is_aync)
 
     exit_required_pid = pid;
 
-    if (!is_aync)  // foreground
+    if (!is_async)  // foreground
     {   
         addjob(pid, FG, cmdline); 
         sigset_t prev_with_sigchld_blocked = prev;
@@ -138,68 +167,6 @@ int eval_exe(const string &s, bool is_aync)
     return 0;
 }
 
-int eval_subshell(size_t i, const T_lexer &lexer_instance)
-{
-    println("eval_tree_cd: processing subshell");
-
-    // TODO: implement async
-    bool is_aync = false;
-
-    char cmdline[] = "subshell";
-
-    // block_io signals can stop shell
-    // when child is at foreground, parent shell is at background
-    sigprocmask(SIG_BLOCK, &block_io, nullptr);
-
-    sigset_t prev;
-    block_all(&prev);
-
-    shell_pgid = getpgid(0);
-    pid_t pid = fork();
-    
-    if (pid == 0) // child
-    {
-        setpgid(0, 0);
-        if (!is_aync) // foreground
-            tcsetpgrp(tty_fd, getpgrp());
-
-        sigprocmask(SIG_SETMASK, &prev, nullptr);
-
-        // program inside execve may use SIGTTIN/SIGTTOU
-        // so just restore in child
-        sigprocmask(SIG_UNBLOCK, &block_io, nullptr);
-        eval_tree_cd(i, lexer_instance, true);
-        exit(0);
-    }
-
-    // parent
-
-    exit_required_pid = pid;
-
-    if (!is_aync)  // foreground
-    {   
-        addjob(pid, FG, cmdline); 
-        sigset_t prev_with_sigchld_blocked = prev;
-        sigaddset(&prev_with_sigchld_blocked, SIGCHLD);
-        sigprocmask(SIG_SETMASK, &prev_with_sigchld_blocked, NULL);
-        waitfg(pid);
-        sigprocmask(SIG_SETMASK, &prev, NULL);
-
-        return exit_code;
-    }
-    else // background
-    {
-        addjob(pid, BG, cmdline);
-        sigprocmask(SIG_SETMASK, &prev, NULL);
-        cout << "[" << pid2jid(pid) << "] (" << pid << ") " << cmdline;
-
-        // POSIX:
-        // async command returns 0 immediately
-        // TODO: recurring async 
-        return 0;
-    }
-}
-
 int eval_tree_cd(size_t i, const T_lexer &lexer_instance, bool inside_subshell)
 {
     // TODO: async
@@ -213,7 +180,7 @@ int eval_tree_cd(size_t i, const T_lexer &lexer_instance, bool inside_subshell)
     // fork itself
     if (lexer_instance.ast[i].subshell && !inside_subshell)
     {
-        eval_subshell(i, lexer_instance);
+        eval_exe("", false, &lexer_instance, i);
         return 0;
     }
 
