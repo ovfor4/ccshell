@@ -60,11 +60,12 @@ int eval_exe(const string &s, bool is_async, const T_lexer *lexer_instance, size
         s_wrap_eliminated = s.substr(0, s.find('\n')); // eliminate \n
         raw_input = s_wrap_eliminated.c_str();
         
+        // NB: remember to delete
         argv = parseline(s);
 
-        if (argv == nullptr || argv[0] == nullptr) return 0;
+        if (argv == nullptr || argv[0] == nullptr) { operator delete(argv); return 0; }
 
-        if (exe_bultin_command(argv)) return 0;
+        if (exe_bultin_command(argv)) { operator delete(argv); return 0; }
 
         unified_cmd = find_cmd(argv[0]);
         unified_cmd_c = unified_cmd.c_str();
