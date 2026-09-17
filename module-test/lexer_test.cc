@@ -6,6 +6,7 @@ g++ \
     src/lexer/token.cc \
     src/lexer/ast.cc \
     src/lexer/symbol_property.cc \
+    src/util/string.cc \
     -std=c++23 -Iinclude -Ithird_party/magic_enum/include \
     -O0 -ggdb3 -fno-omit-frame-pointer -fno-inline -D_GLIBCXX_ASSERTIONS \
     -o module-test/lexer_test.out
@@ -27,6 +28,7 @@ g++ \
 #include "lexer/token.h"
 #include "global.h"
 #include "error.h"
+#include "util/string.h"
 
 using namespace std;
 using namespace ov4;
@@ -37,7 +39,7 @@ constexpr int MAXLINE = 1024;
 int main()
 {
     verbose = true;
-    int test_case = 17;
+    int test_case = 19;
     string s;
 
     switch (test_case)
@@ -124,6 +126,16 @@ int main()
         // more LEFT brackets than RIGHT
         case 17:
             s = "((alpha)";
+            break;
+
+        // quotation mark in command
+        case 18:
+            s = "argument_printer.out \"hello hi\" second third &";
+            break;
+
+        // harder quotation mark test
+        case 19:
+            s = "alpha \"arg1 arg2 \'arg3 arg4\' arg5\" && beta &";
             break;
 
         default:

@@ -12,7 +12,7 @@
 
 using namespace std; // remove this
 
-constexpr bool TOKEN_DEBUG = false;
+constexpr bool TOKEN_DEBUG = true;
 
 namespace ov4
 {
@@ -35,7 +35,8 @@ bool T_lexer::is_single_symbol(char c)
 {
     string s = " ";
     s[0] = c;
-    if (symbol_property.contains(s))
+    // quotation marks are treated as text
+    if (symbol_property.contains(s) && c != '\'' && c != '\"')
         return true;
     return false;
 }
@@ -119,8 +120,8 @@ void T_lexer::token_push(const string &push_s, int bracket_depth, bool force_tex
     else
     {
         if constexpr (TOKEN_DEBUG) loggerln("token_push: adding text");
-        if (force_text)
-            trimmed = trim(trimmed, "\'\"");
+        // if (force_text)
+        //     trimmed = trim(trimmed, "\'\"");
         tmp.token_type = TEXT;
         tmp.text = trimmed;
     }

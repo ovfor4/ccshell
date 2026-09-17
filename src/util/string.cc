@@ -1,5 +1,7 @@
 #include "util/string.h"
 
+#include <print>
+
 using namespace std;
 
 namespace ov4
@@ -38,6 +40,14 @@ void argv2string(vector<string> &s, const char * const * argv)
 std::string safe_str(const char *s, const char *fallback)
 {
     return (s != nullptr) ? s : fallback; 
+}
+
+void print_str_hex(const std::string &s)
+{
+    for (unsigned char c : s)
+    {
+        print("{:02X} ", c);
+    }
 }
 
 }

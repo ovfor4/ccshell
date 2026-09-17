@@ -1,5 +1,5 @@
 // print all arguments
-// $ g++ module-test/argument_printer.cc -std=c++23
+// $  g++ module-test/argument_printer.cc -std=c++23 -o module-test/argument_printer.out
 
 #include <iostream>
 

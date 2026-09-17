@@ -28,9 +28,6 @@ public:
 };
 
 inline const unordered_map<string, T_property> symbol_property = {
-    // non-operator
-    {"\'",   {.enum_type = SINGLE_QUOTATION}},
-    {"\"",   {.enum_type = SINGLE_QUOTATION}},
 
     // bracket
     {"(",    {.continuable = false, .enum_type = LEFT_BRACKET}},
