@@ -58,7 +58,7 @@ Usage: ccshell [-hvp] \n\
     -v(=<bool>)         print additional diagnostic information \n\
     -p(=<bool>)         do not emit a command prompt \
 " << endl;
-    exit(1);
+    exit(0);
 }
 
 }

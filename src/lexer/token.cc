@@ -54,8 +54,7 @@ void T_lexer::bracket_depth_changer(char c, int &bracket_depth)
         loggerln("changed depth: {}", bracket_depth);
         if (bracket_depth < 0)
         {
-            cerr << "Ooooops bracket unmatched, quitting" << endl;
-            exit(-1); // TODO: std::expected or what, rather than quitting
+            throw T_error{error_code::TOKEN_UNMATCHED_BRACKET, "tokenizer: unmatched bracket(s)"};
         }
         return;
     }
@@ -194,6 +193,10 @@ int T_lexer::tokenizer(const string &s)
             continue;
         }
     }
+
+    if (bracket_depth != 0)
+        throw T_error{error_code::TOKEN_UNMATCHED_BRACKET, "tokenizer: unmatched bracket(s)"};
+
     return 0;
 }
 

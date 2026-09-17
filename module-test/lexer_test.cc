@@ -37,7 +37,7 @@ constexpr int MAXLINE = 1024;
 int main()
 {
     verbose = true;
-    int test_case = 16;
+    int test_case = 17;
     string s;
 
     switch (test_case)
@@ -119,6 +119,11 @@ int main()
         // \n test
         case 16:
             s = "(ls)";
+            break;
+
+        // more LEFT brackets than RIGHT
+        case 17:
+            s = "((alpha)";
             break;
 
         default:
