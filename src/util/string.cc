@@ -36,7 +36,7 @@ void string2argv(const vector<string> &v, char **argv)
  * allocate heap memory, and construct C-style **argv
  * NB: user should be responsible to ::operator delete();
  */
-char **string2argv(const std::vector<std::string> &v)
+char **string2argv_alloc(const std::vector<std::string> &v)
 {
     size_t size = argv_get_required_size(v);
     char **p = static_cast<char**>(operator new(size));
