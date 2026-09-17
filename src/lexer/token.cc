@@ -12,7 +12,7 @@
 
 using namespace std; // remove this
 
-constexpr bool TOKEN_DEBUG = true;
+constexpr bool TOKEN_DEBUG = false;
 
 namespace ov4
 {
