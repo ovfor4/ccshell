@@ -33,7 +33,7 @@ int maxjid(struct job_t *job)
 }
 
 /* addjob - Add a job to the job list */
-int addjob(pid_t pid, int state, char *cmdline, struct job_t *job)
+int addjob(pid_t pid, int state, const char *cmdline, struct job_t *job)
 {
     int i;
     

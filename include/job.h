@@ -51,7 +51,7 @@ struct job_t {              /* The job struct */
 void clearjob(struct job_t *job = _jobs);
 void initjobs(struct job_t *job = _jobs);
 int maxjid(struct job_t *job = _jobs);
-int addjob(pid_t pid, int state, char *cmdline, struct job_t *job = _jobs);
+int addjob(pid_t pid, int state, const char *cmdline, struct job_t *job = _jobs);
 int deletejob(pid_t pid, struct job_t *job = _jobs);
 pid_t fgpid(struct job_t *job = _jobs);
 struct job_t *getjobpid(pid_t pid, struct job_t *job = _jobs);
