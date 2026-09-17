@@ -21,6 +21,7 @@
 #include "lexer/token.h"
 #include "lexer/enum_type.h"
 #include "lexer/symbol_property.h"
+#include "lexer/parseline.h"
 #include "handler.h"
 
 using namespace std;
@@ -40,35 +41,30 @@ int eval_exe(const string &s, bool is_async, const T_lexer *lexer_instance, size
     loggerln("eval_exe: receive {}", s);
 
     bool task_type_is_subshell = false;
-    char cmdline[MAXLINE];
-    char arg[MAXARGS][MAXLINE];
-    char *argv[MAXARGS];
-    char cmd_c[MAXLINE];
+    char raw_input[MAXLINE];
+    char **argv;
+    char cmd_with_path[MAXLINE];
 
     // subshell type
     if (lexer_instance != nullptr)
     {
         task_type_is_subshell = true;
-        strcpy(cmdline, "SUBSHELL");
+        strcpy(raw_input, "SUBSHELL");
     } 
     // command type
     else
     {
         task_type_is_subshell = false;
-        strcpy(cmdline, s.c_str());
+        strcpy(raw_input, s.c_str());
         
-        for (int i = 0 ; i < MAXARGS; i++)
-        {
-            argv[i] = &arg[i][0];
-        }
-        parseline(cmdline, argv);
+        argv = parseline(s);
 
         if (argv == nullptr || argv[0] == nullptr) return 0;
 
         if (exe_bultin_command(argv)) return 0;
 
         string cmd = find_cmd(argv[0]);
-        strcpy(cmd_c, cmd.c_str());
+        strcpy(cmd_with_path, cmd.c_str());
     }
 
     // block_io signals can stop shell
@@ -101,12 +97,12 @@ int eval_exe(const string &s, bool is_async, const T_lexer *lexer_instance, size
         }
 
         // normal command
-        execve(cmd_c, argv, environ);
+        execve(cmd_with_path, argv, environ);
 
         // execve: if success, never returns
 
-        wrap_eliminator(cmdline);
-        cout << cmdline << flush;
+        wrap_eliminator(raw_input);
+        cout << raw_input << flush;
         switch (errno)
         {
             case ENOTDIR:
@@ -137,11 +133,13 @@ int eval_exe(const string &s, bool is_async, const T_lexer *lexer_instance, size
 
     // parent
 
+    operator delete(argv);
+
     exit_required_pid = pid;
 
     if (!is_async)  // foreground
     {   
-        addjob(pid, FG, cmdline); 
+        addjob(pid, FG, raw_input); 
         sigset_t prev_with_sigchld_blocked = prev;
         sigaddset(&prev_with_sigchld_blocked, SIGCHLD);
         sigprocmask(SIG_SETMASK, &prev_with_sigchld_blocked, NULL);
@@ -152,9 +150,9 @@ int eval_exe(const string &s, bool is_async, const T_lexer *lexer_instance, size
     }
     else // background
     {
-        addjob(pid, BG, cmdline);
+        addjob(pid, BG, raw_input);
         sigprocmask(SIG_SETMASK, &prev, NULL);
-        cout << "[" << pid2jid(pid) << "] (" << pid << ") " << cmdline;
+        cout << "[" << pid2jid(pid) << "] (" << pid << ") " << raw_input;
 
         // POSIX:
         // async command returns 0 immediately
@@ -216,9 +214,9 @@ int eval_tree_cd(size_t i, const T_lexer &lexer_instance, bool inside_subshell)
  * background children don't receive SIGINT (SIGTSTP) from the kernel
  * when we type ctrl-c (ctrl-z) at the keyboard.  
 */
-void eval(char *cmdline) 
+void eval(char *raw_input) 
 {
-    string s = cmdline;
+    string s = raw_input;
     T_lexer lexer_instance;
 
     try
