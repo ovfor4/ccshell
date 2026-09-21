@@ -6,8 +6,6 @@
 
 #include "lang_analysis/enum_type.h"
 
-using namespace std;
-
 namespace ov4
 {
 
@@ -17,25 +15,25 @@ public:
 
     // token.h
     class T_token;
-    string trim(const string &s, const string &trim_target = " \t");
+    std::string trim(const std::string &s, const std::string &trim_target = " \t");
     bool is_single_symbol(char c);
     void bracket_depth_changer(char c, int &bracket_depth);
-    bool token_continue(const string &s, char next);
-    void token_push(const string &push_s, int bracket_depth, bool force_text = false);
-    int tokenizer(const string &s);
+    bool token_continue(const std::string &s, char next);
+    void token_push(const std::string &push_s, int bracket_depth, bool force_text = false);
+    int tokenizer(const std::string &s);
 
     // ast.h
     class T_ast;
-    string final_trim(size_t _begin, size_t _end);
-    size_t alloc_ast();
+    std::string final_trim(std::size_t _begin, std::size_t _end);
+    std::size_t alloc_ast();
     int get_pivot_order(enum_token_type x);
     bool is_operator(enum_token_type x);
-    void parse(size_t cmd_begin, size_t cmd_end, size_t ast_vec);
+    void parse(std::size_t cmd_begin, std::size_t cmd_end, std::size_t ast_vec);
 
     // shared
     std::vector<T_ast> ast;
     std::vector<T_token> token;
-    size_t ast_index = 0;
+    std::size_t ast_index = 0;
 
 };
 

@@ -5,8 +5,6 @@
 
 #include "lang_analysis/enum_type.h"
 
-using namespace std;
-
 namespace ov4
 {
 
@@ -27,7 +25,7 @@ public:
     enum_token_type enum_type = TEXT;
 };
 
-inline const unordered_map<string, T_property> symbol_property = {
+inline const std::unordered_map<std::string, T_property> symbol_property = {
 
     // bracket
     {"(",    {.continuable = false, .enum_type = LEFT_BRACKET}},
@@ -41,7 +39,7 @@ inline const unordered_map<string, T_property> symbol_property = {
 
 };
 
-string symbol_enum2string(enum_token_type e);
+std::string symbol_enum2string(enum_token_type e);
 
 bool symbol_contains_enum_type(enum_token_type e);
     

@@ -6,8 +6,6 @@
 #include "lang_analysis/enum_type.h"
 #include "lang_analysis/symbol_property.h"
 
-using namespace std; // remove this
-
 namespace ov4
 {
 
@@ -17,7 +15,7 @@ public:
     T_token() = default;
 
     enum_token_type token_type;
-    string text;
+    std::string text;
     guard_type guard = GUARD_OFF;
     int bracket_depth = 0;
 };
