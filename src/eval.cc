@@ -16,12 +16,12 @@
 #include "magic_enum/magic_enum.hpp"
 
 #include "error.h"
-#include "lexer/lexer_class.h"
-#include "lexer/ast.h"
-#include "lexer/token.h"
-#include "lexer/enum_type.h"
-#include "lexer/symbol_property.h"
-#include "lexer/parseline.h"
+#include "lang_analysis/lexer_class.h"
+#include "lang_analysis/ast.h"
+#include "lang_analysis/token.h"
+#include "lang_analysis/enum_type.h"
+#include "lang_analysis/symbol_property.h"
+#include "lang_analysis/parseline.h"
 #include "handler.h"
 
 using namespace std;

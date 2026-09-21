@@ -1,13 +1,13 @@
-#include "lexer/ast.h"
+#include "lang_analysis/ast.h"
 
 #include <string>
 #include <iostream>
 #include <print>
 
-#include "lexer/lexer_class.h"
-#include "lexer/enum_type.h"
-#include "lexer/token.h"
-#include "lexer/symbol_property.h"
+#include "lang_analysis/lexer_class.h"
+#include "lang_analysis/enum_type.h"
+#include "lang_analysis/token.h"
+#include "lang_analysis/symbol_property.h"
 #include "util/io.h"
 #include "error.h"
 #include "magic_enum/magic_enum.hpp"

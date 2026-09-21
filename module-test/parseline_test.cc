@@ -1,9 +1,9 @@
 /* 
- * test lexer/parseline
+ * test lang_analysis/parseline
 $ 
 g++ \
     module-test/parseline_test.cc \
-    src/lexer/parseline.cc \
+    src/lang_analysis/parseline.cc \
     src/util/string.cc \
     -std=c++23 -Iinclude \
     -O0 -ggdb3 -fno-omit-frame-pointer -fno-inline -D_GLIBCXX_ASSERTIONS \
@@ -13,7 +13,7 @@ g++ \
 #include <iostream>
 #include <print>
 
-#include "lexer/parseline.h"
+#include "lang_analysis/parseline.h"
 
 using namespace std;
 

@@ -12,6 +12,5 @@
 #include "handler.h"
 #include "init.h"
 #include "job.h"
-#include "parse.h"
 #include "path.h"
 #include "option.h"

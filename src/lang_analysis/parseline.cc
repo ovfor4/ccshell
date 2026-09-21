@@ -1,8 +1,8 @@
-#include "lexer/parseline.h"
+#include "lang_analysis/parseline.h"
 
 #include <vector>
 
-#include "lexer/enum_type.h"
+#include "lang_analysis/enum_type.h"
 #include "util/string.h"
 
 using namespace std;

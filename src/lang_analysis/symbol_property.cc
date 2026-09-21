@@ -1,8 +1,8 @@
-#include "lexer/symbol_property.h"
+#include "lang_analysis/symbol_property.h"
 
 #include <string>
 
-#include "lexer/enum_type.h"
+#include "lang_analysis/enum_type.h"
 
 using namespace std;
 

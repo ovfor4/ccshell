@@ -2,9 +2,9 @@
 
 #include <string>
 
-#include "lexer/lexer_class.h"
-#include "lexer/enum_type.h"
-#include "lexer/token.h"
+#include "lang_analysis/lexer_class.h"
+#include "lang_analysis/enum_type.h"
+#include "lang_analysis/token.h"
 
 using namespace std; // remove this
 

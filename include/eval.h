@@ -1,7 +1,7 @@
 #pragma once
 
 #include "all.h"
-#include "lexer/lexer_class.h"
+#include "lang_analysis/lexer_class.h"
 
 namespace ov4
 {

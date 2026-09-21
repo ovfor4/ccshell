@@ -3,9 +3,9 @@
 $ 
 g++ \
     module-test/lexer_test.cc \
-    src/lexer/token.cc \
-    src/lexer/ast.cc \
-    src/lexer/symbol_property.cc \
+    src/lang_analysis/token.cc \
+    src/lang_analysis/ast.cc \
+    src/lang_analysis/symbol_property.cc \
     src/util/string.cc \
     -std=c++23 -Iinclude -Ithird_party/magic_enum/include \
     -O0 -ggdb3 -fno-omit-frame-pointer -fno-inline -D_GLIBCXX_ASSERTIONS \
@@ -23,9 +23,9 @@ g++ \
 
 #include "magic_enum/magic_enum.hpp"
 
-#include "lexer/ast.h"
-#include "lexer/enum_type.h"
-#include "lexer/token.h"
+#include "lang_analysis/ast.h"
+#include "lang_analysis/enum_type.h"
+#include "lang_analysis/token.h"
 #include "global.h"
 #include "error.h"
 #include "util/string.h"

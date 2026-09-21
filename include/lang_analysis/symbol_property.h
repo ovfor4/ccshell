@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <string>
 
-#include "lexer/enum_type.h"
+#include "lang_analysis/enum_type.h"
 
 using namespace std;
 
