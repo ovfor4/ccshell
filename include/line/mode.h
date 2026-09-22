@@ -25,4 +25,6 @@ std::string readline();
 
 T_position get_cursor_position();
 
+void print_override(const std::string &s);
+
 }

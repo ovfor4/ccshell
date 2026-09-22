@@ -71,7 +71,7 @@ string readline()
         {
             clear_below();
         }
-        else if (c == 'R')
+        else if (c == 'P')
         {
             get_cursor_position();
         }
@@ -87,9 +87,14 @@ string readline()
         }
         else
         {
-            print("{}", c);
             buffer += c;
-            fflush(stdout);
+            print_override(buffer);
+
+            // esc sequence
+            if (buffer.size() <= 2 && buffer[0] == '\x1b' && buffer[1] == '[')
+            {
+                ;
+            }
         }
     }
     return buffer;
@@ -126,5 +131,13 @@ T_position get_cursor_position()
     fflush(stdout);
     return pos;
 } 
+
+void print_override(const std::string &s)
+{
+    print("\r");
+    fflush(stdout);
+    print("{}", s);
+    fflush(stdout);
+}
 
 }
