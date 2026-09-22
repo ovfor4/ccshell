@@ -47,7 +47,7 @@ void enable_raw()
 
     // misc
     attr_raw.c_iflag &= ~(BRKINT | INPCK | ISTRIP);
-    attr_raw.c_cflag |= ~(CS8);
+    attr_raw.c_cflag |= (CS8);
 
     atexit(disable_raw);
 
