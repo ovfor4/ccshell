@@ -5,6 +5,8 @@
 #include <iostream>
 #include <print>
 
+#include "line/cursor.h"
+
 using namespace std;
 
 namespace ov4
@@ -96,31 +98,7 @@ string readline()
                 if (read(STDIN_FILENO, seq + 1, 1) != 1)
                     continue;
 
-                switch (seq[1])
-                {
-                    case 'A':
-                        print("\x1b[A");
-                        fflush(stdout);
-                        cursor_row--;
-                        break;
-                    case 'B':
-                        print("\x1b[B");
-                        fflush(stdout);
-                        cursor_row++;
-                        break;
-                    case 'C':
-                        print("\x1b[C");
-                        fflush(stdout);
-                        cursor_col--;
-                        break;
-                    case 'D':
-                        print("\x1b[D");
-                        fflush(stdout);
-                        cursor_col++;
-                        break;
-                    default:
-                        return "ERROR";
-                }
+                move_cursor(seq[1]);
             }
         }
 
@@ -134,45 +112,5 @@ string readline()
     return buffer;
 }
 
-T_position get_cursor_position()
-{
-    char c;
-    string buffer;
-    T_position pos;
-    int row, col;
-    tcflush(STDIN_FILENO, TCIFLUSH);
-    cout << "\x1b[6n" << flush;
-    while (read(STDIN_FILENO, &c, 1) == 1)
-    {
-        if (c == 'R') break;
-        buffer += c;
-    }
-    if (buffer.size() <= 2 || buffer[0] != '\x1b' || buffer[1] != '[')
-    {
-        pos.row = -1;
-        pos.col = -1;
-        return pos;
-    }
-    if ((sscanf(buffer.c_str(), "\x1b[%d;%d", &row, &col)) != 2)
-    {
-        pos.row = -1;
-        pos.col = -1;
-        return pos;
-    }
-    pos.row = row;
-    pos.col = col;
-    print("row {}, col {}\r\n", row, col);
-    fflush(stdout);
-    return pos;
-} 
-
-void print_override(const std::string &s)
-{
-    print("\r");
-    fflush(stdout);
-    print("{}", s);
-    fflush(stdout);
-    cursor_col = s.size()+1;
-}
 
 }
