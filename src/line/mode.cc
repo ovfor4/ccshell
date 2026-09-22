@@ -77,24 +77,58 @@ string readline()
         }
         else if (iscntrl(c))
         {
-            print("control: {}\r\n", static_cast<unsigned char>(c));
-            fflush(stdout);
+            //print("control: {}\r\n", static_cast<unsigned char>(c));
+            //fflush(stdout);
             if (c == 13) // \n
             {
                 //print("line: {}\r\n", buffer);
                 return buffer;
             }
+
+            // ESC sequence
+            if (c == '\x1b')
+            {
+                char seq[10];
+                // eat [
+                if (read(STDIN_FILENO, seq + 0, 1) != 1)
+                    continue;
+
+                if (read(STDIN_FILENO, seq + 1, 1) != 1)
+                    continue;
+
+                switch (seq[1])
+                {
+                    case 'A':
+                        print("\x1b[A");
+                        fflush(stdout);
+                        cursor_row--;
+                        break;
+                    case 'B':
+                        print("\x1b[B");
+                        fflush(stdout);
+                        cursor_row++;
+                        break;
+                    case 'C':
+                        print("\x1b[C");
+                        fflush(stdout);
+                        cursor_col--;
+                        break;
+                    case 'D':
+                        print("\x1b[D");
+                        fflush(stdout);
+                        cursor_col++;
+                        break;
+                    default:
+                        return "ERROR";
+                }
+            }
         }
+
+        // normal char
         else
         {
             buffer += c;
             print_override(buffer);
-
-            // esc sequence
-            if (buffer.size() <= 2 && buffer[0] == '\x1b' && buffer[1] == '[')
-            {
-                ;
-            }
         }
     }
     return buffer;
@@ -138,6 +172,7 @@ void print_override(const std::string &s)
     fflush(stdout);
     print("{}", s);
     fflush(stdout);
+    cursor_col = s.size()+1;
 }
 
 }

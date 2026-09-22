@@ -15,6 +15,8 @@ struct T_position
 };
 
 inline termios attr;
+inline int cursor_row;
+inline int cursor_col;
 
 void disable_raw();
 void enable_raw();

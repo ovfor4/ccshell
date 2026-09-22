@@ -22,6 +22,9 @@ using namespace ov4;
 int main()
 {
     enable_raw();
+    T_position pos = get_cursor_position();
+    cursor_row = pos.row;
+    cursor_col = pos.col;
     string s = readline();
     disable_raw();
     cout << s << endl;
