@@ -105,7 +105,7 @@ string readline()
         // normal char
         else
         {
-            buffer += c;
+            cursor_input(c, buffer);
             print_override(buffer);
         }
     }

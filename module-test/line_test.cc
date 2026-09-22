@@ -29,6 +29,7 @@ int main()
     cursor_col = pos.col;
     string s = readline();
     disable_raw();
+    cout << "\n\n\n\n" << endl;
     cout << s << endl;
     return 0;
 }

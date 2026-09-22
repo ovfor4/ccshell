@@ -47,12 +47,13 @@ T_position get_cursor_position()
 
 void print_override(const std::string &s)
 {
+    print("\x1b[s"); fflush(stdout);
     print("\r");
     fflush(stdout);
     print("{}", s);
     fflush(stdout);
-    cursor_col = s.size()+1;
-    line_end_pos = cursor_col;
+    //line_end_pos = s.size()+1;
+    print("\x1b[u"); fflush(stdout);
 }
 
 void move_cursor(char c)
@@ -88,6 +89,24 @@ void move_cursor(char c)
         default:
             return;
     }
+}
+
+void cursor_input(char c, std::string &buffer)
+{
+    if (c != '\b')
+    {
+        buffer.insert(cursor_col-1, 1, c);
+        print("\x1b[C"); fflush(stdout);
+        cursor_col++;
+        line_end_pos = buffer.size()+1;
+        return;
+    }
+
+    // BACKSPACE
+    buffer.erase(cursor_col-1, 1);
+    print("\x1b[D"); fflush(stdout);
+    cursor_col--;
+    line_end_pos = buffer.size()+1;
 }
 
 }

@@ -24,5 +24,7 @@ void print_override(const std::string &s);
 
 void move_cursor(char c);
 
+void cursor_input(char c, std::string &buffer);
+
 }
 
