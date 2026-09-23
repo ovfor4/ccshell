@@ -14,11 +14,15 @@ namespace ov4
 
 void disable_raw()
 {
+    raw_enabled = false;
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &attr);
 }
 
 void enable_raw()
 {
+    if (raw_enabled = false) return;
+     
+    raw_enabled = true;
     termios attr_raw;
     tcgetattr(STDIN_FILENO, &attr);
     tcgetattr(STDIN_FILENO, &attr_raw);
