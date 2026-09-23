@@ -68,6 +68,8 @@ void clear_below()
 
 string readline()
 {
+    T_position pos = get_cursor_position();
+    line_begin_pos = pos.col;
     string buffer;
     char c;
     while (read(STDIN_FILENO, &c, 1) == 1)

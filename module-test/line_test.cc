@@ -23,6 +23,7 @@ using namespace ov4;
 
 int main()
 {
+    print("shell $ ");
     enable_raw();
     T_position pos = get_cursor_position();
     cursor_row = pos.row;
