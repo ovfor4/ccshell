@@ -68,6 +68,8 @@ void clear_below()
 
 string readline()
 {
+    update_window_size();
+
     T_position pos = get_cursor_position();
     line_begin_pos = pos.col;
     string buffer;

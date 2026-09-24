@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <termios.h>
+#include <sys/ioctl.h>
 
 using namespace std;
 
@@ -101,12 +102,14 @@ void move_cursor(char c)
 
 void cursor_input(char c, std::string &buffer)
 {
+    // normal input
     if (c != '\b')
     {
         buffer.insert(line_buffer_index, 1, c);
         print("\x1b[C"); fflush(stdout);
         line_buffer_index++;
-        line_end_pos = line_begin_pos + buffer.size();
+        buffer_len = buffer.size();
+        update_line_end_pos();
         return;
     }
 
@@ -114,12 +117,29 @@ void cursor_input(char c, std::string &buffer)
     buffer.erase(line_buffer_index, 1);
     print("\x1b[D"); fflush(stdout);
     line_buffer_index--;
-    line_end_pos = line_begin_pos + buffer.size();
+    buffer_len = buffer.size();
+    update_line_end_pos();
 }
 
 int get_cursor_real_pos()
 {
     return line_begin_pos + line_buffer_index;
+}
+
+void update_window_size() 
+{
+    winsize ws;
+    if (ioctl(1, TIOCGWINSZ, &ws) == -1) 
+        exit(-1); // TODO: fix
+
+    window_size_row = ws.ws_row;
+    window_size_col = ws.ws_col;
+}
+
+void update_line_end_pos()
+{
+    line_end_pos = line_begin_pos + buffer_len;
+    line_end_pos = (line_end_pos > window_size_col) ? window_size_col : line_end_pos;
 }
 
 }
