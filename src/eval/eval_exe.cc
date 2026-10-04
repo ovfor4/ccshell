@@ -23,7 +23,10 @@ int eval_exe(const string &s, bool is_async)
     return eval_exe(s, is_async, nullptr, string::npos);
 }
 
-int eval_exe(const string &s, bool is_async, const T_lexer *lexer_instance, size_t i)
+/*
+ * receive a single command, and execute
+ */
+int eval_exe(const string &s, bool is_async, const T_lexer *lexer_instance, size_t i, const T_pipe &pi)
 {
     loggerln("eval_exe: receive {}", s);
 

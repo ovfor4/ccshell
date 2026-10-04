@@ -1,6 +1,7 @@
 #include "eval.h"
 
 #include <string>
+#include <unistd.h>
 
 #include "error.h"
 #include "lang_analysis/lexer_class.h"
@@ -15,11 +16,16 @@ using namespace std;
 namespace ov4
 {
 
-int eval_tree_cd(size_t i, const T_lexer &lexer_instance, bool inside_subshell)
+/*
+ * browse AST
+ * and recurse or set up a subshell
+ */
+int eval_tree_cd(size_t i, const T_lexer &lexer_instance, bool inside_subshell, T_pipe pi)
 {
     // TODO: async
 
     int ret = -1;
+    int fd[2];
 
     println("eval_tree_cd: processing {} subshell {}", i, (lexer_instance.ast[i].subshell ? "TRUE" : "FALSE"));
 

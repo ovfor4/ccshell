@@ -8,6 +8,9 @@ using namespace std;
 namespace ov4
 {
 
+/*
+ * print exec error message
+ */
 void eval_err(int err)
 {
     switch (err)
