@@ -17,6 +17,9 @@ enum class error_code
     AST_EXIST_LEFT_CHILLD,
     AST_EXIST_RIGHT_CHILD,
 
+    // eval
+    EVAL_FAIL_TO_CREATE_PIPE,
+
 };
 
 class T_error : public std::runtime_error {
