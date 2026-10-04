@@ -9,5 +9,6 @@ int eval_exe(const std::string &s, bool is_async);
 int eval_exe(const std::string &s, bool is_async, const T_lexer *lexer_instance, size_t i);
 int eval_tree_cd(size_t i, const T_lexer &lexer_instance, bool inside_subshell);
 void eval(char *cmdline);
+void eval_err(int err);
 
 }
