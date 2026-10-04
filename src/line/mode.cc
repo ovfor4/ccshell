@@ -20,7 +20,7 @@ void disable_raw()
 
 void enable_raw()
 {
-    if (raw_enabled = false) return;
+    if (raw_enabled == false) return;
      
     raw_enabled = true;
     termios attr_raw;
