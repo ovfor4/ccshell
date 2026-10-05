@@ -70,6 +70,7 @@ void sigchld_handler([[maybe_unused]] int sig)
     while ((pid = waitpid(-1, &status, WNOHANG | WUNTRACED)) > 0)
     {
         // signal'd or stopped or normally quit
+        // print terminated/stopped message
         if (WIFSIGNALED(status) || WIFSTOPPED(status))
         {
             int jid = pid2jid(pid);
@@ -88,12 +89,12 @@ void sigchld_handler([[maybe_unused]] int sig)
             safe_print("\n");
         } 
 
+        // handle job table
+        // and save exit/signal code
+
         // stopped
         if (WIFSTOPPED(status))
         {
-            // safe_debug("suspended pid: ");
-            // safe_debug(pid);
-            // safe_debug("\n");
             safe_output("Process suspended PID: ", pid, "\n");
             sigset_t prev_inner;
             block_all(&prev_inner);
@@ -109,7 +110,7 @@ void sigchld_handler([[maybe_unused]] int sig)
             deletejob(pid);
             sigprocmask(SIG_SETMASK, &prev_inner, nullptr);
 
-            // normally quit
+            // terminated normally
             // so that exit code should be available
             if (WIFEXITED(status))
             {
@@ -120,6 +121,17 @@ void sigchld_handler([[maybe_unused]] int sig)
                     safe_logger("sigchld_handler: required PID detected: ", pid, "\n");
                 }
             }
+            // if signal'd
+            else if (WIFSIGNALED(status))
+            {
+                safe_output("Signal code: ", WTERMSIG(status), "\n");
+                if (pid == exit_required_pid)
+                {
+                    exit_code = SIGNAL_EXIT_CODE_BASE + WTERMSIG(status);
+                    safe_logger("sigchld_handler: required PID detected: ", pid, "\n");
+                }
+            }
+
         }
     }
 

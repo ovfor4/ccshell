@@ -25,6 +25,8 @@ extern sigset_t
 
 inline std::atomic_int exit_code, exit_required_pid;
 
+inline constexpr int SIGNAL_EXIT_CODE_BASE = 128;
+
 void signal_init();
 handler_t *Signal(int signum, handler_t *handler);
 void sigchld_handler(int sig);
