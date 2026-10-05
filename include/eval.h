@@ -14,9 +14,10 @@ struct T_pipe
         WRITE_PIPE,
         READ_PIPE,
     };
-    T_pipe_type pipe_type = NOT_PIPE;
+    T_pipe_type pipe_type =T_pipe_type::NOT_PIPE;
     int fd = -1; 
-} T_pipe_not_pipe;
+};
+inline T_pipe T_pipe_not_pipe;
 
 int eval_exe(const std::string &s, bool is_async);
 int eval_exe(const std::string &s, bool is_async, const T_lexer *lexer_instance, size_t i, const T_pipe &pi = T_pipe_not_pipe);
