@@ -1,14 +1,6 @@
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <ctype.h>
 #include <signal.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <errno.h>
 #include <atomic>
 
 #include "all.h"
@@ -18,7 +10,7 @@ namespace ov4
 
 typedef void handler_t(int);
 
-extern sigset_t 
+inline sigset_t 
     block_sig_TTOU,
     block_job,
     block_io;

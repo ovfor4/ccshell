@@ -9,7 +9,7 @@
 #include "eval.h"
 #include "global.h"
 #include "ground.h"
-#include "handler.h"
+#include "signal_handler.h"
 #include "init.h"
 #include "job.h"
 #include "path.h"

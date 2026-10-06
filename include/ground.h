@@ -8,7 +8,7 @@
 #include "global.h"
 #include "util/io.h"
 #include "job.h"
-#include "handler.h"
+#include "signal_handler.h"
 
 namespace ov4
 {

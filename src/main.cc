@@ -56,9 +56,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 
     
 
-    /* This one provides a clean way to kill the shell */
-    Signal(SIGQUIT, sigquit_handler); 
-
     /* Initialize the job list */
     initjobs();
 

@@ -1,55 +1,10 @@
-#include "handler.h"
+#include "signal_handler.h"
 
-#include <termios.h>
-#include <sys/ioctl.h>
+#include <errno.h>
 
 namespace ov4
 {
 
-sigset_t 
-    block_sig_TTOU,
-    block_job,
-    block_io;
-
-void signal_init()
-{
-    /* Install the signal handlers */
-    
-    sigemptyset(&block_job);
-    sigemptyset(&block_sig_TTOU);
-    sigemptyset(&block_io);
-
-    sigaddset(&block_job, SIGINT);
-    sigaddset(&block_job, SIGTSTP);
-    sigaddset(&block_job, SIGCHLD);
-
-    sigaddset(&block_sig_TTOU, SIGTTOU);
-
-    sigaddset(&block_io, SIGTTOU);
-    sigaddset(&block_io, SIGTTIN);
-
-    Signal(SIGINT,  sigint_handler);   /* ctrl-c */
-    Signal(SIGTSTP, sigtstp_handler);  /* ctrl-z */
-    Signal(SIGCHLD, sigchld_handler);  /* Terminated or stopped child */
-}
-
-/*
- * Signal - wrapper for the sigaction function
- */
-
-handler_t *Signal([[maybe_unused]] int signum, handler_t *handler) 
-{
-    struct sigaction action, old_action;
-
-    action.sa_handler = handler;  
-    sigemptyset(&action.sa_mask); /* block sigs of type being handled */
-    action.sa_flags = SA_RESTART; /* restart syscalls if possible */
-
-    if (sigaction(signum, &action, &old_action) < 0)
-	unix_error("Signal error");
-    return (old_action.sa_handler);
-}
-    
 /* 
  * sigchld_handler - The kernel sends a SIGCHLD to the shell whenever
  *     a child job terminates (becomes a zombie), or stops because it
@@ -139,76 +94,6 @@ void sigchld_handler([[maybe_unused]] int sig)
 
     errno = errno_backup;
     return;
-}
-
-/* 
- * sigint_handler - The kernel sends a SIGINT to the shell whenver the
- *    user types ctrl-c at the keyboard.  Catch it and send it along
- *    to the foreground job.  
- */
-void sigint_handler([[maybe_unused]] int sig) 
-{
-    int errno_backup = errno;
-
-    sigset_t prev;
-    block_handler(&prev);
-
-    int pid = fgpid();
-    if (pid != 0)
-    {
-        kill(-pid, SIGINT);
-    } else {
-        tcflush(STDIN_FILENO, TCIFLUSH);
-        ioctl(STDIN_FILENO, TIOCSTI, "\n");
-    }
-
-    sigprocmask(SIG_SETMASK, &prev, nullptr);
-
-    errno = errno_backup;
-    return;
-}
-
-/*
- * sigtstp_handler - The kernel sends a SIGTSTP to the shell whenever
- *     the user types ctrl-z at the keyboard. Catch it and suspend the
- *     foreground job by sending it a SIGTSTP.  
- */
-void sigtstp_handler([[maybe_unused]] int sig) 
-{
-    int errno_backup = errno;
-
-    sigset_t prev;
-    block_handler(&prev);
-
-    int pid = fgpid();
-    if (pid != 0)
-    {
-        kill(-pid, SIGTSTP);
-    }
-
-    sigprocmask(SIG_SETMASK, &prev, nullptr);
-
-    errno = errno_backup;
-    return;
-}
-
-int block_all(sigset_t *prev)
-{
-    sigset_t set;
-    sigfillset(&set);
-    return sigprocmask(SIG_SETMASK, &set, prev);
-}
-
-int block_handler(sigset_t *prev)
-{
-    return sigprocmask(SIG_BLOCK, &block_job, prev);
-}
-
-void sigquit_handler([[maybe_unused]] int sig) 
-{
-    //printf("Terminating after receipt of SIGQUIT signal\n");
-    safe_output("Terminating after receipt of SIGQUIT signal\n");
-    exit(1);
 }
 
 }

@@ -19,7 +19,7 @@
 #include "lang_analysis/lexer_class.h"
 #include "lang_analysis/ast.h"
 #include "lang_analysis/token.h"
-#include "handler.h"
+#include "signal_handler.h"
 
 using namespace std;
 

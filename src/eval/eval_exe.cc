@@ -1,6 +1,8 @@
 #include "eval.h"
 
 #include <string>
+#include <signal.h>
+#include <sys/ioctl.h>
 
 #include "error.h"
 #include "lang_analysis/lexer_class.h"
