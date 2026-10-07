@@ -69,7 +69,7 @@ $(BUILD_DIR)/%.cc.o: %.cc
 
 -include $(DEPS)
 
-.PHONY: clean fresh magic-enum 
+.PHONY: all clean fresh magic-enum
 
 magic-enum:
 	@mkdir -p $(DEPS_DIR)
@@ -86,3 +86,4 @@ fresh:
 	$(MAKE) clean
 	$(MAKE) DEBUG=$(DEBUG) STATIC=$(STATIC)
 
+all: $(TARGET)

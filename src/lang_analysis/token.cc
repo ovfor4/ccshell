@@ -133,7 +133,6 @@ int T_lexer::tokenizer(const string &s)
     if (s.size() == 0) return -1;
 
     size_t len = s.size();
-    size_t token_vector_index = 0;
     string prev_str = "";
     bool force_text = false;
     int bracket_depth = 0;
