@@ -19,7 +19,10 @@ namespace ov4
 void print_override(const std::string &s)
 {
     // save current cursor position
-    print("\x1b[s"); fflush(stdout);
+    // print("\x1b[s"); fflush(stdout);
+    // WTF
+    // ESC 7     Save Cursor (DECSC), VT100.
+    print("\x1b" "7"); fflush(stdout);
 
     // move to the "start" of the zone
     // should skip prompt zone
@@ -34,7 +37,8 @@ void print_override(const std::string &s)
     //line_end_pos = s.size()+1;
 
     // restore cursor position
-    print("\x1b[u"); fflush(stdout);
+    // ESC 8     Restore Cursor (DECRC), VT100.
+    print("\x1b" "8"); fflush(stdout);
 }
 
 void move_cursor(char c)
@@ -155,7 +159,7 @@ void move_cursor(T_cursor_movement_direction d)
             {
                 // already at the end of buffer
                 if (buffer_index_cursor == line_buffer.size()) break;
-                
+
                 buffer_index_cursor++;
                 _buffer_index_display_begin++;
                 print_override(line_buffer);
