@@ -12,7 +12,7 @@ namespace ov4
 // 1-based
 inline int cursor_row;
 inline int cursor_col;
-inline int line_end_pos;
+//inline int line_end_pos;
 
 inline int prompt_pos;
 

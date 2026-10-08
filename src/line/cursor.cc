@@ -84,7 +84,7 @@ void cursor_input_char(char c)
         line_buffer.insert(buffer_index_cursor, 1, c);
         // print("\x1b[C"); fflush(stdout); // move cursor to the right
         // buffer_index_cursor++;
-        update_line_end_pos();
+        // update_line_end_pos();
         // int end_possible_buffer_index = window_size_col-prompt_pos-1;
         // buffer_index_display_end = 
         //     (end_possible_buffer_index > (buffer_index_display_end)+1) 
@@ -99,7 +99,7 @@ void cursor_input_char(char c)
     line_buffer.erase(buffer_index_cursor, 1);
     // print("\x1b[D"); fflush(stdout); // move cursor to the left
     // buffer_index_cursor--;
-    update_line_end_pos();
+    // update_line_end_pos();
     // TODO: backspace page
     move_cursor(T_cursor_movement_direction::LEFT);
     
@@ -131,6 +131,8 @@ void move_cursor(T_cursor_movement_direction d)
             // margin
             else
             {
+                // already at the beginning of buffer
+                if (buffer_index_cursor == 0) break;
                 buffer_index_cursor--;
                 _buffer_index_display_begin--;
             }
@@ -138,14 +140,19 @@ void move_cursor(T_cursor_movement_direction d)
 
         case T_cursor_movement_direction::RIGHT:
             // if cursor is not at right margin
-            if (line_end_pos > get_terminal_pos_cursor())
+            if (window_size_col > get_terminal_pos_cursor())
             {
+                // already at the end of buffer
+                if (buffer_index_cursor == line_buffer.size()) break;
+                
                 buffer_index_cursor++;
                 print("\x1b[C"); fflush(stdout); // move cursor to the right
             }
             // margin
             else
             {
+                // already at the end of buffer
+                if (buffer_index_cursor == line_buffer.size()) break;
                 buffer_index_cursor++;
                 _buffer_index_display_begin++;
             }
