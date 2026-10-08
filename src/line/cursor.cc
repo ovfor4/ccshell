@@ -133,8 +133,10 @@ void move_cursor(T_cursor_movement_direction d)
             {
                 // already at the beginning of buffer
                 if (buffer_index_cursor == 0) break;
+
                 buffer_index_cursor--;
                 _buffer_index_display_begin--;
+                print_override(line_buffer);
             }
             break;
 
@@ -153,8 +155,10 @@ void move_cursor(T_cursor_movement_direction d)
             {
                 // already at the end of buffer
                 if (buffer_index_cursor == line_buffer.size()) break;
+                
                 buffer_index_cursor++;
                 _buffer_index_display_begin++;
+                print_override(line_buffer);
             }
             break;
 
