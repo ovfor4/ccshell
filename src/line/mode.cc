@@ -6,6 +6,7 @@
 #include <print>
 
 #include "line/cursor.h"
+#include "line/getter.h"
 
 using namespace std;
 

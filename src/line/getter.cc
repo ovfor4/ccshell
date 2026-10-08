@@ -33,6 +33,12 @@ int get_buffer_index_display_end()
     return min(max_possible_end, window_possible_end);
 }
 
+void update_line_end_pos()
+{
+    line_end_pos = prompt_pos + line_buffer.size();
+    line_end_pos = (line_end_pos > window_size_col) ? window_size_col : line_end_pos;
+}
+
 
 T_position get_cursor_position()
 {

@@ -36,8 +36,6 @@ void cursor_input_char(char c);
 
 void update_window_size();
 
-void update_line_end_pos();
-
 void move_cursor(T_cursor_movement_direction d);
 
 }

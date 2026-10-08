@@ -9,6 +9,8 @@
 #include <termios.h>
 #include <sys/ioctl.h>
 
+#include "line/getter.h"
+
 using namespace std;
 
 namespace ov4
@@ -27,7 +29,8 @@ void print_override(const std::string &s)
     // erase rest of the line
     print("\x1b[K"); fflush(stdout);
     
-    print("{}", s.substr(buffer_index_display_begin, buffer_index_display_end-buffer_index_display_begin+1)); fflush(stdout);
+    print("{}", s.substr(get_buffer_index_display_begin(), 
+        get_buffer_index_display_end() - get_buffer_index_display_begin() + 1)); fflush(stdout);
     //line_end_pos = s.size()+1;
 
     // restore cursor position
@@ -82,11 +85,11 @@ void cursor_input_char(char c)
         // print("\x1b[C"); fflush(stdout); // move cursor to the right
         // buffer_index_cursor++;
         update_line_end_pos();
-        int end_possible_buffer_index = window_size_col-prompt_pos-1;
-        buffer_index_display_end = 
-            (end_possible_buffer_index > (buffer_index_display_end)+1) 
-            ? (buffer_index_display_end)+1
-            : end_possible_buffer_index;
+        // int end_possible_buffer_index = window_size_col-prompt_pos-1;
+        // buffer_index_display_end = 
+        //     (end_possible_buffer_index > (buffer_index_display_end)+1) 
+        //     ? (buffer_index_display_end)+1
+        //     : end_possible_buffer_index;
         move_cursor(T_cursor_movement_direction::RIGHT);
         
         return;
@@ -114,19 +117,13 @@ void update_window_size()
     window_size_col = ws.ws_col;
 }
 
-void update_line_end_pos()
-{
-    line_end_pos = prompt_pos + line_buffer.size();
-    line_end_pos = (line_end_pos > window_size_col) ? window_size_col : line_end_pos;
-}
-
 void move_cursor(T_cursor_movement_direction d)
 {
     switch (d)
     {
         case T_cursor_movement_direction::LEFT:
             // if cursor is not at left margin
-            if (prompt_pos < (buffer_index_cursor+1))
+            if (prompt_pos < get_terminal_pos_cursor())
             {
                 buffer_index_cursor--;
                 print("\x1b[D"); fflush(stdout); // move cursor to the left
@@ -135,14 +132,13 @@ void move_cursor(T_cursor_movement_direction d)
             else
             {
                 buffer_index_cursor--;
-                buffer_index_display_begin--;
-                buffer_index_display_end--;
+                _buffer_index_display_begin--;
             }
             break;
 
         case T_cursor_movement_direction::RIGHT:
             // if cursor is not at right margin
-            if (line_end_pos > (buffer_index_cursor+1))
+            if (line_end_pos > get_terminal_pos_cursor())
             {
                 buffer_index_cursor++;
                 print("\x1b[C"); fflush(stdout); // move cursor to the right
@@ -151,8 +147,7 @@ void move_cursor(T_cursor_movement_direction d)
             else
             {
                 buffer_index_cursor++;
-                buffer_index_display_begin++;
-                buffer_index_display_end++;
+                _buffer_index_display_begin++;
             }
             break;
 
