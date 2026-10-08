@@ -20,7 +20,7 @@ void disable_raw()
 
 void enable_raw()
 {
-    if (raw_enabled == false) return;
+    if (raw_enabled) return;
      
     raw_enabled = true;
     termios attr_raw;
@@ -72,7 +72,6 @@ string readline()
 
     T_position pos = get_cursor_position();
     line_begin_pos = pos.col;
-    string buffer;
     char c;
     while (read(STDIN_FILENO, &c, 1) == 1)
     {
@@ -91,8 +90,8 @@ string readline()
             //fflush(stdout);
             if (c == 13) // \n
             {
-                //print("line: {}\r\n", buffer);
-                return buffer;
+                //print("line: {}\r\n", line_buffer);
+                return line_buffer;
             }
 
             // ESC sequence
@@ -113,11 +112,11 @@ string readline()
         // normal char
         else
         {
-            cursor_input(c, buffer);
-            print_override(buffer);
+            cursor_input_char(c);
+            print_override(line_buffer);
         }
     }
-    return buffer;
+    return line_buffer;
 }
 
 
