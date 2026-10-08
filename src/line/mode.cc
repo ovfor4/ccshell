@@ -71,7 +71,7 @@ string readline()
     update_window_size();
 
     T_position pos = get_cursor_position();
-    line_begin_pos = pos.col;
+    prompt_pos = pos.col;
     char c;
     while (read(STDIN_FILENO, &c, 1) == 1)
     {

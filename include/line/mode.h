@@ -3,6 +3,8 @@
 #include <termios.h>
 #include <string>
 
+#include "line/type.h"
+
 using namespace std; // TODO: remove
 
 namespace ov4
