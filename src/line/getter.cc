@@ -18,7 +18,7 @@ namespace ov4
 
 int get_terminal_pos_cursor()
 {
-    return prompt_pos + buffer_index_cursor;
+    return prompt_pos + (buffer_index_cursor - get_buffer_index_display_begin()) + 1;
 }
 
 int get_buffer_index_display_begin()

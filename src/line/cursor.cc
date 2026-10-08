@@ -123,7 +123,7 @@ void move_cursor(T_cursor_movement_direction d)
     {
         case T_cursor_movement_direction::LEFT:
             // if cursor is not at left margin
-            if (prompt_pos < get_terminal_pos_cursor())
+            if (prompt_pos+1 < get_terminal_pos_cursor())
             {
                 buffer_index_cursor--;
                 print("\x1b[D"); fflush(stdout); // move cursor to the left
@@ -144,7 +144,7 @@ void move_cursor(T_cursor_movement_direction d)
             {
                 // already at the end of buffer
                 if (buffer_index_cursor == line_buffer.size()) break;
-                
+
                 buffer_index_cursor++;
                 print("\x1b[C"); fflush(stdout); // move cursor to the right
             }
