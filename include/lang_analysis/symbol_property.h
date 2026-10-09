@@ -32,10 +32,12 @@ inline const std::unordered_map<std::string, T_property> symbol_property = {
     {")",    {.continuable = false, .enum_type = RIGHT_BRACKET}},
 
     // operator
-    {"&",    {.continuable = true, .pivot_priority = 2000, .left = child_existence_type::EXIST,     .right = child_existence_type::NOT_EXIST, .enum_type = ASYNC}},
-    {"|",    {.continuable = true, .pivot_priority = 100,  .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = PIPE}},
-    {"&&",   {.continuable = true, .pivot_priority = 1000, .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = LOGIC_AND}},
-    {"||",   {.continuable = true, .pivot_priority = 1000, .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = LOGIC_OR}},
+    {"&",    {.continuable = true,  .pivot_priority = 2000, .left = child_existence_type::EXIST,     .right = child_existence_type::NOT_EXIST, .enum_type = ASYNC}},
+    {"|",    {.continuable = true,  .pivot_priority = 100,  .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = PIPE}},
+    {"&&",   {.continuable = true,  .pivot_priority = 1000, .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = LOGIC_AND}},
+    {"||",   {.continuable = true,  .pivot_priority = 1000, .left = child_existence_type::EXIST,     .right = child_existence_type::EXIST,     .enum_type = LOGIC_OR}},
+
+    {";",    {.continuable = false, .pivot_priority = 2000, .left = child_existence_type::EXIST,     .right = child_existence_type::OPTIONAL,  .enum_type = SEMICOLON}},
 
 };
 
