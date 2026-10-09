@@ -36,6 +36,9 @@ string get_default_history_path()
     return get_home_dir() + '/' + ".ccshell_history";
 }
 
+/*
+ * load history from file
+ */
 void load_history(const string &path)
 {
     history_vec.clear();
@@ -53,8 +56,19 @@ void load_history(const string &path)
     return;
 }
 
+
+/*
+ * atomically save history to file
+ */
 void save_history(const string &path)
 {
+    /*
+     * C++ and C standard lib do not guarantee that write is atomic
+     * So if the program crashes, or computer shutdowns, it will leave a bad file
+     * Then reading it may lead to problems if we launch the shell again
+     * But unix guarantees rename(2) is atomic
+     * So we just write to a temp file, and rename it to replace the "real" history file
+     */
     string tmp_path = path + ".tmp";
     int fd = open(tmp_path.c_str(), (O_WRONLY | O_CREAT | O_TRUNC), (S_IRUSR | S_IWUSR));
     if (fd == -1) 
