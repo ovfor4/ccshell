@@ -42,5 +42,7 @@ void switch_history(T_cursor_movement_direction d);
 
 void reset_editor();
 
+void cursor_skip_prompt();
+
 }
 

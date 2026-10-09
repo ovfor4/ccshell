@@ -80,28 +80,34 @@ string readline()
     char c;
     while (read(STDIN_FILENO, &c, 1) == 1)
     {
-        if (c == 'Q') editor_exit(-1); // TODO: remove
-        else if (c == 'C') 
-        {
-            clear_below();
-        }
-        else if (c == 'P')
-        {
-            get_cursor_position();
-        }
-        else if (iscntrl(c))
+        if (iscntrl(c))
         {
             //print("control: {}\r\n", static_cast<unsigned char>(c));
             //fflush(stdout);
-            if (c == 13) // \n
+            if (c == 0x0A || c == 0x0D) // \n OR \r
             {
                 //print("line: {}\r\n", line_buffer);
-                history_vec[get_last_index()] = line_buffer;
+                if (line_buffer.empty())
+                {
+                    history_index--;
+                    history_vec.pop_back();
+                }
+                else
+                {
+                    history_vec[get_last_index()] = line_buffer;
+                }
                 return line_buffer;
             }
 
+            else if (c == 0x03) // control C
+            {
+                history_index--;
+                history_vec.pop_back();
+                return "";
+            }
+
             // ESC sequence
-            if (c == '\x1b')
+            else if (c == '\x1b')
             {
                 char seq[10];
                 // eat [
@@ -122,8 +128,16 @@ string readline()
             print_override(line_buffer);
         }
     }
-    
-    history_vec[get_last_index()] = line_buffer;
+
+    if (line_buffer.empty())
+    {
+        history_index--;
+        history_vec.pop_back();
+    }
+    else
+    {
+        history_vec[get_last_index()] = line_buffer;
+    }
     return line_buffer;
 }
 

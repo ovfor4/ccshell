@@ -26,10 +26,7 @@ void print_override(const std::string &s)
     // ESC 7     Save Cursor (DECSC), VT100.
     print("\x1b" "7"); fflush(stdout);
 
-    // move to the "start" of the zone
-    // should skip prompt zone
-    print("\r"); fflush(stdout);
-    print("\x1b[{}C", prompt_pos-1); fflush(stdout);
+    cursor_skip_prompt();
 
     // erase rest of the line
     print("\x1b[K"); fflush(stdout);
@@ -54,23 +51,9 @@ void move_cursor(char c)
             switch_history(T_cursor_movement_direction::DOWN);
             break;
         case 'C':
-            // if (get_cursor_real_pos() < line_end_pos)
-            // {
-            //     // print("\x1b[C");
-            //     // fflush(stdout);
-            //     // buffer_index_cursor++;
-            //     move_cursor(T_cursor_movement_direction::RIGHT);
-            // }
             move_cursor(T_cursor_movement_direction::RIGHT);
             break;
         case 'D':
-            // if (get_cursor_real_pos() > prompt_pos)
-            // {
-            //     // print("\x1b[D");
-            //     // fflush(stdout);
-            //     // buffer_index_cursor--;
-            //     move_cursor(T_cursor_movement_direction::LEFT);
-            // }
             move_cursor(T_cursor_movement_direction::LEFT);
             break;
         default:
@@ -87,14 +70,6 @@ void cursor_input_char(char c)
     if (c != '\b')
     {
         line_buffer.insert(buffer_index_cursor, 1, c);
-        // print("\x1b[C"); fflush(stdout); // move cursor to the right
-        // buffer_index_cursor++;
-        // update_line_end_pos();
-        // int end_possible_buffer_index = window_size_col-prompt_pos-1;
-        // buffer_index_display_end = 
-        //     (end_possible_buffer_index > (buffer_index_display_end)+1) 
-        //     ? (buffer_index_display_end)+1
-        //     : end_possible_buffer_index;
         move_cursor(T_cursor_movement_direction::RIGHT);
         
         return;
@@ -102,9 +77,6 @@ void cursor_input_char(char c)
 
     // BACKSPACE
     line_buffer.erase(buffer_index_cursor, 1);
-    // print("\x1b[D"); fflush(stdout); // move cursor to the left
-    // buffer_index_cursor--;
-    // update_line_end_pos();
     // TODO: backspace page
     move_cursor(T_cursor_movement_direction::LEFT);
     
@@ -186,10 +158,6 @@ void switch_history(T_cursor_movement_direction d)
                 history_index--;
                 reset_editor();
                 line_buffer = history_vec[history_index];
-                // move to the "start" of the zone
-                // should skip prompt zone
-                print("\r"); fflush(stdout);
-                print("\x1b[{}C", prompt_pos-1); fflush(stdout);
                 print_override(line_buffer);
             }
             break;
@@ -204,10 +172,6 @@ void switch_history(T_cursor_movement_direction d)
                 history_index++;
                 reset_editor();
                 line_buffer = history_vec[history_index];
-                // move to the "start" of the zone
-                // should skip prompt zone
-                print("\r"); fflush(stdout);
-                print("\x1b[{}C", prompt_pos-1); fflush(stdout);
                 print_override(line_buffer);
             }
             break;
@@ -222,6 +186,14 @@ void reset_editor()
     line_buffer = "";
     buffer_index_cursor = 0;
     _buffer_index_display_begin = 0;
+    cursor_skip_prompt();
+}
+
+void cursor_skip_prompt()
+{
+    // move to the "start" of the zone
+    // should skip prompt zone
+    print("\r\x1b[{}C", prompt_pos-1); fflush(stdout);
 }
 
 }
