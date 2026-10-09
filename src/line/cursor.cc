@@ -109,7 +109,11 @@ void move_cursor(T_cursor_movement_direction d)
             else
             {
                 // already at the beginning of buffer
-                if (buffer_index_cursor == 0) break;
+                if (buffer_index_cursor == 0)
+                {
+                    print("\a"); fflush(stdout);
+                    break;
+                }
 
                 buffer_index_cursor--;
                 _buffer_index_display_begin--;
@@ -122,7 +126,11 @@ void move_cursor(T_cursor_movement_direction d)
             if (window_size_col > get_terminal_pos_cursor())
             {
                 // already at the end of buffer
-                if (buffer_index_cursor == line_buffer.size()) break;
+                if (buffer_index_cursor == line_buffer.size())
+                {
+                    print("\a"); fflush(stdout);
+                    break;
+                }
 
                 buffer_index_cursor++;
                 print("\x1b[C"); fflush(stdout); // move cursor to the right
@@ -131,7 +139,11 @@ void move_cursor(T_cursor_movement_direction d)
             else
             {
                 // already at the end of buffer
-                if (buffer_index_cursor == line_buffer.size()) break;
+                if (buffer_index_cursor == line_buffer.size())
+                {
+                    print("\a"); fflush(stdout);
+                    break;
+                }
 
                 buffer_index_cursor++;
                 _buffer_index_display_begin++;
