@@ -5,8 +5,6 @@
 
 #include "line/type.h"
 
-using namespace std; // TODO: remove
-
 namespace ov4
 {
 
