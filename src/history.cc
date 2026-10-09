@@ -70,7 +70,7 @@ void save_history(const string &path)
      * So we just write to a temp file, and rename it to replace the "real" history file
      */
     string tmp_path = path + ".tmp";
-    int fd = open(tmp_path.c_str(), (O_WRONLY | O_CREAT | O_TRUNC), (S_IRUSR | S_IWUSR));
+    int fd = open(tmp_path.c_str(), (O_WRONLY | O_CREAT | O_TRUNC | O_NOFOLLOW), (S_IRUSR | S_IWUSR));
     if (fd == -1) 
     {
         loggerln("save_history: fail to open() history");
