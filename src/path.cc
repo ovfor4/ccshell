@@ -1,5 +1,12 @@
 #include "path.h"
 
+#include <pwd.h>
+#include <unistd.h>
+
+#include "global.h"
+#include "util/string.h"
+#include "util/io.h"
+
 namespace ov4
 {
 
@@ -65,6 +72,11 @@ string get_current_dir()
 {
     char buf[MAXLINE];
     return safe_str(getcwd(buf, MAXLINE));
+}
+
+string get_home_dir()
+{
+    return getpwuid(getuid())->pw_dir;
 }
 
 

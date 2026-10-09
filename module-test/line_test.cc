@@ -6,6 +6,8 @@
    src/line/cursor.cc \
    src/line/getter.cc \
    src/history.cc \
+   src/path.cc \
+   src/util/string.cc \
    -std=c++26 -Iinclude -Ithird_party/magic_enum/include \
    -O0 -ggdb3 -fno-omit-frame-pointer -fno-inline -D_GLIBCXX_ASSERTIONS \
    -o module-test/line_test.out
@@ -21,12 +23,15 @@
 #include "line/cursor.h"
 #include "line/getter.h"
 #include "line/type.h"
+#include "history.h"
+#include "path.h"
 
 using namespace std;
 using namespace ov4;
 
 int main()
 {
+    load_history();
     while (true)
     {
         print("shell $ ");
@@ -39,6 +44,8 @@ int main()
         disable_raw();
         cout << "\n\n\n\n" << endl;
         cout << s << endl;
+        if (s == "quit") break;
     }
+    save_history();
     return 0;
 }
