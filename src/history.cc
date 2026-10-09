@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <fstream>
 #include <iostream>
+#include <sys/stat.h>
 
 #include "util/io.h"
 
@@ -54,18 +55,18 @@ void load_history(const string &path)
 
 void save_history(const string &path)
 {
-    int fd = open(path.c_str(), O_WRONLY | O_CREAT);
+    string tmp_path = path + ".tmp";
+    int fd = open(tmp_path.c_str(), (O_WRONLY | O_CREAT | O_TRUNC), (S_IRUSR | S_IWUSR));
     if (fd == -1) 
     {
         loggerln("save_history: fail to open() history");
         return;
     }
-    char f_mode = 'w';
-    FILE *f = fdopen(fd, &f_mode);
+    FILE *f = fdopen(fd, "w");
     if (f == nullptr)
     {
-        loggerln("save_history: fail to fdopen() history");
         close(fd);
+        loggerln("save_history: fail to fdopen() history");
         return;
     }
 
@@ -74,9 +75,24 @@ void save_history(const string &path)
         println(f, "{}", c);
     }
 
-    fflush(f);
-    fsync(fd);
-    fclose(f);
+
+    bool success_write = true;
+    if (fflush(f) != 0) success_write = false;
+    if (fsync(fd) != 0) success_write = false;
+    if (fclose(f) != 0) success_write = false;
+
+    if (!success_write)
+    {
+        loggerln("save_history: fail to write");
+        return;
+    }
+
+    // atomic rename (replace)
+    if (rename(tmp_path.c_str(), path.c_str()) != 0)
+    {
+        loggerln("save_history: fail to rename");
+        return;
+    }
 }
     
 }
