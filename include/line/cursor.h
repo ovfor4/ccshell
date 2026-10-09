@@ -38,5 +38,9 @@ void update_window_size();
 
 void move_cursor(T_cursor_movement_direction d);
 
+void switch_history(T_cursor_movement_direction d);
+
+void reset_editor();
+
 }
 

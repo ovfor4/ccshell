@@ -13,6 +13,8 @@ enum class T_cursor_movement_direction
 {
     LEFT,
     RIGHT,
+    UP,
+    DOWN,
 };
 
 }

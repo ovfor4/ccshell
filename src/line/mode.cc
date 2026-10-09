@@ -7,6 +7,7 @@
 
 #include "line/cursor.h"
 #include "line/getter.h"
+#include "history.h"
 
 using namespace std;
 
@@ -70,13 +71,16 @@ void clear_below()
 string readline()
 {
     update_window_size();
+    history_vec.push_back("");
+    history_index = get_last_index();
+    reset_editor();
 
     T_position pos = get_cursor_position();
     prompt_pos = pos.col;
     char c;
     while (read(STDIN_FILENO, &c, 1) == 1)
     {
-        if (c == 'Q') break;
+        if (c == 'Q') editor_exit(-1); // TODO: remove
         else if (c == 'C') 
         {
             clear_below();
@@ -92,6 +96,7 @@ string readline()
             if (c == 13) // \n
             {
                 //print("line: {}\r\n", line_buffer);
+                history_vec[get_last_index()] = line_buffer;
                 return line_buffer;
             }
 
@@ -117,7 +122,15 @@ string readline()
             print_override(line_buffer);
         }
     }
+    
+    history_vec[get_last_index()] = line_buffer;
     return line_buffer;
+}
+
+void editor_exit(int code)
+{
+    disable_raw();
+    exit(code);
 }
 
 

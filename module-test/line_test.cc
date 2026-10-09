@@ -5,6 +5,7 @@
    src/line/mode.cc \
    src/line/cursor.cc \
    src/line/getter.cc \
+   src/history.cc \
    -std=c++26 -Iinclude -Ithird_party/magic_enum/include \
    -O0 -ggdb3 -fno-omit-frame-pointer -fno-inline -D_GLIBCXX_ASSERTIONS \
    -o module-test/line_test.out
@@ -26,15 +27,18 @@ using namespace ov4;
 
 int main()
 {
-    print("shell $ ");
-    enable_raw();
-    T_position pos = get_cursor_position();
-    cursor_row = pos.row;
-    cursor_col = pos.col;
-    prompt_pos = cursor_col;
-    string s = readline();
-    disable_raw();
-    cout << "\n\n\n\n" << endl;
-    cout << s << endl;
+    while (true)
+    {
+        print("shell $ ");
+        enable_raw();
+        T_position pos = get_cursor_position();
+        cursor_row = pos.row;
+        cursor_col = pos.col;
+        prompt_pos = cursor_col;
+        string s = readline();
+        disable_raw();
+        cout << "\n\n\n\n" << endl;
+        cout << s << endl;
+    }
     return 0;
 }

@@ -10,6 +10,8 @@
 #include <sys/ioctl.h>
 
 #include "line/getter.h"
+#include "history.h"
+#include "line/mode.h"
 
 using namespace std;
 
@@ -45,16 +47,12 @@ void move_cursor(char c)
 {
     switch (c)
     {
-        // case 'A':
-        //     print("\x1b[A");
-        //     fflush(stdout);
-        //     cursor_row--;
-        //     break;
-        // case 'B':
-        //     print("\x1b[B");
-        //     fflush(stdout);
-        //     cursor_row++;
-        //     break;
+        case 'A':
+            switch_history(T_cursor_movement_direction::UP);
+            break;
+        case 'B':
+            switch_history(T_cursor_movement_direction::DOWN);
+            break;
         case 'C':
             // if (get_cursor_real_pos() < line_end_pos)
             // {
@@ -82,6 +80,9 @@ void move_cursor(char c)
 
 void cursor_input_char(char c)
 {
+    // if receives any input
+    // it should move to the latest history
+    history_index = get_last_index();
     // normal input
     if (c != '\b')
     {
@@ -115,7 +116,7 @@ void update_window_size()
 {
     winsize ws;
     if (ioctl(1, TIOCGWINSZ, &ws) == -1) 
-        exit(-1); // TODO: fix
+        editor_exit(-1); // TODO: fix
 
     window_size_row = ws.ws_row;
     window_size_col = ws.ws_col;
@@ -167,8 +168,60 @@ void move_cursor(T_cursor_movement_direction d)
             break;
 
         default:
-            exit(-1); // TODO: fix
+            editor_exit(-1); // TODO: fix
     }
+}
+
+void switch_history(T_cursor_movement_direction d)
+{
+    switch (d)
+    {
+        case T_cursor_movement_direction::UP:
+            if (history_index == 0)
+            {
+                print("\a"); fflush(stdout);
+            }
+            else
+            {
+                history_index--;
+                reset_editor();
+                line_buffer = history_vec[history_index];
+                // move to the "start" of the zone
+                // should skip prompt zone
+                print("\r"); fflush(stdout);
+                print("\x1b[{}C", prompt_pos-1); fflush(stdout);
+                print_override(line_buffer);
+            }
+            break;
+
+        case T_cursor_movement_direction::DOWN:
+            if (history_index == get_last_index())
+            {
+                print("\a"); fflush(stdout);
+            }
+            else
+            {
+                history_index++;
+                reset_editor();
+                line_buffer = history_vec[history_index];
+                // move to the "start" of the zone
+                // should skip prompt zone
+                print("\r"); fflush(stdout);
+                print("\x1b[{}C", prompt_pos-1); fflush(stdout);
+                print_override(line_buffer);
+            }
+            break;
+
+        default:
+            editor_exit(-1); // TODO: fix
+    }
+}
+
+void reset_editor()
+{
+    line_buffer = "";
+    buffer_index_cursor = 0;
+    _buffer_index_display_begin = 0;
 }
 
 }

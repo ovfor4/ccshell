@@ -20,4 +20,6 @@ void clear_below();
 
 std::string readline();
 
+void editor_exit(int code);
+
 }

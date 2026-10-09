@@ -14,5 +14,10 @@ void clear_history()
 {
     history_vec.clear();
 }
+
+size_t get_last_index()
+{
+    return history_vec.size() - 1;
+}
     
 }
