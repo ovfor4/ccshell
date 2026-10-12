@@ -69,6 +69,13 @@ string readline()
 
                 move_cursor(seq[1]);
             }
+
+            // backspace
+            else if (c == '\b' || c == '\x7f')
+            {
+                cursor_input_char(c);
+                print_override(line_buffer);
+            }
         }
 
         // normal char

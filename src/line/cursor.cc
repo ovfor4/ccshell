@@ -74,7 +74,7 @@ void cursor_input_char(char c)
     // it should move to the latest history
     history_index = get_last_index();
     // normal input
-    if (c != '\b')
+    if (c != '\b' && c != '\x7f')
     {
         line_buffer.insert(buffer_index_cursor, 1, c);
         move_cursor(T_cursor_movement_direction::RIGHT);
@@ -83,9 +83,15 @@ void cursor_input_char(char c)
     }
 
     // BACKSPACE
-    line_buffer.erase(buffer_index_cursor, 1);
-    // TODO: backspace page
-    move_cursor(T_cursor_movement_direction::LEFT);
+    if (buffer_index_cursor != 0)
+    {
+        line_buffer.erase(buffer_index_cursor-1, 1);
+        move_cursor(T_cursor_movement_direction::LEFT);
+    }
+    else
+    {
+        print("\a"); fflush(stdout);
+    }
     
 }
 
