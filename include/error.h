@@ -20,6 +20,12 @@ enum class error_code
     // eval
     EVAL_FAIL_TO_CREATE_PIPE,
 
+    // file
+    FILE_MODE_NOT_SET,
+    FILE_FAIL_TO_OPEN,
+    FILE_OFLAG_ERROR,
+    FILE_POINTER_FAIL_TO_OPEN,
+
 };
 
 class T_error : public std::runtime_error {
