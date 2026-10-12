@@ -8,8 +8,10 @@
 #include <fstream>
 #include <iostream>
 #include <sys/stat.h>
+#include <optional>
 
 #include "util/io.h"
+#include "util/file.h"
 
 using namespace std;
 
@@ -70,30 +72,43 @@ void save_history(const string &path)
      * So we just write to a temp file, and rename it to replace the "real" history file
      */
     string tmp_path = path + ".tmp";
-    int fd = open(tmp_path.c_str(), (O_WRONLY | O_CREAT | O_TRUNC | O_NOFOLLOW), (S_IRUSR | S_IWUSR));
-    if (fd == -1) 
+    // int fd = open(tmp_path.c_str(), (O_WRONLY | O_CREAT | O_TRUNC | O_NOFOLLOW), (S_IRUSR | S_IWUSR));
+
+    optional<T_unix_file_p> file_fp_optional;
+    try
     {
-        loggerln("save_history: fail to open() history");
-        return;
+        file_fp_optional.emplace(tmp_path.c_str(), (O_WRONLY | O_CREAT | O_TRUNC | O_NOFOLLOW), (S_IRUSR | S_IWUSR));
     }
-    FILE *f = fdopen(fd, "w");
-    if (f == nullptr)
+    catch(const T_error &e)
     {
-        close(fd);
-        loggerln("save_history: fail to fdopen() history");
+        std::cerr << e.what() << endl;
+        switch (e.code)
+        {
+            case error_code::FILE_FAIL_TO_OPEN:
+                loggerln("save_history: fail to open() history");
+                break;
+
+            case error_code::FILE_POINTER_FAIL_TO_OPEN:
+                loggerln("save_history: fail to fdopen() history");
+
+            default:
+                ;
+        }
         return;
     }
 
+    T_unix_file_p &file_fp = *file_fp_optional;
+
     for (auto &c : history_vec)
     {
-        println(f, "{}", c);
+        println(file_fp.fp, "{}", c);
     }
 
 
     bool success_write = true;
-    if (fflush(f) != 0) success_write = false;
-    if (fsync(fd) != 0) success_write = false;
-    if (fclose(f) != 0) success_write = false;
+    if (fflush(file_fp.fp) != 0) success_write = false;
+    if (fsync(file_fp.fd) != 0) success_write = false;
+    if (file_fp.close() != 0) success_write = false;
 
     if (!success_write)
     {

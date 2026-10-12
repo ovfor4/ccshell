@@ -14,6 +14,10 @@ class T_unix_file_d;
 class T_unix_file_p;
 
 
+/*
+ * RAII unix file descriptor
+ * fd is automatically closed with RAII
+ */
 class T_unix_file_d
 {
 public:
@@ -51,6 +55,11 @@ public:
     T_unix_file_d &operator=(const T_unix_file_d &) = delete;
 };
 
+
+/*
+ * RAII FILE pointer
+ * FILE* is automatically closed with RAII
+ */
 class T_unix_file_p : public T_unix_file_d
 {
 public:
