@@ -5,6 +5,8 @@
 namespace ov4
 {
 
+inline bool windows_size_changed;
+
 int get_terminal_pos_cursor();
 int get_buffer_index_display_begin();
 int get_buffer_index_display_end();

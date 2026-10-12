@@ -42,5 +42,7 @@ void reset_editor();
 
 void cursor_skip_prompt();
 
+void check_window_update();
+
 }
 

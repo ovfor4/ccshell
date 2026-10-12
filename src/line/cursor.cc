@@ -21,6 +21,8 @@ namespace ov4
 
 void print_override(const std::string &s)
 {
+    check_window_update();
+    
     // save current cursor position
     // print("\x1b[s"); fflush(stdout);
     // WTF
@@ -43,6 +45,8 @@ void print_override(const std::string &s)
 
 void move_cursor(char c)
 {
+    check_window_update();
+
     switch (c)
     {
         case 'A':
@@ -64,6 +68,8 @@ void move_cursor(char c)
 
 void cursor_input_char(char c)
 {
+    check_window_update();
+
     // if receives any input
     // it should move to the latest history
     history_index = get_last_index();
@@ -97,6 +103,8 @@ void update_window_size()
 
 void move_cursor(T_cursor_movement_direction d)
 {
+    void check_window_update();
+
     switch (d)
     {
         case T_cursor_movement_direction::LEFT:
@@ -159,6 +167,8 @@ void move_cursor(T_cursor_movement_direction d)
 
 void switch_history(T_cursor_movement_direction d)
 {
+    check_window_update();
+
     switch (d)
     {
         case T_cursor_movement_direction::UP:
@@ -207,6 +217,16 @@ void cursor_skip_prompt()
     // move to the "start" of the zone
     // should skip prompt zone
     print("\r\x1b[{}C", prompt_pos-1); fflush(stdout);
+}
+
+void check_window_update()
+{
+    if (windows_size_changed)
+    {
+        update_window_size();
+        clear_below();
+        windows_size_changed = false;
+    }
 }
 
 }

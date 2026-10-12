@@ -9,9 +9,21 @@
    src/history.cc \
    src/path.cc \
    src/util/string.cc \
+   src/signal/misc.cc \
+   src/signal/sigwinch_handler.cc \
    -std=c++26 -Iinclude -Ithird_party/magic_enum/include \
    -O0 -ggdb3 -fno-omit-frame-pointer -fno-inline -D_GLIBCXX_ASSERTIONS \
-   -o module-test/line_test.out
+   -o module-test/line_test.out\
+   \
+   src/option.cc \
+   src/util/io.cc \
+   src/signal/sigint_handler.cc \
+   src/signal/sigtstp_handler.cc \
+   src/signal/sigchld_handler.cc \
+   src/signal/sigquit_handler.cc \
+   src/job.cc \
+   src/util/prompt.cc \
+   src/util/color.cc
  *
  */
 

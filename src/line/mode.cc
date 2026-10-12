@@ -8,6 +8,7 @@
 #include "line/cursor.h"
 #include "line/getter.h"
 #include "history.h"
+#include "signal_handler.h"
 
 using namespace std;
 
@@ -56,6 +57,8 @@ void enable_raw()
     attr_raw.c_cflag |= (CS8);
 
     atexit(disable_raw);
+
+    Signal(SIGWINCH, sigwinch_handler);
 
     // TCSAFLUSH
     // the change shall occur after all output written to fildes is transmitted

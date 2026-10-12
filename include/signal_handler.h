@@ -25,6 +25,7 @@ void sigchld_handler(int sig);
 void sigint_handler(int sig);
 void sigtstp_handler(int sig);
 void sigquit_handler(int sig);
+void sigwinch_handler(int sig);
 
 int block_all(sigset_t *prev);
 int block_handler(sigset_t *prev);
