@@ -14,10 +14,6 @@ inline bool raw_enabled = false;
 void disable_raw();
 void enable_raw();
 
-void clear_below();
 
-std::string readline();
-
-void editor_exit(int code);
 
 }

@@ -5,6 +5,7 @@
    src/line/mode.cc \
    src/line/cursor.cc \
    src/line/getter.cc \
+   src/line/input.cc \
    src/history.cc \
    src/path.cc \
    src/util/string.cc \
@@ -23,6 +24,7 @@
 #include "line/cursor.h"
 #include "line/getter.h"
 #include "line/type.h"
+#include "line/input.h"
 #include "history.h"
 #include "path.h"
 

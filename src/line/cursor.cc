@@ -12,6 +12,7 @@
 #include "line/getter.h"
 #include "history.h"
 #include "line/mode.h"
+#include "line/input.h"
 
 using namespace std;
 
