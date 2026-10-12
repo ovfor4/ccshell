@@ -109,7 +109,7 @@ void update_window_size()
 
 void move_cursor(T_cursor_movement_direction d)
 {
-    void check_window_update();
+    check_window_update();
 
     switch (d)
     {
