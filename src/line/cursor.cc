@@ -18,7 +18,6 @@ namespace ov4
 
 void T_line_editor::print_override(const std::string &s)
 {
-    check_window_update();
     
     // save current cursor position
     // print("\x1b[s"); fflush(stdout);
@@ -42,7 +41,6 @@ void T_line_editor::print_override(const std::string &s)
 
 void T_line_editor::move_cursor(char c)
 {
-    check_window_update();
 
     switch (c)
     {
@@ -65,7 +63,6 @@ void T_line_editor::move_cursor(char c)
 
 void T_line_editor::cursor_input_char(char c)
 {
-    check_window_update();
 
     // if receives any input
     // it should move to the latest history
@@ -106,7 +103,6 @@ void T_line_editor::update_window_size()
 
 void T_line_editor::move_cursor(T_cursor_movement_direction d)
 {
-    check_window_update();
 
     switch (d)
     {
@@ -170,7 +166,6 @@ void T_line_editor::move_cursor(T_cursor_movement_direction d)
 
 void T_line_editor::switch_history(T_cursor_movement_direction d)
 {
-    check_window_update();
 
     switch (d)
     {

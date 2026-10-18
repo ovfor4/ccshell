@@ -34,7 +34,7 @@ string T_line_editor::readline()
         if (src == self_pipe_fd[0])
         {
             check_window_update();
-            break;
+            continue;
         }
         if (iscntrl(c))
         {
