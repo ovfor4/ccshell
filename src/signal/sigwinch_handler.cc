@@ -1,6 +1,6 @@
 #include "signal_handler.h"
 
-#include "line/getter.h"
+#include "line/line_editor.h"
 
 namespace ov4
 {

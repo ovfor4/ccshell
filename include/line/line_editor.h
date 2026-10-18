@@ -15,6 +15,7 @@ inline bool raw_enabled = false;
 void disable_raw();
 void enable_raw();
 void editor_exit(int code);
+inline bool windows_size_changed = false;
 
 class T_line_editor
 {
@@ -49,7 +50,6 @@ public:
 
 
     // getter
-    bool windows_size_changed = false;
 
     int get_terminal_pos_cursor();
     int get_buffer_index_display_begin();

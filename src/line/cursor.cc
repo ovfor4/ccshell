@@ -228,6 +228,7 @@ void T_line_editor::check_window_update()
     {
         update_window_size();
         clear_below();
+        print_override(line_buffer);
         windows_size_changed = false;
     }
 }

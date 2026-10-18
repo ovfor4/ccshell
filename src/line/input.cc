@@ -5,6 +5,8 @@
 #include <unistd.h>
 
 #include "history.h"
+#include "util/non_block_input.h"
+#include "pipe.h"
 
 using namespace std;
 
@@ -25,9 +27,15 @@ string T_line_editor::readline()
 
     T_position pos = get_cursor_position();
     prompt_pos = pos.col;
-    char c;
-    while (read(STDIN_FILENO, &c, 1) == 1)
+    char c; int src;
+    while (non_block_read_char(&c, &src) == 1)
     {
+        // if signal'd
+        if (src == self_pipe_fd[0])
+        {
+            check_window_update();
+            break;
+        }
         if (iscntrl(c))
         {
             //print("control: {}\r\n", static_cast<unsigned char>(c));

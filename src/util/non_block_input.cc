@@ -41,7 +41,7 @@ int non_block_read_char(char *c, int *src)
     else if (FD_ISSET(STDIN_FILENO, &rset))
     {
         ret = read(STDIN_FILENO, c, 1);
-        if (src != nullptr) *src = self_pipe_fd[0];
+        if (src != nullptr) *src = STDIN_FILENO;
     }
     return ret;
 } 
