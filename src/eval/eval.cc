@@ -37,9 +37,8 @@ namespace ov4
  * background children don't receive SIGINT (SIGTSTP) from the kernel
  * when we type ctrl-c (ctrl-z) at the keyboard.  
 */
-void eval(char *raw_input) 
+void eval(const string &s) 
 {
-    string s = raw_input;
     T_lexer lexer_instance;
 
     try

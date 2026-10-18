@@ -22,7 +22,7 @@ inline T_pipe T_pipe_not_pipe;
 int eval_exe(const std::string &s, bool is_async);
 int eval_exe(const std::string &s, bool is_async, const T_lexer *lexer_instance, size_t i, const T_pipe &pi = T_pipe_not_pipe);
 int eval_tree_cd(size_t i, const T_lexer &lexer_instance, bool inside_subshell, T_pipe pi = T_pipe_not_pipe);
-void eval(char *cmdline);
+void eval(const std::string &s);
 void eval_err(int err);
 
 }

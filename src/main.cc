@@ -13,6 +13,7 @@
 
 #include "all.h"
 #include "test.h"
+#include "line/line_editor.h"
 
 using namespace std;
 using namespace ov4;
@@ -38,22 +39,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 
     exe_option(argv);
 
-    // while ((c = getopt(argc, argv, "hvp")) != EOF) {
-    //     switch (c) {
-    //     case 'h':             /* print help message */
-    //         usage();
-	//     break;
-    //     case 'v':             /* emit additional diagnostic info */
-    //         verbose = true;
-	//     break;
-    //     case 'p':             /* don't print a prompt */
-    //         emit_prompt = 0;  /* handy for automatic testing */
-	//     break;
-	// default:
-    //         usage();
-	// }
-    // }
-
     
 
     /* Initialize the job list */
@@ -62,24 +47,25 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     /* Execute the shell's read/eval loop */
     while (1) {
 
-	/* Read command line */
-    print_prompt();
+        /* Read command line */
+        print_prompt();
 
-	if ((fgets(cmdline, MAXLINE, stdin) == NULL) && ferror(stdin))
-	    app_error("fgets error");
-	if (feof(stdin)) { /* End of file (ctrl-d) */
-	    fflush(stdout);
-	    exit(0);
-	}
+        T_line_editor line_editor_instance;
 
+        enable_raw();
+        T_position pos = line_editor_instance.get_cursor_position();
+        line_editor_instance.cursor_row = pos.row;
+        line_editor_instance.cursor_col = pos.col;
+        line_editor_instance.prompt_pos = line_editor_instance.cursor_col;
+        string s = line_editor_instance.readline();
+        disable_raw();
+        cout << "\n\n\n\n" << endl;
+        cout << s << endl;
+        if (s == "quit")
+            break;
+        eval(s.c_str());
 
-	/* Evaluate the command line */
-    // trim \n
-    if(cmdline[strlen(cmdline)-1] == '\n')
-        cmdline[strlen(cmdline)-1] = '\0';
-	eval(cmdline);
-	fflush(stdout);
-	fflush(stdout);
+        fflush(stdout);
     } 
 
     exit(0); /* control never reaches here */

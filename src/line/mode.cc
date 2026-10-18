@@ -1,12 +1,10 @@
-#include "line/mode.h"
+#include "line/line_editor.h"
 
 #include <unistd.h>
 #include <stdlib.h>
 #include <iostream>
 #include <print>
 
-#include "line/cursor.h"
-#include "line/getter.h"
 #include "history.h"
 #include "signal_handler.h"
 

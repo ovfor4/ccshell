@@ -1,4 +1,4 @@
-#include "line/cursor.h"
+#include "line/line_editor.h"
 
 #include <print>
 #include <iostream>
@@ -9,17 +9,14 @@
 #include <termios.h>
 #include <sys/ioctl.h>
 
-#include "line/getter.h"
 #include "history.h"
-#include "line/mode.h"
-#include "line/input.h"
 
 using namespace std;
 
 namespace ov4
 {
 
-void print_override(const std::string &s)
+void T_line_editor::print_override(const std::string &s)
 {
     check_window_update();
     
@@ -43,7 +40,7 @@ void print_override(const std::string &s)
     print("\x1b" "8"); fflush(stdout);
 }
 
-void move_cursor(char c)
+void T_line_editor::move_cursor(char c)
 {
     check_window_update();
 
@@ -66,7 +63,7 @@ void move_cursor(char c)
     }
 }
 
-void cursor_input_char(char c)
+void T_line_editor::cursor_input_char(char c)
 {
     check_window_update();
 
@@ -97,7 +94,7 @@ void cursor_input_char(char c)
 
 
 
-void update_window_size() 
+void T_line_editor::update_window_size() 
 {
     winsize ws;
     if (ioctl(1, TIOCGWINSZ, &ws) == -1) 
@@ -107,7 +104,7 @@ void update_window_size()
     window_size_col = ws.ws_col;
 }
 
-void move_cursor(T_cursor_movement_direction d)
+void T_line_editor::move_cursor(T_cursor_movement_direction d)
 {
     check_window_update();
 
@@ -171,7 +168,7 @@ void move_cursor(T_cursor_movement_direction d)
     }
 }
 
-void switch_history(T_cursor_movement_direction d)
+void T_line_editor::switch_history(T_cursor_movement_direction d)
 {
     check_window_update();
 
@@ -210,7 +207,7 @@ void switch_history(T_cursor_movement_direction d)
     }
 }
 
-void reset_editor()
+void T_line_editor::reset_editor()
 {
     line_buffer = "";
     buffer_index_cursor = 0;
@@ -218,14 +215,14 @@ void reset_editor()
     cursor_skip_prompt();
 }
 
-void cursor_skip_prompt()
+void T_line_editor::cursor_skip_prompt()
 {
     // move to the "start" of the zone
     // should skip prompt zone
     print("\r\x1b[{}C", prompt_pos-1); fflush(stdout);
 }
 
-void check_window_update()
+void T_line_editor::check_window_update()
 {
     if (windows_size_changed)
     {

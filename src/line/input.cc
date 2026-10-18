@@ -1,24 +1,22 @@
-#include "line/input.h"
+#include "line/line_editor.h"
 
 #include <print>
 #include <string>
 #include <unistd.h>
 
-#include "line/cursor.h"
 #include "history.h"
-#include "line/getter.h"
 
 using namespace std;
 
 namespace ov4
 {
 
-void clear_below()
+void T_line_editor::clear_below()
 {
     print("\x1b[0J");
 }
 
-string readline()
+string T_line_editor::readline()
 {
     update_window_size();
     history_vec.push_back("");

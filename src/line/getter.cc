@@ -1,4 +1,4 @@
-#include "line/getter.h"
+#include "line/line_editor.h"
 
 #include <cstdio>
 #include <string>
@@ -8,39 +8,37 @@
 #include <unistd.h>
 #include <cmath>
 
-#include "line/cursor.h"
-
 
 using namespace std;
 
 namespace ov4
 {
 
-int get_terminal_pos_cursor()
+int T_line_editor::get_terminal_pos_cursor()
 {
     return prompt_pos + (buffer_index_cursor - get_buffer_index_display_begin()) + 1;
 }
 
-int get_buffer_index_display_begin()
+int T_line_editor::get_buffer_index_display_begin()
 {
     return _buffer_index_display_begin;
 }
 
-int get_buffer_index_display_end()
+int T_line_editor::get_buffer_index_display_end()
 {
     int max_possible_end = get_buffer_index_display_begin() + line_buffer.size() - 1;
     int window_possible_end = get_buffer_index_display_begin() + (window_size_col - prompt_pos) -1;
     return min(max_possible_end, window_possible_end);
 }
 
-int get_terminal_pos_line_end()
+int T_line_editor::get_terminal_pos_line_end()
 {
     int possible = prompt_pos + line_buffer.size();
     return min(possible, window_size_col);
 }
 
 
-T_position get_cursor_position()
+T_position T_line_editor::get_cursor_position()
 {
     char c;
     string buffer;
