@@ -26,6 +26,9 @@ enum class error_code
     FILE_OFLAG_ERROR,
     FILE_POINTER_FAIL_TO_OPEN,
 
+    // pipe
+    FAIL_TO_OPEN_PIPE,
+
 };
 
 class T_error : public std::runtime_error {
