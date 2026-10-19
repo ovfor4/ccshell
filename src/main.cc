@@ -14,6 +14,7 @@
 #include "all.h"
 #include "test.h"
 #include "line/line_editor.h"
+#include "signal_handler.h"
 
 using namespace std;
 using namespace ov4;
@@ -48,6 +49,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     while (1) {
 
         /* Read command line */
+        cout << endl;
         int len = print_prompt();
 
         T_line_editor line_editor_instance;
@@ -55,6 +57,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         enable_raw();
         string s = line_editor_instance.readline(len);
         disable_raw();
+        process_signal();
         cout << "\n\n\n\n" << endl;
         cout << s << endl;
         if (s == "quit")

@@ -7,6 +7,7 @@
 #include "history.h"
 #include "util/non_block_input.h"
 #include "pipe.h"
+#include "signal_handler.h"
 
 using namespace std;
 
@@ -33,6 +34,7 @@ string T_line_editor::readline(int prompt_len)
         if (src == self_pipe_fd[0])
         {
             check_window_update();
+            process_signal();
             continue;
         }
         if (iscntrl(c))

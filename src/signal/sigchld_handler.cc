@@ -2,6 +2,8 @@
 
 #include <errno.h>
 
+#include "pipe.h"
+
 namespace ov4
 {
 
@@ -24,24 +26,27 @@ void sigchld_handler([[maybe_unused]] int sig)
 
     while ((pid = waitpid(-1, &status, WNOHANG | WUNTRACED)) > 0)
     {
+        set_signal_delivered(SIGCHLD);
+        self_pipe_write();
+        //safe_print("-----------");
         // signal'd or stopped or normally quit
         // print terminated/stopped message
         if (WIFSIGNALED(status) || WIFSTOPPED(status))
         {
             int jid = pid2jid(pid);
-            safe_output("Job [", jid, "] (", pid, ") ");
-            if (!WIFSTOPPED(status) && WTERMSIG(status) == SIGINT)
-                safe_print("terminated");
-            else if (WIFSTOPPED(status))
-                safe_print("stopped");
-            else 
-                safe_print("idk");
-            safe_print(" by signal ");
-            if (WIFSTOPPED(status))
-                safe_print(WSTOPSIG(status));
-            else
-                safe_print(WTERMSIG(status));
-            safe_print("\n");
+            //safe_output("Job [", jid, "] (", pid, ") ");
+            // if (!WIFSTOPPED(status) && WTERMSIG(status) == SIGINT)
+            //     //safe_print("terminated");
+            // else if (WIFSTOPPED(status))
+            //     //safe_print("stopped");
+            // else 
+            //     //safe_print("idk");
+            // //safe_print(" by signal ");
+            // if (WIFSTOPPED(status))
+            //     //safe_print(WSTOPSIG(status));
+            // else
+            //     //safe_print(WTERMSIG(status));
+            // //safe_print("\n");
         } 
 
         // handle job table
@@ -50,7 +55,7 @@ void sigchld_handler([[maybe_unused]] int sig)
         // stopped
         if (WIFSTOPPED(status))
         {
-            safe_output("Process suspended PID: ", pid, "\n");
+            //safe_output("Process suspended PID: ", pid, "\n");
             sigset_t prev_inner;
             block_all(&prev_inner);
             job_suspend(pid);
@@ -59,7 +64,7 @@ void sigchld_handler([[maybe_unused]] int sig)
         // other type of signal'd
         // or normally quit
         else {
-            safe_output("Process terminated PID: ", pid, "\n");
+            //safe_output("Process terminated PID: ", pid, "\n");
             sigset_t prev_inner;
             block_all(&prev_inner);
             deletejob(pid);
@@ -69,7 +74,7 @@ void sigchld_handler([[maybe_unused]] int sig)
             // so that exit code should be available
             if (WIFEXITED(status))
             {
-                safe_output("Exit code: ", WEXITSTATUS(status), "\n");
+                //safe_output("Exit code: ", WEXITSTATUS(status), "\n");
                 if (pid == exit_required_pid)
                 {
                     exit_code = WEXITSTATUS(status);
@@ -79,11 +84,11 @@ void sigchld_handler([[maybe_unused]] int sig)
             // if signal'd
             else if (WIFSIGNALED(status))
             {
-                safe_output("Signal code: ", WTERMSIG(status), "\n");
+                //safe_output("Signal code: ", WTERMSIG(status), "\n");
                 if (pid == exit_required_pid)
                 {
                     exit_code = SIGNAL_EXIT_CODE_BASE + WTERMSIG(status);
-                    safe_logger("sigchld_handler: required PID detected: ", pid, "\n");
+                    //safe_logger("sigchld_handler: required PID detected: ", pid, "\n");
                 }
             }
 
