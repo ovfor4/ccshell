@@ -63,7 +63,7 @@ public:
 
     // input
     void clear_below();
-    std::string readline();
+    std::string readline(int prompt_len);
 };
 
 }

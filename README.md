@@ -22,8 +22,9 @@ Support very complex syntax with a systematic language analysis system (it is im
 - brackets
 - multiple commands
 - TODO: pipeline, expansion, etc.
+- Limit: terminal reflow is being done, but it may take some time
 
-A fantastic line editor has been DONE, and it will be adapted very SOON! 😘
+A fantastic line editor has been DONE, and the only things left are pipeline and async! 😘
 
 ## Build
 

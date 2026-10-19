@@ -48,16 +48,12 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     while (1) {
 
         /* Read command line */
-        print_prompt();
+        int len = print_prompt();
 
         T_line_editor line_editor_instance;
 
         enable_raw();
-        T_position pos = line_editor_instance.get_cursor_position();
-        line_editor_instance.cursor_row = pos.row;
-        line_editor_instance.cursor_col = pos.col;
-        line_editor_instance.prompt_pos = line_editor_instance.cursor_col;
-        string s = line_editor_instance.readline();
+        string s = line_editor_instance.readline(len);
         disable_raw();
         cout << "\n\n\n\n" << endl;
         cout << s << endl;

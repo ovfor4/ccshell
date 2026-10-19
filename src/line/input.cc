@@ -18,15 +18,14 @@ void T_line_editor::clear_below()
     print("\x1b[0J");
 }
 
-string T_line_editor::readline()
+string T_line_editor::readline(int prompt_len)
 {
+    prompt_pos = prompt_len+1;
     update_window_size();
     history_vec.push_back("");
     history_index = get_last_index();
     reset_editor();
 
-    T_position pos = get_cursor_position();
-    prompt_pos = pos.col;
     char c; int src;
     while (non_block_read_char(&c, &src) == 1)
     {
