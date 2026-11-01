@@ -1,19 +1,20 @@
 /*
  *
  * test self pipe
-   $ g++ \
-   module-test/self_pipe.cc \
-   -std=c++26 \
-   -O0 -ggdb3 -fno-omit-frame-pointer -fno-inline -D_GLIBCXX_ASSERTIONS \
+   $ gcc \
+   module-test/self_pipe.c \
+   -std=gnu23 \
+   -O0 -ggdb3 -fno-omit-frame-pointer -fno-inline \
    -o module-test/self_pipe.out
  */
 
-#include <iostream>
+#include <stdio.h>
 #include <sys/select.h>
 #include <unistd.h>
 #include <signal.h>
 
-using namespace std;
+#define TMP_SIZE 1024
+
 
 typedef void handler_t(int);
 handler_t *Signal(int signum, handler_t *handler);
@@ -66,16 +67,17 @@ handler_t *Signal(int signum, handler_t *handler)
 
 int main()
 {
+    printf("Do not enter anything\n");
     Signal(SIGUSR1, sigusr1_handler);
     pipe(self_pipe_fd);
-    cout << "Running PID: " << getpid() << endl;
-    cout << "Do not enter anything" << endl;
+    int pid = getpid();
+    printf("Running PID: %d\n", pid);
+    printf("Do not enter anything\n");
 
-    constexpr int tmp_size = 1024;
-    char tmp[tmp_size];
-    while (my_read(tmp, tmp_size))
-        cout << "Hi" << endl;
+    char tmp[TMP_SIZE];
+    while (my_read(tmp, TMP_SIZE))
+        printf("Hi\n");
 
-    cout << "Finished" << endl;
+    printf("Finished\n");
     return 0;
 }
