@@ -12,6 +12,7 @@
 #include "lang_analysis/symbol_property.h"
 #include "lang_analysis/parseline.h"
 #include "util/io.h"
+#include "memory.h"
 
 using namespace std;
 
@@ -34,7 +35,7 @@ int eval_exe(const string &s, bool is_async, const T_lexer *lexer_instance, size
 
     bool task_type_is_subshell = false;
     const char *raw_input = nullptr;
-    char **argv = nullptr;
+    __attribute__((cleanup(cleanup_free_argv))) char **argv = nullptr;
     const char *unified_cmd_c = nullptr;
     string unified_cmd, s_wrap_eliminated;
 
@@ -55,9 +56,13 @@ int eval_exe(const string &s, bool is_async, const T_lexer *lexer_instance, size
         // NB: remember to delete
         argv = parseline(s);
 
-        if (argv == nullptr || argv[0] == nullptr) { operator delete(argv); return 0; }
 
-        if (exe_bultin_command(argv)) { operator delete(argv); return 0; }
+        // the compiler should free() it here
+        // if returns
+
+        if (argv == nullptr || argv[0] == nullptr) { return 0; }
+
+        if (exe_bultin_command(argv)) { return 0; }
 
         unified_cmd = find_cmd(argv[0]);
         unified_cmd_c = unified_cmd.c_str();
@@ -102,8 +107,7 @@ int eval_exe(const string &s, bool is_async, const T_lexer *lexer_instance, size
     }
 
     // parent
-
-    operator delete(argv);
+    free(argv);
     argv = nullptr;
 
     exit_required_pid = pid;

@@ -1,6 +1,7 @@
 #include "util/string.h"
 
 #include <print>
+#include <cstdio>
 
 using namespace std;
 
@@ -38,8 +39,8 @@ void string2argv(const vector<string> &v, char **argv)
  */
 char **string2argv_alloc(const std::vector<std::string> &v)
 {
-    size_t size = argv_get_required_size(v);
-    char **p = static_cast<char**>(operator new(size));
+    size_t size = argv_get_required_size(v) * sizeof(char);
+    char **p = (char**)malloc(size);
     string2argv(v, p);
     return p;
 }
