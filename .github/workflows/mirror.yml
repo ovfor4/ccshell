@@ -1,0 +1,17 @@
+name: 'mirror'
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    name: mirror
+    steps:
+      - name: mirror
+        id: mirror
+        uses: bridgelightcloud/github-mirror-action@v3
+        with:
+          origin: 'https://codeberg.org/ov4/ccshell.git'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
