@@ -29,6 +29,9 @@ enum class error_code
     // pipe
     FAIL_TO_OPEN_PIPE,
 
+    // util/path
+    UTIL_PATH_ERR,
+    
 };
 
 class T_error : public std::runtime_error {
