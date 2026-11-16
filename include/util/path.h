@@ -15,33 +15,58 @@ namespace ov4::path
 
 enum class executable_t
 {
-    ALL,
-    TRUE,
-    FALSE,
+    ALL, /* accept executable or non-executable file */
+    TRUE, /* executable only */
+    FALSE, /* non-executable only */
 };
 
 enum class path_mode_t
 {
-    RELATIVE,
-    ABSOLUTE,
+    RELATIVE, /* relative to current working dir */
+    ABSOLUTE, /* absolute path starting with <slash> */
 };
 
 struct file_property_t
 {
+    /* intended executability */
     executable_t executable = executable_t::ALL;
-    mode_t file_type = 0; // all
+
+    /* see stat(2) */
+    mode_t file_type = 0; /* all */
+
+    /* 
+     * whether find in path 
+     * if true, path files would be ABSOLUTE
+     * and cwd files would keep RELATIVE
+     */
     bool in_path_env = true;
+
+    /* whether find in specific dir */
     bool in_dir = true;
+    /* absolute or relative dir */
     std::string candidate_dir = "";
 
+    /* ABSOLUTE or RELATIVE path */
     path_mode_t path_mode = path_mode_t::RELATIVE;
 
-    bool (*custom_check)(const char *) = nullptr;
+    /*
+     * custom property checker
+     * if matches, it should return true
+     */
+    bool (*custom_check)(const char * _path) = nullptr;
 
+    /*
+     * return value
+     * path of candidate
+     */
     std::string ret = "";
 };
 
-// find candidate vector
-std::vector<file_property_t> fcv(file_property_t &property);
+/*
+ * find candidate vector
+ * find files based on file_property_t conditions
+ * returns valid cadidates with their properties filled in file_property_t
+ */
+std::vector<file_property_t> fcv(const file_property_t &property);
 
 }

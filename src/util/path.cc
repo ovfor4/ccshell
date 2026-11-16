@@ -13,7 +13,7 @@ using namespace ov4;
 namespace ov4::path
 {
 
-std::vector<file_property_t> fcv(file_property_t &property)
+std::vector<file_property_t> fcv(const file_property_t &property)
 {
     std::vector<file_property_t> v;
     __attribute__((cleanup(globfree))) glob_t pglob = {};
