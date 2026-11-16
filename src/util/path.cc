@@ -16,11 +16,10 @@ namespace ov4::path
 std::vector<file_property_t> fcv(file_property_t &property)
 {
     std::vector<file_property_t> v;
-    glob_t pglob;
+    __attribute__((cleanup(globfree))) glob_t pglob = {};
     int ret = glob("/*", 0, nullptr, &pglob);
     if (ret != 0 || pglob.gl_pathc == 0)
     {
-        throw T_error {error_code::UTIL_PATH_ERR, "UTIL_PATH_ERR"};
         return v;
     }
     
@@ -32,7 +31,7 @@ std::vector<file_property_t> fcv(file_property_t &property)
 
         struct stat buffer_stat;
         int stat_ret = stat(pglob.gl_pathv[i], &buffer_stat);
-        if (stat_ret != 0) throw T_error {error_code::UTIL_PATH_ERR, "UTIL_PATH_ERR"};
+        if (stat_ret != 0) continue;
 
         // check executable
         int executable_ret = access(p, X_OK);
