@@ -26,6 +26,12 @@ enum class path_mode_t
     ABSOLUTE, /* absolute path starting with <slash> */
 };
 
+enum class dir_type_t
+{
+    PATH,
+    CUSTOM,
+};
+
 struct file_property_t
 {
     /* intended executability */
@@ -39,12 +45,10 @@ struct file_property_t
      * if true, path files would be ABSOLUTE
      * and cwd files would keep RELATIVE
      */
-    bool in_path_env = true;
+    dir_type_t dir_type = dir_type_t::PATH;
 
-    /* whether find in specific dir */
-    bool in_dir = true;
     /* absolute or relative dir */
-    std::string candidate_dir = "";
+    std::string pattern = "";
 
     /* ABSOLUTE or RELATIVE path */
     path_mode_t path_mode = path_mode_t::RELATIVE;
@@ -63,10 +67,15 @@ struct file_property_t
 };
 
 /*
- * find candidate vector
+ * fcv: find candidate vector
  * find files based on file_property_t conditions
  * returns valid cadidates with their properties filled in file_property_t
  */
 std::vector<file_property_t> fcv(const file_property_t &property);
+
+/*
+ * split: split path
+ */
+std::vector<std::string> split(std::string &s);
 
 }
