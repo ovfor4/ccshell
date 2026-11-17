@@ -72,6 +72,6 @@ include/test.h
 src/test.cc
 test/
 .vscode/
-third_party/
+#third_party/
 .idea/
 .DS_Store
