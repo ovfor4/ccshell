@@ -17,36 +17,55 @@ namespace ov4::path
 std::vector<file_property_t> fcv(const file_property_t &property)
 {
     std::vector<file_property_t> v;
-    __attribute__((cleanup(globfree))) glob_t pglob = {};
-    string s;
+    std::vector<std::string> pattern_v;
+    std::vector<std::string> res;
 
     /* set intented dir */
     if (property.dir_type == dir_type_t::PATH)
     {
+        /* PATH can be splitted into some dir's */
         const char *sp = getenv("PATH");
         if (sp == nullptr)
             return v;
-        s = sp + '/' + property.pattern;
+        
+        string s = sp;
+        auto ret_split = split(s);
+        for (auto &t : ret_split)
+        {
+            file_property_t tmp = property;
+            tmp.pattern = t + '/' + property.pattern;
+            pattern_v.push_back(tmp.pattern);
+        }
     }
     else
-        s = property.pattern;
+        pattern_v.push_back(property.pattern);
 
-    UTIL_PATH_LOGGERLN("111");
-    int ret = glob(s.c_str(), 0, nullptr, &pglob);
-    UTIL_PATH_LOGGERLN("ret {} {}", ret, GLOB_NOMATCH);
-    if (ret != 0 || pglob.gl_pathc == 0)
+
+    for (auto &t : pattern_v)
     {
-        return v;
+        /* get an array of qualified files */
+        __attribute__((cleanup(globfree))) glob_t g = {};
+        int ret = glob(t.c_str(), 0, nullptr, &g);
+        if (ret != 0 || g.gl_pathc == 0)
+        {
+            continue;
+        }
+
+        /* copy results to vector */
+        for (int i = 0; g.gl_pathv[i] != nullptr; i++)
+        {
+            res.push_back(g.gl_pathv[i]);
+        }
     }
     
-    UTIL_PATH_LOGGERLN("search");
-    for (int i = 0; pglob.gl_pathv[i] != nullptr; i++)
+
+    for (auto &t : res)
     {
-        const char * const p = pglob.gl_pathv[i];
+        const char * const p = t.c_str();
         file_property_t this_file = { .ret = p};
 
         struct stat buffer_stat;
-        int stat_ret = stat(pglob.gl_pathv[i], &buffer_stat);
+        int stat_ret = stat(p, &buffer_stat);
         if (stat_ret != 0) continue;
 
         // check executable
@@ -79,19 +98,15 @@ std::vector<file_property_t> fcv(const file_property_t &property)
 
 std::vector<std::string> split(std::string &s)
 {
-    UTIL_PATH_LOGGERLN("{}", s.size());
     std::vector<std::string> v;
     size_t cur = 0, prev = 0;
     while (true)
     {
-        sleep(1);
         cur = s.find(':', prev);
         if (cur == string::npos)
             cur = s.size();
 
         string tmp = s.substr(prev, cur-prev);
-        UTIL_PATH_LOGGERLN("{} {}", prev, cur);
-        UTIL_PATH_LOGGERLN("{}", tmp);
         v.push_back(tmp);
         prev = cur+1;
         if (cur == s.size())

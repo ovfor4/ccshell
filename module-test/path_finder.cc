@@ -18,9 +18,28 @@ using namespace std;
 using namespace ov4;
 using namespace ov4::path;
 
-int main()
+int main(int argc, char **argv)
 {
     file_property_t file_property;
+    
+    switch (argc)
+    {
+        case 1:
+        file_property = {
+            .dir_type = dir_type_t::CUSTOM,
+            .pattern = "/bin/ba*",
+        };
+        break;
+
+
+        default:
+        file_property = {
+            .dir_type = dir_type_t::PATH,
+            .pattern = "ba*",
+        };
+
+    }
+
     auto v = fcv(file_property);
     for (auto &c : v)
     {
