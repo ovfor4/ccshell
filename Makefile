@@ -4,9 +4,31 @@ CXX ?= g++
 SRC_DIR := src
 INCLUDE_DIR := include
 BUILD_DIR := build
+TEST_O_DIR := $(BUILD_DIR)/test
 
 DEPS_DIR := third_party
 MAGIC_ENUM_DIR := $(DEPS_DIR)/magic_enum
+
+TARGET := $(BUILD_DIR)/ccshell
+
+WARNFLAGS := -Wall -Wextra
+
+ALL_CPPFLAGS := -I$(INCLUDE_DIR) -I$(MAGIC_ENUM_DIR)/include -MMD -MP $(CPPFLAGS)
+ALL_CXXFLAGS := -std=c++23 $(WARNFLAGS) $(OPTFLAGS) $(LTOFLAGS) $(CXXFLAGS)
+ALL_LDFLAGS  := $(OPTFLAGS) $(LTOFLAGS)
+
+TARGET_OS ?= $(shell uname -s)
+
+ALL_LDFLAGS += $(LDFLAGS) $(EXTRA_LDFLAGS)
+
+SRCS := $(shell find $(SRC_DIR) -name '*.cc')
+OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+DEPS := $(OBJS:.o=.d)
+
+TEST_SRCS := $(shell find test -name 'driver.cc')
+TEST_BINS := $(TEST_SRCS:%.cc=$(BUILD_DIR)/%.out)
+DEPS += $(TEST_SRCS:%=$(BUILD_DIR)/%.d)
+LIB_OBJS := $(filter-out %/main.cc.o,$(OBJS))
 
 ifeq ($(MAKELEVEL),0)
 	MAKEFLAGS += -j8
@@ -33,15 +55,6 @@ ifeq ($(LTO),1)
     LTOFLAGS := -flto=auto
 endif
 
-TARGET := $(BUILD_DIR)/ccshell
-
-WARNFLAGS := -Wall -Wextra
-
-ALL_CPPFLAGS := -I$(INCLUDE_DIR) -I$(MAGIC_ENUM_DIR)/include -MMD -MP $(CPPFLAGS)
-ALL_CXXFLAGS := -std=c++23 $(WARNFLAGS) $(OPTFLAGS) $(LTOFLAGS) $(CXXFLAGS)
-ALL_LDFLAGS  := $(OPTFLAGS) $(LTOFLAGS)
-
-TARGET_OS ?= $(shell uname -s)
 
 ifeq ($(STATIC),1)
     ifeq ($(TARGET_OS),Linux)
@@ -53,11 +66,6 @@ ifeq ($(STATIC),1)
     endif
 endif
 
-ALL_LDFLAGS += $(LDFLAGS) $(EXTRA_LDFLAGS)
-
-SRCS := $(shell find $(SRC_DIR) -name '*.cc')
-OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
-DEPS := $(OBJS:.o=.d)
 
 $(TARGET): $(OBJS)
 	@mkdir -p $(dir $@)
@@ -69,7 +77,7 @@ $(BUILD_DIR)/%.cc.o: %.cc
 
 -include $(DEPS)
 
-.PHONY: all clean fresh magic-enum
+.PHONY: all clean fresh magic-enum test
 
 magic-enum:
 	@mkdir -p $(DEPS_DIR)
@@ -87,3 +95,11 @@ fresh:
 	$(MAKE) DEBUG=$(DEBUG) STATIC=$(STATIC)
 
 all: $(TARGET)
+
+# test
+
+$(BUILD_DIR)/test/%/driver.out: $(BUILD_DIR)/test/%/driver.cc.o $(LIB_OBJS)
+	@mkdir -p $(dir $@)
+	$(CXX) $(ALL_LDFLAGS) $^ $(LDLIBS) -o $@
+
+test: $(TEST_BINS)
